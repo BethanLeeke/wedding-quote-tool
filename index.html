@@ -691,6 +691,12 @@
                     </div>
 
                     <div class="drink-section">
+                        <div class="drink-section-title">Wedding Breakfast Drink</div>
+                        <div id="breakfastDrinkRows"></div>
+                        <button class="add-drink-btn" onclick="addDrinkRow('breakfast')">+ Add Drink</button>
+                    </div>
+
+                    <div class="drink-section">
                         <div class="drink-section-title">Reception Drinks</div>
                         <div id="receptionDrinkRows"></div>
                         <button class="add-drink-btn" onclick="addDrinkRow('reception')">+ Add Drink</button>
@@ -819,6 +825,7 @@
                 { year: 2026, name: "NON ALCOHOLIC", bottle: 0, glass: 6.95, type: "Other" },
                 { year: 2026, name: "SOFT DRINKS", bottle: 0, glass: 3.50, type: "Other" },
                 { year: 2026, name: "Bottled Beer/Larger", bottle: 58.00, glass: 6.00, type: "Beer" },
+                { year: 2026, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 58.00, glass: 0, type: "Beer" },
                 { year: 2026, name: "Staropramen Zero", bottle: 0, glass: 4.80, type: "Beer" },
                 { year: 2027, name: "LAURENT-PERRIER CHAMPAGNE", bottle: 85.00, glass: 14.17, type: "Wine" },
                 { year: 2027, name: "SPARKLING WINE", bottle: 36.50, glass: 6.08, type: "Wine" },
@@ -829,6 +836,7 @@
                 { year: 2027, name: "NON ALCOHOLIC", bottle: 0, glass: 6.95, type: "Other" },
                 { year: 2027, name: "SOFT DRINKS", bottle: 0, glass: 3.50, type: "Other" },
                 { year: 2027, name: "Bottled Beer/Larger", bottle: 58.00, glass: 6.00, type: "Beer" },
+                { year: 2027, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 58.00, glass: 0, type: "Beer" },
                 { year: 2027, name: "Staropramen Zero", bottle: 0, glass: 4.80, type: "Beer" },
                 { year: 2028, name: "LAURENT-PERRIER CHAMPAGNE", bottle: 93.50, glass: 15.59, type: "Wine" },
                 { year: 2028, name: "SPARKLING WINE", bottle: 40.15, glass: 6.69, type: "Wine" },
@@ -839,6 +847,7 @@
                 { year: 2028, name: "NON ALCOHOLIC", bottle: 0, glass: 7.65, type: "Other" },
                 { year: 2028, name: "SOFT DRINKS", bottle: 0, glass: 3.85, type: "Other" },
                 { year: 2028, name: "Bottled Beer/Larger", bottle: 63.80, glass: 6.60, type: "Beer" },
+                { year: 2028, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 63.80, glass: 0, type: "Beer" },
                 { year: 2028, name: "Staropramen Zero", bottle: 0, glass: 5.28, type: "Beer" }
             ],
             extras: [
@@ -895,6 +904,7 @@
             evening: null,
             includeDessert: true,
             arrivalDrinks: [],
+            breakfastDrinks: [],
             receptionDrinks: [],
             toastDrinks: [],
             extras: [],
@@ -991,6 +1001,7 @@
             selectedOptions.breakfast = null;
             selectedOptions.evening = null;
             selectedOptions.arrivalDrinks = [];
+            selectedOptions.breakfastDrinks = [];
             selectedOptions.receptionDrinks = [];
             selectedOptions.toastDrinks = [];
             selectedOptions.extras = [];
@@ -1360,9 +1371,10 @@
 
             // Drinks (three categories, each supporting multiple selections)
             const drinkCategories = [
-                { key: 'arrivalDrinks',   label: 'Arrival Drinks' },
-                { key: 'receptionDrinks', label: 'Reception Drinks' },
-                { key: 'toastDrinks',     label: 'Drink with Toast' }
+                { key: 'arrivalDrinks',    label: 'Arrival Drinks' },
+                { key: 'breakfastDrinks',  label: 'Wedding Breakfast Drink' },
+                { key: 'receptionDrinks',  label: 'Reception Drinks' },
+                { key: 'toastDrinks',      label: 'Drink with Toast' }
             ];
             drinkCategories.forEach(({ key, label }) => {
                 selectedOptions[key].forEach(({ drink, qty }) => {
@@ -1542,7 +1554,7 @@
             `;
 
             const drinkSummaryParts = [];
-            [['arrivalDrinks', 'Arrival'], ['receptionDrinks', 'Reception'], ['toastDrinks', 'Toast']].forEach(([key, lbl]) => {
+            [['arrivalDrinks', 'Arrival'], ['breakfastDrinks', 'Breakfast Drink'], ['receptionDrinks', 'Reception'], ['toastDrinks', 'Toast']].forEach(([key, lbl]) => {
                 selectedOptions[key].forEach(({ drink, qty }) => {
                     if (drink) drinkSummaryParts.push(`${lbl}: ${drink.name} ×${qty}`);
                 });
@@ -1603,7 +1615,7 @@
             document.getElementById('preparedBy').value = '';
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.querySelectorAll('input[type="radio"]').forEach(rb => rb.checked = false);
-            ['arrival', 'reception', 'toast'].forEach(type => {
+            ['arrival', 'breakfast', 'reception', 'toast'].forEach(type => {
                 document.getElementById(type + 'DrinkRows').innerHTML = '';
             });
             const dessertAddon = document.getElementById('dessert-addon');
@@ -1622,6 +1634,7 @@
                 evening: null,
                 includeDessert: true,
                 arrivalDrinks: [],
+                breakfastDrinks: [],
                 receptionDrinks: [],
                 toastDrinks: [],
                 extras: [],
