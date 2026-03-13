@@ -825,7 +825,7 @@
                 { year: 2026, name: "NON ALCOHOLIC", bottle: 0, glass: 6.95, type: "Other" },
                 { year: 2026, name: "SOFT DRINKS", bottle: 0, glass: 3.50, type: "Other" },
                 { year: 2026, name: "Bottled Beer/Larger", bottle: 58.00, glass: 6.00, type: "Beer" },
-                { year: 2026, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 58.00, glass: 0, type: "Beer" },
+                { year: 2026, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 58.00, glass: 0, type: "Beer", unit: "quantity" },
                 { year: 2026, name: "Staropramen Zero", bottle: 0, glass: 4.80, type: "Beer" },
                 { year: 2027, name: "LAURENT-PERRIER CHAMPAGNE", bottle: 85.00, glass: 14.17, type: "Wine" },
                 { year: 2027, name: "SPARKLING WINE", bottle: 36.50, glass: 6.08, type: "Wine" },
@@ -836,7 +836,7 @@
                 { year: 2027, name: "NON ALCOHOLIC", bottle: 0, glass: 6.95, type: "Other" },
                 { year: 2027, name: "SOFT DRINKS", bottle: 0, glass: 3.50, type: "Other" },
                 { year: 2027, name: "Bottled Beer/Larger", bottle: 58.00, glass: 6.00, type: "Beer" },
-                { year: 2027, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 58.00, glass: 0, type: "Beer" },
+                { year: 2027, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 58.00, glass: 0, type: "Beer", unit: "quantity" },
                 { year: 2027, name: "Staropramen Zero", bottle: 0, glass: 4.80, type: "Beer" },
                 { year: 2028, name: "LAURENT-PERRIER CHAMPAGNE", bottle: 93.50, glass: 15.59, type: "Wine" },
                 { year: 2028, name: "SPARKLING WINE", bottle: 40.15, glass: 6.69, type: "Wine" },
@@ -847,7 +847,7 @@
                 { year: 2028, name: "NON ALCOHOLIC", bottle: 0, glass: 7.65, type: "Other" },
                 { year: 2028, name: "SOFT DRINKS", bottle: 0, glass: 3.85, type: "Other" },
                 { year: 2028, name: "Bottled Beer/Larger", bottle: 63.80, glass: 6.60, type: "Beer" },
-                { year: 2028, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 63.80, glass: 0, type: "Beer" },
+                { year: 2028, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 63.80, glass: 0, type: "Beer", unit: "quantity" },
                 { year: 2028, name: "Staropramen Zero", bottle: 0, glass: 5.28, type: "Beer" }
             ],
             extras: [
@@ -1190,9 +1190,15 @@
             return drink && drink.type === 'Wine' && drink.bottle > 0;
         }
 
+        function isByQty(drink) {
+            return drink && drink.unit === 'quantity';
+        }
+
         function defaultDrinkQty(drink) {
             const dayGuests = Math.max(0, parseInt(document.getElementById('dayGuests').value) || 0);
-            return isByBottle(drink) ? Math.ceil(dayGuests / 6) : dayGuests;
+            if (isByQty(drink)) return 1;
+            if (isByBottle(drink)) return Math.ceil(dayGuests / 6);
+            return dayGuests;
         }
 
         function buildDrinkSelect(drinksOptions) {
@@ -1204,9 +1210,11 @@
             drinksOptions.forEach((drink, idx) => {
                 const opt = document.createElement('option');
                 opt.value = idx;
-                const priceLabel = isByBottle(drink)
-                    ? `£${drink.bottle.toFixed(2)}/bottle`
-                    : `£${drink.glass.toFixed(2)}/glass`;
+                const priceLabel = isByQty(drink)
+                    ? `£${drink.bottle.toFixed(2)}/bucket`
+                    : isByBottle(drink)
+                        ? `£${drink.bottle.toFixed(2)}/bottle`
+                        : `£${drink.glass.toFixed(2)}/glass`;
                 opt.textContent = `${drink.name} – ${priceLabel}`;
                 select.appendChild(opt);
             });
@@ -1276,8 +1284,11 @@
 
             // If the drink selection changed, reset qty to appropriate default and update label
             if (entry && entry.drink !== drink) {
-                const byBottle = isByBottle(drink);
-                if (qtyLabel) qtyLabel.textContent = byBottle ? 'Bottles:' : 'Guests:';
+                if (qtyLabel) {
+                    if (isByQty(drink)) qtyLabel.textContent = 'Qty:';
+                    else if (isByBottle(drink)) qtyLabel.textContent = 'Bottles:';
+                    else qtyLabel.textContent = 'Guests:';
+                }
                 qtyInput.value = defaultDrinkQty(drink);
             }
 
@@ -1380,11 +1391,14 @@
                 selectedOptions[key].forEach(({ drink, qty }) => {
                     if (drink) {
                         const byBottle = isByBottle(drink);
-                        const unitPrice = byBottle ? drink.bottle : drink.glass;
+                        const byQty = isByQty(drink);
+                        const unitPrice = (byBottle || byQty) ? drink.bottle : drink.glass;
                         const drinkPrice = unitPrice * qty;
-                        const qtyLabel = byBottle
-                            ? `${qty} bottle${qty !== 1 ? 's' : ''}`
-                            : `${qty} guests`;
+                        const qtyLabel = byQty
+                            ? `×${qty}`
+                            : byBottle
+                                ? `${qty} bottle${qty !== 1 ? 's' : ''}`
+                                : `${qty} guests`;
                         total += drinkPrice;
                         summary.push({
                             label: `${label}: ${drink.name} (${qtyLabel})`,
