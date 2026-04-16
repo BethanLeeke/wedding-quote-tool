@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vale Resort Golf Packages Quoting Engine</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-dark: #2a2e3a;
+            --primary-burgundy: #8b3a4a;
+            --primary-green: #8fa17e;
+            --primary-green-dark: #6d8062;
+            --primary-cream: #f5f1e8;
+            --accent-light: #e8e4d8;
+            --text-dark: #2a2e3a;
+            --text-light: #6b6b6b;
+            --bg-light: #faf8f3;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Montserrat:wght@300;400;500;600&display=swap');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #faf8f3 0%, #f5f1e8 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0; }
+
+        .header {
+            background: linear-gradient(rgba(42, 46, 58, 0.55), rgba(143, 161, 126, 0.35));
+            padding: 80px 40px;
+            text-align: center;
+            color: white;
+            border-bottom: 3px solid var(--primary-green);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            background: rgba(42, 46, 58, 0.65);
+            padding: 40px 50px;
+            border-radius: 8px;
+            backdrop-filter: blur(2px);
+            display: inline-block;
+        }
+
+        .header-logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 20px;
+            background: white;
+            padding: 14px 22px;
+            border-radius: 6px;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 1.15em;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .header-tagline {
+            font-size: 0.95em;
+            color: #f5f5f5;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px;
+        }
+
+        .form-section, .quote-section {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(42, 46, 58, 0.08);
+            border: 1px solid var(--accent-light);
+        }
+
+        .form-section { border-top: 4px solid var(--primary-green); }
+        .quote-section { border-top: 4px solid var(--primary-burgundy); }
+
+        .form-section h2, .quote-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-green);
+        }
+
+        .form-group { margin-bottom: 25px; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group select,
+        .form-group input[type="number"],
+        .form-group input[type="text"],
+        .form-group input[type="date"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--accent-light);
+            border-radius: 4px;
+            font-size: 1em;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(143, 161, 126, 0.2);
+            background: #fffbf7;
+        }
+
+        .form-group input[readonly] {
+            background: var(--accent-light);
+            color: var(--text-light);
+            cursor: default;
+        }
+
+        .date-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .date-grid .form-group { margin-bottom: 0; }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid-3 .form-group { margin-bottom: 0; }
+
+        .helper-text {
+            font-size: 0.82em;
+            color: var(--text-light);
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        .section-subtitle {
+            color: var(--primary-burgundy);
+            font-size: 0.9em;
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Mode tabs */
+        .mode-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 2px solid var(--primary-burgundy);
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 16px 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            background: white;
+            color: var(--primary-burgundy);
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .mode-tab:not(:last-child) {
+            border-right: 2px solid var(--primary-burgundy);
+        }
+
+        .mode-tab.active {
+            background: var(--primary-burgundy);
+            color: white;
+        }
+
+        .mode-tab:hover:not(.active) {
+            background: #fbeaec;
+        }
+
+        /* Checkbox toggle */
+        .toggle-wrap {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--primary-cream);
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid var(--accent-light);
+            transition: all 0.3s ease;
+        }
+
+        .toggle-wrap:hover { border-color: var(--primary-green); }
+
+        .toggle-wrap input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 14px;
+            accent-color: var(--primary-burgundy);
+            cursor: pointer;
+        }
+
+        .toggle-wrap label {
+            margin: 0 !important;
+            cursor: pointer;
+            font-weight: 600 !important;
+            color: var(--text-dark);
+            letter-spacing: 0.3px;
+        }
+
+        /* Quote summary */
+        .quote-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--accent-light);
+            color: var(--text-dark);
+            font-size: 0.95em;
+        }
+
+        .quote-item.package-include {
+            color: var(--primary-green-dark);
+            font-style: italic;
+            font-size: 0.88em;
+        }
+
+        .quote-item.total {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            padding-top: 20px;
+            padding-bottom: 10px;
+            border-top: 2px solid var(--primary-green);
+            border-bottom: none;
+            margin-top: 15px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .quote-item.deposit-line {
+            font-size: 0.88em;
+            color: var(--primary-green-dark);
+            font-weight: 600;
+            border-bottom: none;
+            padding: 6px 0;
+        }
+
+        .quote-item.info-line {
+            font-size: 0.85em;
+            color: var(--text-light);
+            font-style: italic;
+            border-bottom: none;
+            padding: 4px 0;
+        }
+
+        .quote-item.discount {
+            color: var(--primary-green-dark);
+            font-weight: 600;
+        }
+
+        .quote-section {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .quote-section::-webkit-scrollbar { width: 6px; }
+        .quote-section::-webkit-scrollbar-track { background: var(--primary-cream); }
+        .quote-section::-webkit-scrollbar-thumb { background: var(--primary-green); border-radius: 3px; }
+
+        /* Buttons */
+        .btn-group { display: flex; gap: 12px; margin-top: 30px; }
+
+        button.btn {
+            flex: 1;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-burgundy) 0%, #a65060 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 58, 74, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-green-dark);
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover { background: var(--primary-cream); border-color: #ccc; }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(42, 46, 58, 0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            padding: 50px;
+            border-radius: 8px;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .modal-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--primary-green);
+            padding-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .modal-item {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--primary-cream);
+            border-radius: 4px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .modal-item-label {
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            margin-bottom: 6px;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-item-value { color: var(--text-dark); font-size: 1em; line-height: 1.6; }
+
+        .modal-total {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid var(--primary-green);
+            text-align: right;
+        }
+
+        .modal-actions { display: flex; gap: 12px; margin-top: 30px; }
+        .modal-actions button { flex: 1; }
+
+        .quote-status {
+            display: none;
+            background: var(--primary-cream);
+            color: var(--primary-green-dark);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        @media (max-width: 1024px) {
+            .content { grid-template-columns: 1fr; }
+            .header h1 { font-size: 2.2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1776162028/vale_logo_April_2026_p4grbk.jpg" alt="Vale Resort Logo" class="header-logo">
+                <h1>THE VALE RESORT</h1>
+                <p>Golf Packages Quotation Assistant</p>
+                <p class="header-tagline">Create your bespoke golf package proposal in minutes</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="form-section">
+                <h2>Golf Package Details</h2>
+
+                <div class="mode-tabs">
+                    <button class="mode-tab active" data-mode="day" onclick="switchMode('day')">Golf Day</button>
+                    <button class="mode-tab" data-mode="break" onclick="switchMode('break')">Golf Break</button>
+                </div>
+
+                <!-- =============== GOLF DAY FIELDS =============== -->
+                <div id="dayFields">
+                    <div class="form-group">
+                        <label for="dayEventDate">Event Date</label>
+                        <input type="date" id="dayEventDate" onchange="recalculate();">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dayPreparedBy">Prepared By</label>
+                        <select id="dayPreparedBy" onchange="recalculate();">
+                            <option value="">Select team member</option>
+                            <option value="Liam Williams">Liam Williams</option>
+                            <option value="Richard Williams">Richard Williams</option>
+                            <option value="Natalie Williams">Natalie Williams</option>
+                            <option value="Linda Taylor">Linda Taylor</option>
+                            <option value="Ed Williams">Ed Williams</option>
+                            <option value="Callie Birt">Callie Birt</option>
+                            <option value="Naomi Jones">Naomi Jones</option>
+                            <option value="Hollie Crowe">Hollie Crowe</option>
+                            <option value="Laura Williams">Laura Williams</option>
+                            <option value="Katie Thomas">Katie Thomas</option>
+                        </select>
+                    </div>
+
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="dayGolfNumbers">Golf Numbers</label>
+                            <input type="number" id="dayGolfNumbers" min="1" value="20" oninput="updateDayDefaults(); recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="dayDinnerNumbers">Dinner Numbers</label>
+                            <input type="number" id="dayDinnerNumbers" min="0" value="20" oninput="recalculate();">
+                        </div>
+                    </div>
+
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="dayRounds">Number of Rounds</label>
+                            <input type="number" id="dayRounds" min="1" value="1" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="dayBuggies">Number of Buggies</label>
+                            <input type="number" id="dayBuggies" min="0" value="4" oninput="recalculate();">
+                            <div class="helper-text">Default: golfers &divide; 5</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dayPricePerPerson">Package Price Per Person (&pound;)</label>
+                        <input type="number" id="dayPricePerPerson" min="0" step="0.01" value="0" oninput="recalculate();">
+                    </div>
+
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Course Maintenance</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="dayCourseMaintenance" onchange="recalculate();">
+                            <label for="dayCourseMaintenance">Course maintenance may be taking place</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =============== GOLF BREAK FIELDS =============== -->
+                <div id="breakFields" style="display:none;">
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label for="breakArrivalDate">Arrival Date</label>
+                            <input type="date" id="breakArrivalDate" onchange="updateBreakDates(); recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="breakNights">Number of Nights</label>
+                            <input type="number" id="breakNights" min="1" value="1" oninput="updateBreakDates(); recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="breakDepartureDate">Departure Date</label>
+                            <input type="date" id="breakDepartureDate" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="breakPreparedBy">Prepared By</label>
+                        <select id="breakPreparedBy" onchange="recalculate();">
+                            <option value="">Select team member</option>
+                            <option value="Liam Williams">Liam Williams</option>
+                            <option value="Richard Williams">Richard Williams</option>
+                            <option value="Natalie Williams">Natalie Williams</option>
+                            <option value="Linda Taylor">Linda Taylor</option>
+                            <option value="Ed Williams">Ed Williams</option>
+                            <option value="Callie Birt">Callie Birt</option>
+                            <option value="Naomi Jones">Naomi Jones</option>
+                            <option value="Hollie Crowe">Hollie Crowe</option>
+                            <option value="Laura Williams">Laura Williams</option>
+                            <option value="Katie Thomas">Katie Thomas</option>
+                        </select>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label for="breakGolfers">Total Number of Golfers</label>
+                            <input type="number" id="breakGolfers" min="0" value="12" oninput="updateBreakDefaults(); recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="breakNonGolfers">Total Number of Non-Golfers</label>
+                            <input type="number" id="breakNonGolfers" min="0" value="0" oninput="updateBreakDefaults(); recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="breakTotalGuests">Total Number of Guests</label>
+                            <input type="number" id="breakTotalGuests" value="12" readonly>
+                        </div>
+                    </div>
+
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="breakRounds">Number of Rounds</label>
+                            <input type="number" id="breakRounds" min="1" value="1" oninput="recalculate();">
+                            <div class="helper-text">Default: 1 &times; number of nights</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="breakBuggies">Number of Buggies</label>
+                            <input type="number" id="breakBuggies" min="0" value="3" oninput="recalculate();">
+                            <div class="helper-text">Default: golfers &divide; 5</div>
+                        </div>
+                    </div>
+
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="breakGolferPrice">Price Per Person &mdash; Golfers (&pound;)</label>
+                            <input type="number" id="breakGolferPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="breakNonGolferPrice">Price Per Person &mdash; Non-Golfers (&pound;)</label>
+                            <input type="number" id="breakNonGolferPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                        </div>
+                    </div>
+
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label style="margin-bottom:10px;">Drinks Voucher</label>
+                            <div class="toggle-wrap">
+                                <input type="checkbox" id="breakDrinksVoucher" onchange="recalculate();">
+                                <label for="breakDrinksVoucher">&pound;10 per person drinks voucher</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="margin-bottom:10px;">Course Maintenance</label>
+                            <div class="toggle-wrap">
+                                <input type="checkbox" id="breakCourseMaintenance" onchange="recalculate();">
+                                <label for="breakCourseMaintenance">Course maintenance may be taking place</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-subtitle">Tee Times <span style="color:var(--text-light); font-weight:500; text-transform:none;">(optional)</span></div>
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="breakTeeTimeLake">Lake Course</label>
+                            <input type="text" id="breakTeeTimeLake" placeholder="e.g. 08:30" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="breakTeeTimeWN">Wales National Course</label>
+                            <input type="text" id="breakTeeTimeWN" placeholder="e.g. 10:00" oninput="recalculate();">
+                        </div>
+                    </div>
+
+                    <div class="section-subtitle">Accommodation</div>
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="breakTwinRooms">Number of Twin Rooms</label>
+                            <input type="number" id="breakTwinRooms" min="0" value="6" oninput="recalculate();">
+                            <div class="helper-text">Default: total guests &divide; 2 (rounded up)</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="breakSingleRooms">Number of Single Rooms</label>
+                            <input type="number" id="breakSingleRooms" min="0" value="0" oninput="recalculate();">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">Generate Quote</button>
+                    <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                </div>
+            </div>
+
+            <div class="quote-section">
+                <h2>Quote Summary</h2>
+                <div class="quote-status" id="quoteStatus">&#10003; Quote generated &mdash; make changes above to update</div>
+                <div id="quoteSummary">
+                    <div class="quote-item" style="color: #999;">Enter details to see price summary</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="quoteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalTitle">Your Golf Quote</div>
+            <div id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Edit Quote</button>
+                <button class="btn btn-primary" onclick="downloadPDFQuote()">Download PDF Quote</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let activeMode = 'day';
+
+        /* ===================== MODE SWITCHING ===================== */
+        function switchMode(mode) {
+            activeMode = mode;
+            document.getElementById('dayFields').style.display = mode === 'day' ? 'block' : 'none';
+            document.getElementById('breakFields').style.display = mode === 'break' ? 'block' : 'none';
+            document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.mode-tab[data-mode="${mode}"]`).classList.add('active');
+            recalculate();
+        }
+
+        /* ===================== AUTO-UPDATE HELPERS ===================== */
+        function updateDayDefaults() {
+            const golfers = Math.max(0, parseInt(document.getElementById('dayGolfNumbers').value) || 0);
+            document.getElementById('dayBuggies').value = Math.max(0, Math.ceil(golfers / 5));
+            document.getElementById('dayDinnerNumbers').value = golfers;
+        }
+
+        function updateBreakDefaults() {
+            const golfers = Math.max(0, parseInt(document.getElementById('breakGolfers').value) || 0);
+            const nonGolfers = Math.max(0, parseInt(document.getElementById('breakNonGolfers').value) || 0);
+            const total = golfers + nonGolfers;
+            document.getElementById('breakTotalGuests').value = total;
+            document.getElementById('breakBuggies').value = Math.max(0, Math.ceil(golfers / 5));
+            document.getElementById('breakTwinRooms').value = Math.ceil(total / 2);
+        }
+
+        function updateBreakDates() {
+            const arrival = document.getElementById('breakArrivalDate').value;
+            const nights = Math.max(1, parseInt(document.getElementById('breakNights').value) || 1);
+            if (arrival) {
+                const d = new Date(arrival);
+                d.setDate(d.getDate() + nights);
+                document.getElementById('breakDepartureDate').value = d.toISOString().split('T')[0];
+            }
+            document.getElementById('breakRounds').value = nights;
+        }
+
+        /* ===================== RECALCULATE ===================== */
+        function recalculate() {
+            if (activeMode === 'day') {
+                recalculateDay();
+            } else {
+                recalculateBreak();
+            }
+        }
+
+        function recalculateDay() {
+            const golfers = Math.max(0, parseInt(document.getElementById('dayGolfNumbers').value) || 0);
+            const dinnerNumbers = Math.max(0, parseInt(document.getElementById('dayDinnerNumbers').value) || 0);
+            const rounds = Math.max(1, parseInt(document.getElementById('dayRounds').value) || 1);
+            const buggies = Math.max(0, parseInt(document.getElementById('dayBuggies').value) || 0);
+            const pricePerPerson = Math.max(0, parseFloat(document.getElementById('dayPricePerPerson').value) || 0);
+            const courseMaintenance = document.getElementById('dayCourseMaintenance').checked;
+
+            const summary = [];
+            let total = 0;
+
+            if (pricePerPerson > 0 && golfers > 0) {
+                const packageTotal = golfers * pricePerPerson;
+                total += packageTotal;
+                summary.push({
+                    label: `Golf Package (${golfers} x \u00A3${pricePerPerson.toFixed(2)})`,
+                    price: packageTotal
+                });
+            }
+
+            if (buggies > 0) {
+                const buggyTotal = buggies * 45;
+                total += buggyTotal;
+                summary.push({
+                    label: `Buggies (${buggies} x \u00A345.00)`,
+                    price: buggyTotal
+                });
+            }
+
+            if (courseMaintenance) {
+                summary.push({ label: 'Course Maintenance', price: null, type: 'info', text: 'Yes \u2014 may be taking place' });
+            }
+
+            const deposit = 10 * golfers;
+
+            renderSummary(summary, total, deposit, [
+                'Arrival & Registration: Tea/coffee & bacon rolls',
+                '18 holes Championship golf on the Wales National course',
+                '2 course Society dinner served at the Golf Club'
+            ]);
+
+            window._currentQuote = { mode: 'day', summary, total, deposit, golfers, dinnerNumbers, rounds, buggies, pricePerPerson, courseMaintenance };
+        }
+
+        function recalculateBreak() {
+            const golfers = Math.max(0, parseInt(document.getElementById('breakGolfers').value) || 0);
+            const nonGolfers = Math.max(0, parseInt(document.getElementById('breakNonGolfers').value) || 0);
+            const totalGuests = golfers + nonGolfers;
+            const nights = Math.max(1, parseInt(document.getElementById('breakNights').value) || 1);
+            const rounds = Math.max(1, parseInt(document.getElementById('breakRounds').value) || 1);
+            const buggies = Math.max(0, parseInt(document.getElementById('breakBuggies').value) || 0);
+            const golferPrice = Math.max(0, parseFloat(document.getElementById('breakGolferPrice').value) || 0);
+            const nonGolferPrice = Math.max(0, parseFloat(document.getElementById('breakNonGolferPrice').value) || 0);
+            const drinksVoucher = document.getElementById('breakDrinksVoucher').checked;
+            const courseMaintenance = document.getElementById('breakCourseMaintenance').checked;
+            const twinRooms = Math.max(0, parseInt(document.getElementById('breakTwinRooms').value) || 0);
+            const singleRooms = Math.max(0, parseInt(document.getElementById('breakSingleRooms').value) || 0);
+            const teeTimeLake = document.getElementById('breakTeeTimeLake').value.trim();
+            const teeTimeWN = document.getElementById('breakTeeTimeWN').value.trim();
+
+            const summary = [];
+            let total = 0;
+
+            if (golferPrice > 0 && golfers > 0) {
+                const gt = golfers * golferPrice;
+                total += gt;
+                summary.push({ label: `Golfers Package (${golfers} x \u00A3${golferPrice.toFixed(2)})`, price: gt });
+            }
+
+            if (nonGolferPrice > 0 && nonGolfers > 0) {
+                const nt = nonGolfers * nonGolferPrice;
+                total += nt;
+                summary.push({ label: `Non-Golfers Package (${nonGolfers} x \u00A3${nonGolferPrice.toFixed(2)})`, price: nt });
+            }
+
+            // 1 in 12 go free
+            const freePlaces = Math.floor(totalGuests / 12);
+            if (freePlaces > 0 && golferPrice > 0) {
+                const discount = freePlaces * golferPrice;
+                total -= discount;
+                summary.push({ label: `1 in 12 Free (${freePlaces} place${freePlaces > 1 ? 's' : ''} x -\u00A3${golferPrice.toFixed(2)})`, price: -discount, type: 'discount' });
+            }
+
+            if (buggies > 0) {
+                const bt = buggies * 50;
+                total += bt;
+                summary.push({ label: `Buggies (${buggies} x \u00A350.00)`, price: bt });
+            }
+
+            if (drinksVoucher && totalGuests > 0) {
+                const dv = totalGuests * 10;
+                total += dv;
+                summary.push({ label: `Drinks Voucher (${totalGuests} x \u00A310.00)`, price: dv });
+            }
+
+            if (courseMaintenance) {
+                summary.push({ label: 'Course Maintenance', price: null, type: 'info', text: 'Yes \u2014 may be taking place' });
+            }
+
+            const deposit = 50 * totalGuests;
+
+            const packageIncludes = [
+                `${rounds} Round${rounds > 1 ? 's' : ''} of Championship golf on the Wales National course / Lake Course`,
+                '3 course dinner served at the Golf Club',
+                'Bed & Breakfast Accommodation at The Vale Resort'
+            ];
+
+            renderSummary(summary, total, deposit, packageIncludes, {
+                twinRooms, singleRooms, teeTimeLake, teeTimeWN
+            });
+
+            window._currentQuote = {
+                mode: 'break', summary, total, deposit, golfers, nonGolfers, totalGuests, nights, rounds,
+                buggies, golferPrice, nonGolferPrice, drinksVoucher, courseMaintenance,
+                twinRooms, singleRooms, teeTimeLake, teeTimeWN, freePlaces
+            };
+        }
+
+        /* ===================== RENDER SUMMARY ===================== */
+        function renderSummary(items, total, deposit, packageIncludes, extra) {
+            const div = document.getElementById('quoteSummary');
+
+            if (items.length === 0 && total === 0) {
+                div.innerHTML = '<div class="quote-item" style="color: #999;">Enter details to see price summary</div>';
+                return;
+            }
+
+            let html = '';
+
+            items.forEach(item => {
+                if (item.type === 'info') {
+                    html += `<div class="quote-item info-line"><span>${item.label}</span><span>${item.text}</span></div>`;
+                } else if (item.type === 'discount') {
+                    html += `<div class="quote-item discount"><span>${item.label}</span><span>-\u00A3${Math.abs(item.price).toFixed(2)}</span></div>`;
+                } else {
+                    html += `<div class="quote-item"><span>${item.label}</span><span>\u00A3${item.price.toFixed(2)}</span></div>`;
+                }
+            });
+
+            html += `<div class="quote-item total"><span>TOTAL (inc. VAT)</span><span>\u00A3${total.toFixed(2)}</span></div>`;
+
+            if (deposit > 0) {
+                html += `<div class="quote-item deposit-line"><span>Deposit Required (due within 2 weeks)</span><span>\u00A3${deposit.toFixed(2)}</span></div>`;
+            }
+
+            if (extra) {
+                if (extra.twinRooms > 0 || extra.singleRooms > 0) {
+                    html += `<div class="quote-item info-line"><span>Rooms</span><span>${extra.twinRooms} twin, ${extra.singleRooms} single</span></div>`;
+                }
+                if (extra.teeTimeLake) {
+                    html += `<div class="quote-item info-line"><span>Tee Time &mdash; Lake Course</span><span>${extra.teeTimeLake}</span></div>`;
+                }
+                if (extra.teeTimeWN) {
+                    html += `<div class="quote-item info-line"><span>Tee Time &mdash; Wales National</span><span>${extra.teeTimeWN}</span></div>`;
+                }
+            }
+
+            if (packageIncludes && packageIncludes.length > 0) {
+                html += '<div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--accent-light);">';
+                html += '<div style="font-size:0.8em; font-weight:700; color:var(--primary-burgundy); letter-spacing:0.5px; text-transform:uppercase; margin-bottom:8px;">Package Includes</div>';
+                packageIncludes.forEach(inc => {
+                    html += `<div class="quote-item package-include"><span>\u2713 ${inc}</span></div>`;
+                });
+                html += '</div>';
+            }
+
+            div.innerHTML = html;
+        }
+
+        /* ===================== GENERATE QUOTE ===================== */
+        function generateQuote() {
+            if (activeMode === 'day') {
+                if (!document.getElementById('dayEventDate').value) { alert('Please select an event date.'); return; }
+                const pp = parseFloat(document.getElementById('dayPricePerPerson').value) || 0;
+                if (pp <= 0) { alert('Please enter a package price per person.'); return; }
+            } else {
+                if (!document.getElementById('breakArrivalDate').value) { alert('Please select an arrival date.'); return; }
+                const gp = parseFloat(document.getElementById('breakGolferPrice').value) || 0;
+                const ngp = parseFloat(document.getElementById('breakNonGolferPrice').value) || 0;
+                const g = parseInt(document.getElementById('breakGolfers').value) || 0;
+                if (g > 0 && gp <= 0) { alert('Please enter a price per person for golfers.'); return; }
+                if (g === 0 && ngp <= 0) { alert('Please enter at least one golfer or a non-golfer price.'); return; }
+            }
+
+            displayQuoteModal();
+            document.getElementById('generateBtn').textContent = 'Regenerate Quote';
+            document.getElementById('quoteStatus').style.display = 'block';
+        }
+
+        function formatDate(iso) {
+            try {
+                const d = new Date(iso);
+                if (!isNaN(d.getTime())) {
+                    return d.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                }
+            } catch (e) {}
+            return iso || 'Not selected';
+        }
+
+        function displayQuoteModal() {
+            const q = window._currentQuote;
+            if (!q) return;
+            const isDay = q.mode === 'day';
+            const title = isDay ? 'Your Golf Day Quote' : 'Your Golf Break Quote';
+            document.getElementById('modalTitle').textContent = title;
+
+            let html = '';
+
+            if (isDay) {
+                const eventDate = formatDate(document.getElementById('dayEventDate').value);
+                const preparedBy = document.getElementById('dayPreparedBy').value || '\u2014';
+                html += modalItem('Event Date', eventDate);
+                html += modalItem('Prepared By', preparedBy);
+                html += modalItem('Golf Numbers', q.golfers);
+                html += modalItem('Dinner Numbers', q.dinnerNumbers);
+                html += modalItem('Rounds', q.rounds);
+                html += modalItem('Buggies', q.buggies);
+                if (q.courseMaintenance) html += modalItem('Course Maintenance', 'Yes \u2014 may be taking place');
+            } else {
+                const arrival = formatDate(document.getElementById('breakArrivalDate').value);
+                const departure = formatDate(document.getElementById('breakDepartureDate').value);
+                const preparedBy = document.getElementById('breakPreparedBy').value || '\u2014';
+                html += modalItem('Arrival Date', arrival);
+                html += modalItem('Departure Date', departure);
+                html += modalItem('Nights', q.nights);
+                html += modalItem('Prepared By', preparedBy);
+                html += modalItem('Guests', `${q.golfers} golfer${q.golfers !== 1 ? 's' : ''}, ${q.nonGolfers} non-golfer${q.nonGolfers !== 1 ? 's' : ''} (${q.totalGuests} total)`);
+                html += modalItem('Rounds', q.rounds);
+                html += modalItem('Buggies', q.buggies);
+                if (q.freePlaces > 0) html += modalItem('1 in 12 Free', `${q.freePlaces} free place${q.freePlaces > 1 ? 's' : ''}`);
+                if (q.drinksVoucher) html += modalItem('Drinks Voucher', `\u00A310 per person (\u00A3${(q.totalGuests * 10).toFixed(2)} total)`);
+                if (q.courseMaintenance) html += modalItem('Course Maintenance', 'Yes \u2014 may be taking place');
+                if (q.teeTimeLake || q.teeTimeWN) {
+                    let teeTxt = '';
+                    if (q.teeTimeLake) teeTxt += `Lake Course: ${q.teeTimeLake}<br>`;
+                    if (q.teeTimeWN) teeTxt += `Wales National: ${q.teeTimeWN}`;
+                    html += modalItem('Tee Times', teeTxt);
+                }
+                html += modalItem('Accommodation', `${q.twinRooms} twin room${q.twinRooms !== 1 ? 's' : ''}, ${q.singleRooms} single room${q.singleRooms !== 1 ? 's' : ''}`);
+            }
+
+            // Cost breakdown
+            html += `<div class="modal-item" style="background:#eef2ea; border-left:4px solid var(--primary-green);">
+                <div class="modal-item-label">Cost Breakdown</div>`;
+            q.summary.forEach(item => {
+                if (item.type === 'info') {
+                    html += `<div class="modal-item-value" style="margin:5px 0; font-style:italic; color:var(--text-light);">\u2022 ${item.label}: ${item.text}</div>`;
+                } else if (item.type === 'discount') {
+                    html += `<div class="modal-item-value" style="margin:5px 0; color:var(--primary-green-dark); font-weight:600;">\u2022 ${item.label}: -\u00A3${Math.abs(item.price).toFixed(2)}</div>`;
+                } else {
+                    html += `<div class="modal-item-value" style="margin:5px 0;">\u2022 ${item.label}: \u00A3${item.price.toFixed(2)}</div>`;
+                }
+            });
+            html += '</div>';
+
+            // VAT breakdown
+            const exVat = q.total / 1.2;
+            const vatAmount = q.total - exVat;
+            html += `<div class="modal-item" style="background:#f8f9fa; border-left:3px solid var(--primary-green); font-size:0.9em;">
+                <div class="modal-item-value" style="display:flex; justify-content:space-between; margin:3px 0;"><span>Subtotal (ex. VAT)</span><span>\u00A3${exVat.toFixed(2)}</span></div>
+                <div class="modal-item-value" style="display:flex; justify-content:space-between; margin:3px 0;"><span>VAT (20%)</span><span>\u00A3${vatAmount.toFixed(2)}</span></div>
+            </div>`;
+
+            html += `<div class="modal-total">TOTAL (inc. VAT): \u00A3${q.total.toFixed(2)}</div>`;
+            html += `<div style="text-align:right; font-size:0.9em; color:var(--primary-green-dark); font-weight:600; margin-top:8px;">Deposit Required: \u00A3${q.deposit.toFixed(2)}</div>`;
+
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('quoteModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function modalItem(label, value) {
+            return `<div class="modal-item"><div class="modal-item-label">${label}</div><div class="modal-item-value">${value}</div></div>`;
+        }
+
+        function closeModal() {
+            document.getElementById('quoteModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        /* ===================== RESET ===================== */
+        function resetForm() {
+            if (activeMode === 'day') {
+                document.getElementById('dayEventDate').value = '';
+                document.getElementById('dayPreparedBy').value = '';
+                document.getElementById('dayGolfNumbers').value = '20';
+                document.getElementById('dayDinnerNumbers').value = '20';
+                document.getElementById('dayRounds').value = '1';
+                document.getElementById('dayBuggies').value = '4';
+                document.getElementById('dayPricePerPerson').value = '0';
+                document.getElementById('dayCourseMaintenance').checked = false;
+            } else {
+                document.getElementById('breakArrivalDate').value = '';
+                document.getElementById('breakDepartureDate').value = '';
+                document.getElementById('breakNights').value = '1';
+                document.getElementById('breakPreparedBy').value = '';
+                document.getElementById('breakGolfers').value = '12';
+                document.getElementById('breakNonGolfers').value = '0';
+                document.getElementById('breakTotalGuests').value = '12';
+                document.getElementById('breakRounds').value = '1';
+                document.getElementById('breakBuggies').value = '3';
+                document.getElementById('breakGolferPrice').value = '0';
+                document.getElementById('breakNonGolferPrice').value = '0';
+                document.getElementById('breakDrinksVoucher').checked = false;
+                document.getElementById('breakCourseMaintenance').checked = false;
+                document.getElementById('breakTeeTimeLake').value = '';
+                document.getElementById('breakTeeTimeWN').value = '';
+                document.getElementById('breakTwinRooms').value = '6';
+                document.getElementById('breakSingleRooms').value = '0';
+            }
+            document.getElementById('generateBtn').textContent = 'Generate Quote';
+            document.getElementById('quoteStatus').style.display = 'none';
+            closeModal();
+            recalculate();
+        }
+
+        /* ===================== PDF GENERATION ===================== */
+        function downloadPDFQuote() {
+            const q = window._currentQuote;
+            if (!q || q.total === 0) { alert('Please generate a quote first.'); return; }
+
+            if (q.mode === 'day') {
+                downloadDayPDF(q);
+            } else {
+                downloadBreakPDF(q);
+            }
+        }
+
+        function pdfStyles() {
+            return `
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body { font-family: 'Georgia', serif; font-size: 12px; color: #2a2e3a; background: #fff; padding: 32px 40px; max-width: 820px; margin: 0 auto; }
+                .logo-area { text-align: center; border-bottom: 2px solid #8b3a4a; padding-bottom: 12px; margin-bottom: 16px; }
+                .logo-area img { max-width: 140px; height: auto; margin-bottom: 8px; }
+                .logo-area h1 { font-size: 22px; letter-spacing: 4px; color: #2a2e3a; text-transform: uppercase; font-weight: normal; }
+                .logo-area .tagline { font-size: 10px; letter-spacing: 2px; color: #6d8062; text-transform: uppercase; margin-top: 3px; }
+                .doc-title { text-align: center; font-size: 14px; letter-spacing: 3px; color: #8b3a4a; text-transform: uppercase; margin-bottom: 18px; font-weight: normal; }
+                .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid #c9c1ad; margin-bottom: 14px; }
+                .meta-col { padding: 10px 14px; }
+                .meta-col:first-child { border-right: 1px solid #c9c1ad; }
+                .meta-row { margin-bottom: 4px; line-height: 1.4; }
+                .meta-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #6d8062; display: block; margin-bottom: 1px; }
+                .meta-value { font-size: 12px; color: #2a2e3a; }
+                table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+                thead tr { background: #2a2e3a; color: #fff; }
+                thead th { padding: 8px 10px; font-weight: normal; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+                thead th:last-child, thead th:nth-child(3), thead th:nth-child(2) { text-align: right; }
+                thead th:nth-child(2) { text-align: center; }
+                tbody tr:nth-child(even) { background: #f7f4eb; }
+                .totals-table { width: 100%; border-collapse: collapse; margin-top: 0; border: 1px solid #c9c1ad; border-top: none; page-break-inside: avoid; }
+                .totals-table td { padding: 7px 10px; font-size: 12px; }
+                .totals-table .tot-label { color: #5a5a5a; }
+                .totals-table .tot-value { text-align: right; }
+                .totals-table tr.grand-total td { background: #2a2e3a; color: #fff; font-size: 13px; font-weight: bold; border-top: 2px solid #2a2e3a; }
+                .totals-table tr.sub-row td { border-bottom: 1px solid #dcd6c7; }
+                .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #c9c1ad; text-align: center; font-size: 10px; color: #6d8062; line-height: 1.8; letter-spacing: 0.5px; }
+                .section-title { font-size: 16px; letter-spacing: 3px; color: #8b3a4a; text-transform: uppercase; margin: 28px 0 16px 0; font-weight: normal; text-align: center; }
+                .info-block { margin-bottom: 18px; line-height: 1.8; font-size: 12px; }
+                .info-block h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #6d8062; margin-bottom: 6px; }
+                .info-block p, .info-block li { color: #2a2e3a; }
+                .info-block ul { margin-left: 18px; }
+                .include-row td { padding: 12px 20px; border-bottom: 1px solid #dcd6c7; font-size: 13px; vertical-align: middle; }
+                .green-dot { display: inline-block; width: 10px; height: 10px; background: #8fa17e; border-radius: 50%; margin-right: 14px; vertical-align: middle; }
+                .menu-item { padding: 6px 0; font-size: 12px; color: #2a2e3a; border-bottom: 1px solid #eee; }
+                .menu-divider { text-align: center; font-size: 16px; letter-spacing: 4px; color: #8b3a4a; padding: 12px 0; }
+                @media print { body { padding: 20px 28px; } }
+            `;
+        }
+
+        function pdfLogo() {
+            return `<div class="logo-area">
+                <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1776162028/vale_logo_April_2026_p4grbk.jpg" alt="Vale Resort Logo">
+                <h1>The Vale Resort</h1>
+                <div class="tagline">Hensol &bull; Vale of Glamorgan</div>
+            </div>`;
+        }
+
+        function pdfFooter() {
+            return `<div class="footer">
+                The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY<br>
+                sales@valeresort.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com/vale-golf
+            </div>`;
+        }
+
+        /* ---------- GOLF DAY PDF ---------- */
+        function downloadDayPDF(q) {
+            const eventDate = formatDate(document.getElementById('dayEventDate').value);
+            const preparedBy = document.getElementById('dayPreparedBy').value || '\u2014';
+            const quoteDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            const exVat = q.total / 1.2;
+            const vatAmount = q.total - exVat;
+
+            let lineRows = '';
+            if (q.pricePerPerson > 0 && q.golfers > 0) {
+                lineRows += pdfRow('Golf Package', q.golfers, q.pricePerPerson, q.golfers * q.pricePerPerson);
+            }
+            if (q.buggies > 0) {
+                lineRows += pdfRow('Buggies', q.buggies, 45, q.buggies * 45);
+            }
+            if (q.courseMaintenance) {
+                lineRows += `<tr style="font-style:italic; color:#6d8062;"><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">Course Maintenance</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">Noted</td></tr>`;
+            }
+
+            const html = `<!DOCTYPE html><html><head><title>Vale Resort Golf Day Quotation</title><style>${pdfStyles()}</style></head><body>
+            ${pdfLogo()}
+            <div class="doc-title">Golf Day Quotation</div>
+
+            <div class="meta-grid">
+                <div class="meta-col">
+                    <div class="meta-row"><span class="meta-label">Quote Date</span><span class="meta-value">${quoteDate}</span></div>
+                    <div class="meta-row"><span class="meta-label">Event Date</span><span class="meta-value">${eventDate}</span></div>
+                    <div class="meta-row"><span class="meta-label">Golf Numbers</span><span class="meta-value">${q.golfers}</span></div>
+                    <div class="meta-row"><span class="meta-label">Dinner Numbers</span><span class="meta-value">${q.dinnerNumbers}</span></div>
+                    <div class="meta-row"><span class="meta-label">Rounds</span><span class="meta-value">${q.rounds}</span></div>
+                    <div class="meta-row"><span class="meta-label">Buggies</span><span class="meta-value">${q.buggies}</span></div>
+                </div>
+                <div class="meta-col">
+                    <div class="meta-row"><span class="meta-label">Prepared By</span><span class="meta-value">${preparedBy}</span></div>
+                    <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Contact</span><span class="meta-value">sales@valeresort.com</span></div>
+                    <div class="meta-row"><span class="meta-label">Telephone</span><span class="meta-value">01443 665803</span></div>
+                    <div class="meta-row"><span class="meta-label">Website</span><span class="meta-value">valeresort.com/vale-golf</span></div>
+                </div>
+            </div>
+
+            <table><thead><tr>
+                <th style="text-align:left; width:50%;">Description</th>
+                <th style="text-align:center; width:12%;">Qty</th>
+                <th style="text-align:right; width:19%;">Unit Price</th>
+                <th style="text-align:right; width:19%;">Total (inc VAT)</th>
+            </tr></thead><tbody>${lineRows}</tbody></table>
+
+            <table class="totals-table">
+                <tr class="sub-row"><td class="tot-label">Subtotal (ex. VAT)</td><td class="tot-value">\u00A3${exVat.toFixed(2)}</td></tr>
+                <tr class="sub-row"><td class="tot-label">VAT (20%)</td><td class="tot-value">\u00A3${vatAmount.toFixed(2)}</td></tr>
+                <tr class="grand-total"><td>Total (inc. VAT)</td><td style="text-align:right;">\u00A3${q.total.toFixed(2)}</td></tr>
+                <tr class="sub-row"><td class="tot-label" style="font-style:italic; color:#6d8062;">Deposit Required (\u00A310 per golfer, due within 2 weeks)</td><td class="tot-value" style="font-weight:bold; color:#6d8062;">\u00A3${q.deposit.toFixed(2)}</td></tr>
+            </table>
+
+            ${pdfFooter()}
+
+            <!-- Page 2: Package Includes + Helpful Info -->
+            <div style="page-break-before: always; padding-top: 48px;">
+                ${pdfLogo()}
+                <div class="section-title">Your Golf Day Package Includes</div>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:24px;">
+                    <tr><td class="include-row"><span class="green-dot"></span>Arrival &amp; Registration: Tea/coffee &amp; bacon rolls</td></tr>
+                    <tr style="background:#f7f4eb;"><td class="include-row"><span class="green-dot"></span>18 holes Championship golf on the Wales National course</td></tr>
+                    <tr><td class="include-row"><span class="green-dot"></span>2 course Society dinner served at the Golf Club</td></tr>
+                </table>
+
+                <div class="section-title">Helpful Information</div>
+
+                <div class="info-block">
+                    <h3>Course Competitions</h3>
+                    <p>Nearest the pin &mdash; we advise the 14th<br>
+                    Nearest the pin in two &mdash; we advise the 6th<br>
+                    Longest Drive &mdash; we advise the 4th</p>
+                </div>
+
+                <div class="info-block">
+                    <p>Buggies are charged at &pound;45 per round.</p>
+                </div>
+
+                <div class="info-block">
+                    <h3>Refreshments on the Golf Course</h3>
+                    <p>We have a drinks buggy selling sweet and savoury snacks and both alcoholic and soft drinks which will be out on the course throughout the day.</p>
+                    <p style="margin-top:6px;">There is a half way house on the course with vending machines and toilet facilities.</p>
+                </div>
+
+                ${pdfFooter()}
+            </div>
+
+            <!-- Page 3: Society Dinner Menu + Payments + Next Steps -->
+            <div style="page-break-before: always; padding-top: 48px;">
+                ${pdfLogo()}
+                <div class="section-title">Society Dinner Menu</div>
+
+                <div style="text-align:center; margin-bottom:18px;">
+                    <p style="font-size:13px; font-weight:bold; color:#2a2e3a; margin-bottom:4px;">Golf Society and Golf Teams Menu</p>
+                    <p style="font-size:11px; color:#6d8062; font-style:italic;">Please make one choice from each course for the entire group</p>
+                </div>
+
+                <div style="max-width:500px; margin:0 auto;">
+                    <div class="menu-item">Madras chicken curry, half rice, half chips</div>
+                    <div class="menu-item">Honey and mustard glazed gammon steak, triple cooked chips</div>
+                    <div class="menu-item">Sausage, mash &amp; onion gravy</div>
+                    <div class="menu-item">Steak and ale pie, peas &amp; chips</div>
+                    <div class="menu-item" style="border-bottom:none;">Char-grilled chicken, chips</div>
+
+                    <div class="menu-divider">***</div>
+
+                    <div class="menu-item">Honey and vanilla cheesecake, toffee sauce, crumbled honeycomb, fresh berries</div>
+                    <div class="menu-item">Classic Eton Mess, crushed meringues, Chantilly cream and fresh strawberries</div>
+                    <div class="menu-item">Warm chocolate fudge brownie, with dark chocolate ganache and pouring cream</div>
+                    <div class="menu-item" style="border-bottom:none;">Apple crumble and custard</div>
+                </div>
+
+                <div class="section-title" style="margin-top:36px;">Payments &amp; Final Numbers</div>
+                <div class="info-block">
+                    <p>We require a &pound;10 per person non refundable deposit within the next 2 weeks to secure your booking.</p>
+                    <p style="margin-top:6px;">Your final numbers, arrangements and payment are required 4 weeks prior to your arrival date.</p>
+                </div>
+
+                <div class="section-title">Next Steps</div>
+                <div class="info-block">
+                    <p>Please let us know the following:</p>
+                    <ul style="margin-top:8px;">
+                        <li>If you would like to arrange any of the course competitions or if you are arranging any competitions yourselves</li>
+                        <li style="margin-top:4px;">If your company are paying for buggies or if individuals will be booking their own at the pro shop and paying on the day (01443 665899)</li>
+                        <li style="margin-top:4px;">Your arrival and dinner timings</li>
+                        <li style="margin-top:4px;">Any special dietary requirements</li>
+                    </ul>
+                </div>
+
+                ${pdfFooter()}
+            </div>
+            </body></html>`;
+
+            openPDFWindow(html);
+        }
+
+        /* ---------- GOLF BREAK PDF ---------- */
+        function downloadBreakPDF(q) {
+            const arrivalDate = formatDate(document.getElementById('breakArrivalDate').value);
+            const departureDate = formatDate(document.getElementById('breakDepartureDate').value);
+            const preparedBy = document.getElementById('breakPreparedBy').value || '\u2014';
+            const quoteDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            const exVat = q.total / 1.2;
+            const vatAmount = q.total - exVat;
+
+            let lineRows = '';
+            if (q.golferPrice > 0 && q.golfers > 0) {
+                lineRows += pdfRow('Golfers Package', q.golfers, q.golferPrice, q.golfers * q.golferPrice);
+            }
+            if (q.nonGolferPrice > 0 && q.nonGolfers > 0) {
+                lineRows += pdfRow('Non-Golfers Package', q.nonGolfers, q.nonGolferPrice, q.nonGolfers * q.nonGolferPrice);
+            }
+            if (q.freePlaces > 0 && q.golferPrice > 0) {
+                const disc = q.freePlaces * q.golferPrice;
+                lineRows += `<tr style="color:#6d8062; font-weight:600;">
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">1 in 12 Free (${q.freePlaces} place${q.freePlaces > 1 ? 's' : ''})</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">${q.freePlaces}</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${q.golferPrice.toFixed(2)}</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${disc.toFixed(2)}</td>
+                </tr>`;
+            }
+            if (q.buggies > 0) {
+                lineRows += pdfRow('Buggies', q.buggies, 50, q.buggies * 50);
+            }
+            if (q.drinksVoucher && q.totalGuests > 0) {
+                lineRows += pdfRow('Drinks Voucher', q.totalGuests, 10, q.totalGuests * 10);
+            }
+            if (q.courseMaintenance) {
+                lineRows += `<tr style="font-style:italic; color:#6d8062;"><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">Course Maintenance</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">Noted</td></tr>`;
+            }
+
+            let teeTimes = '';
+            if (q.teeTimeLake || q.teeTimeWN) {
+                teeTimes = '<div class="meta-row"><span class="meta-label">Tee Times</span><span class="meta-value">';
+                if (q.teeTimeLake) teeTimes += `Lake Course: ${q.teeTimeLake}`;
+                if (q.teeTimeLake && q.teeTimeWN) teeTimes += ' &nbsp;|&nbsp; ';
+                if (q.teeTimeWN) teeTimes += `Wales National: ${q.teeTimeWN}`;
+                teeTimes += '</span></div>';
+            }
+
+            const html = `<!DOCTYPE html><html><head><title>Vale Resort Golf Break Quotation</title><style>${pdfStyles()}</style></head><body>
+            ${pdfLogo()}
+            <div class="doc-title">Golf Break Quotation</div>
+
+            <div class="meta-grid">
+                <div class="meta-col">
+                    <div class="meta-row"><span class="meta-label">Quote Date</span><span class="meta-value">${quoteDate}</span></div>
+                    <div class="meta-row"><span class="meta-label">Arrival Date</span><span class="meta-value">${arrivalDate}</span></div>
+                    <div class="meta-row"><span class="meta-label">Departure Date</span><span class="meta-value">${departureDate}</span></div>
+                    <div class="meta-row"><span class="meta-label">Nights</span><span class="meta-value">${q.nights}</span></div>
+                    <div class="meta-row"><span class="meta-label">Golfers</span><span class="meta-value">${q.golfers}</span></div>
+                    <div class="meta-row"><span class="meta-label">Non-Golfers</span><span class="meta-value">${q.nonGolfers}</span></div>
+                    <div class="meta-row"><span class="meta-label">Total Guests</span><span class="meta-value">${q.totalGuests}</span></div>
+                    <div class="meta-row"><span class="meta-label">Rounds</span><span class="meta-value">${q.rounds}</span></div>
+                    <div class="meta-row"><span class="meta-label">Buggies</span><span class="meta-value">${q.buggies}</span></div>
+                    ${teeTimes}
+                    <div class="meta-row"><span class="meta-label">Accommodation</span><span class="meta-value">${q.twinRooms} twin, ${q.singleRooms} single</span></div>
+                </div>
+                <div class="meta-col">
+                    <div class="meta-row"><span class="meta-label">Prepared By</span><span class="meta-value">${preparedBy}</span></div>
+                    <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Contact</span><span class="meta-value">sales@valeresort.com</span></div>
+                    <div class="meta-row"><span class="meta-label">Telephone</span><span class="meta-value">01443 665803</span></div>
+                    <div class="meta-row"><span class="meta-label">Website</span><span class="meta-value">valeresort.com/vale-golf</span></div>
+                </div>
+            </div>
+
+            <table><thead><tr>
+                <th style="text-align:left; width:50%;">Description</th>
+                <th style="text-align:center; width:12%;">Qty</th>
+                <th style="text-align:right; width:19%;">Unit Price</th>
+                <th style="text-align:right; width:19%;">Total (inc VAT)</th>
+            </tr></thead><tbody>${lineRows}</tbody></table>
+
+            <table class="totals-table">
+                <tr class="sub-row"><td class="tot-label">Subtotal (ex. VAT)</td><td class="tot-value">\u00A3${exVat.toFixed(2)}</td></tr>
+                <tr class="sub-row"><td class="tot-label">VAT (20%)</td><td class="tot-value">\u00A3${vatAmount.toFixed(2)}</td></tr>
+                <tr class="grand-total"><td>Total (inc. VAT)</td><td style="text-align:right;">\u00A3${q.total.toFixed(2)}</td></tr>
+                <tr class="sub-row"><td class="tot-label" style="font-style:italic; color:#6d8062;">Deposit Required (\u00A350 per person, due within 2 weeks)</td><td class="tot-value" style="font-weight:bold; color:#6d8062;">\u00A3${q.deposit.toFixed(2)}</td></tr>
+            </table>
+
+            ${pdfFooter()}
+
+            <!-- Page 2: Package Includes + Helpful Info + Payments + Next Steps -->
+            <div style="page-break-before: always; padding-top: 48px;">
+                ${pdfLogo()}
+                <div class="section-title">Your Golf Break Package Includes</div>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:24px;">
+                    <tr><td class="include-row"><span class="green-dot"></span>${q.rounds} Round${q.rounds > 1 ? 's' : ''} of Championship golf on the Wales National course / Lake Course</td></tr>
+                    <tr style="background:#f7f4eb;"><td class="include-row"><span class="green-dot"></span>3 course dinner served at the Golf Club</td></tr>
+                    <tr><td class="include-row"><span class="green-dot"></span>Bed &amp; Breakfast Accommodation at The Vale Resort</td></tr>
+                </table>
+
+                <div class="section-title">Helpful Information</div>
+
+                <div class="info-block">
+                    <p>Buggies are charged at &pound;50 per round. To book these, please call or email the Pro shop on 01443 665899 <a href="mailto:golfclub@valeresort.com">golfclub@valeresort.com</a>.</p>
+                </div>
+
+                <div class="info-block">
+                    <h3>Course Competitions</h3>
+                    <p>Nearest the pin &mdash; we advise the 14th<br>
+                    Nearest the pin in two &mdash; we advise the 6th<br>
+                    Longest Drive &mdash; we advise the 4th</p>
+                </div>
+
+                <div class="info-block">
+                    <h3>Refreshments on the Golf Course</h3>
+                    <p>We have a drinks buggy selling sweet and savoury snacks and both alcoholic and soft drinks which will be out on the course throughout the day.</p>
+                    <p style="margin-top:6px;">There is a half way house on the course with vending machines and toilet facilities.</p>
+                </div>
+
+                <div class="section-title">Payments &amp; Final Numbers</div>
+                <div class="info-block">
+                    <p>We require a &pound;50 non refundable deposit per person within 2 weeks of making your booking to secure it.</p>
+                    <p style="margin-top:6px;">Your final details, rooming list and payment are required 4 weeks prior to your arrival date.</p>
+                </div>
+
+                <div class="section-title">Next Steps</div>
+                <div class="info-block">
+                    <ul>
+                        <li>We require deposit payment within 2 weeks</li>
+                        <li style="margin-top:4px;">Prebook Buggies (01443 665899 <a href="mailto:golfclub@valeresort.com">golfclub@valeresort.com</a>)</li>
+                        <li style="margin-top:4px;">Please let us know preferred arrival and dinner timings</li>
+                        <li style="margin-top:4px;">Rooming list and final payment (4 weeks prior to arrival date)</li>
+                    </ul>
+                </div>
+
+                ${pdfFooter()}
+            </div>
+            </body></html>`;
+
+            openPDFWindow(html);
+        }
+
+        function pdfRow(desc, qty, unitPrice, total) {
+            return `<tr>
+                <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">${desc}</td>
+                <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">${qty}</td>
+                <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u00A3${unitPrice.toFixed(2)}</td>
+                <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u00A3${total.toFixed(2)}</td>
+            </tr>`;
+        }
+
+        function openPDFWindow(html) {
+            const printWindow = window.open('', '_blank', 'width=850,height=1100');
+            if (!printWindow) { alert('Please allow popups for this site to download the PDF.'); return; }
+            printWindow.document.write(html);
+            printWindow.document.close();
+            setTimeout(() => { printWindow.print(); }, 500);
+        }
+
+        /* ===================== INIT ===================== */
+        document.getElementById('quoteModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.getElementById('dayEventDate').min = new Date().toISOString().split('T')[0];
+        document.getElementById('breakArrivalDate').min = new Date().toISOString().split('T')[0];
+
+        recalculate();
+    </script>
+</body>
+</html>
