@@ -158,17 +158,10 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
+            margin-bottom: 25px;
         }
 
         .date-grid .form-group { margin-bottom: 0; }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 14px;
-        }
-
-        .grid-3 .form-group { margin-bottom: 0; }
 
         .helper-text {
             font-size: 0.82em;
@@ -517,7 +510,9 @@
 
                 <!-- =============== GOLF BREAK FIELDS =============== -->
                 <div id="breakFields" style="display:none;">
-                    <div class="grid-3">
+
+                    <div class="section-subtitle">Event Details</div>
+                    <div class="date-grid">
                         <div class="form-group">
                             <label for="breakArrivalDate">Arrival Date</label>
                             <input type="date" id="breakArrivalDate" onchange="updateBreakDates(); recalculate();">
@@ -526,10 +521,12 @@
                             <label for="breakNights">Number of Nights</label>
                             <input type="number" id="breakNights" min="1" value="1" oninput="updateBreakDates(); recalculate();">
                         </div>
-                        <div class="form-group">
-                            <label for="breakDepartureDate">Departure Date</label>
-                            <input type="date" id="breakDepartureDate" readonly>
-                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="breakDepartureDate">Departure Date</label>
+                        <input type="date" id="breakDepartureDate" readonly>
+                        <div class="helper-text">Auto-calculated from arrival date &amp; nights</div>
                     </div>
 
                     <div class="form-group">
@@ -549,21 +546,25 @@
                         </select>
                     </div>
 
-                    <div class="grid-3">
+                    <div class="section-subtitle">Guests</div>
+                    <div class="date-grid">
                         <div class="form-group">
-                            <label for="breakGolfers">Total Number of Golfers</label>
+                            <label for="breakGolfers">Number of Golfers</label>
                             <input type="number" id="breakGolfers" min="0" value="12" oninput="updateBreakDefaults(); recalculate();">
                         </div>
                         <div class="form-group">
-                            <label for="breakNonGolfers">Total Number of Non-Golfers</label>
+                            <label for="breakNonGolfers">Number of Non-Golfers</label>
                             <input type="number" id="breakNonGolfers" min="0" value="0" oninput="updateBreakDefaults(); recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="breakTotalGuests">Total Number of Guests</label>
-                            <input type="number" id="breakTotalGuests" value="12" readonly>
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="breakTotalGuests">Total Guests</label>
+                        <input type="number" id="breakTotalGuests" value="12" readonly>
+                        <div class="helper-text">Auto-calculated</div>
+                    </div>
+
+                    <div class="section-subtitle">Golf</div>
                     <div class="date-grid">
                         <div class="form-group">
                             <label for="breakRounds">Number of Rounds</label>
@@ -577,31 +578,29 @@
                         </div>
                     </div>
 
-                    <div class="date-grid">
-                        <div class="form-group">
-                            <label for="breakGolferPrice">Price Per Person &mdash; Golfers (&pound;)</label>
-                            <input type="number" id="breakGolferPrice" min="0" step="0.01" value="0" oninput="recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="breakNonGolferPrice">Price Per Person &mdash; Non-Golfers (&pound;)</label>
-                            <input type="number" id="breakNonGolferPrice" min="0" step="0.01" value="0" oninput="recalculate();">
-                        </div>
+                    <div class="section-subtitle">Pricing</div>
+                    <div class="form-group">
+                        <label for="breakGolferPrice">Price Per Person &mdash; Golfers (&pound;)</label>
+                        <input type="number" id="breakGolferPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                    </div>
+                    <div class="form-group">
+                        <label for="breakNonGolferPrice">Price Per Person &mdash; Non-Golfers (&pound;)</label>
+                        <input type="number" id="breakNonGolferPrice" min="0" step="0.01" value="0" oninput="recalculate();">
                     </div>
 
-                    <div class="date-grid">
-                        <div class="form-group">
-                            <label style="margin-bottom:10px;">Drinks Voucher</label>
-                            <div class="toggle-wrap">
-                                <input type="checkbox" id="breakDrinksVoucher" onchange="recalculate();">
-                                <label for="breakDrinksVoucher">&pound;10 per person drinks voucher</label>
-                            </div>
+                    <div class="section-subtitle">Options</div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Drinks Voucher</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakDrinksVoucher" onchange="recalculate();">
+                            <label for="breakDrinksVoucher">&pound;10 per person drinks voucher</label>
                         </div>
-                        <div class="form-group">
-                            <label style="margin-bottom:10px;">Course Maintenance</label>
-                            <div class="toggle-wrap">
-                                <input type="checkbox" id="breakCourseMaintenance" onchange="recalculate();">
-                                <label for="breakCourseMaintenance">Course maintenance may be taking place</label>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Course Maintenance</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakCourseMaintenance" onchange="recalculate();">
+                            <label for="breakCourseMaintenance">Course maintenance may be taking place</label>
                         </div>
                     </div>
 
@@ -1232,8 +1231,8 @@
                         <li>If you would like to arrange any of the course competitions or if you are arranging any competitions yourselves</li>
                         <li style="margin-top:4px;">If your company are paying for buggies or if individuals will be booking their own at the pro shop and paying on the day (01443 665899)</li>
                         <li style="margin-top:4px;">Your arrival and dinner timings</li>
+                        <li style="margin-top:4px;">Menu choices for your group</li>
                         <li style="margin-top:4px;">Any special dietary requirements</li>
-                        <li style="margin-top:4px;">Let us know your Menu choices for your group</li>
                     </ul>
                 </div>
 
