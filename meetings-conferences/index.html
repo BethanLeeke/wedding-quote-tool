@@ -555,8 +555,9 @@
 
         .bedroom-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 14px;
+            margin-bottom: 14px;
         }
 
         .bedroom-grid .form-group { margin-bottom: 0; }
@@ -846,6 +847,25 @@
                             <label for="valeDoubleOccRooms">Double Occ Rooms</label>
                             <input type="number" id="valeDoubleOccRooms" min="0" value="0" oninput="recalculate();">
                         </div>
+                        <div class="form-group">
+                            <label for="valeNights">Nights</label>
+                            <input type="number" id="valeNights" min="1" value="1" oninput="recalculate();">
+                        </div>
+                    </div>
+                    <div class="helper-text" style="margin-bottom:10px;">Optional: enter rooms at a different night count below</div>
+                    <div class="bedroom-grid">
+                        <div class="form-group">
+                            <label for="valeSingleOccRooms2">Single Occ Rooms</label>
+                            <input type="number" id="valeSingleOccRooms2" min="0" value="0" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="valeDoubleOccRooms2">Double Occ Rooms</label>
+                            <input type="number" id="valeDoubleOccRooms2" min="0" value="0" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="valeNights2">Nights</label>
+                            <input type="number" id="valeNights2" min="1" value="1" oninput="recalculate();">
+                        </div>
                     </div>
 
                     <div class="section-subtitle" style="margin-top:25px;">Hensol Castle</div>
@@ -862,6 +882,25 @@
                         <div class="form-group">
                             <label for="hensolDoubleOccRooms">Double Occ Rooms</label>
                             <input type="number" id="hensolDoubleOccRooms" min="0" value="0" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="hensolNights">Nights</label>
+                            <input type="number" id="hensolNights" min="1" value="1" oninput="recalculate();">
+                        </div>
+                    </div>
+                    <div class="helper-text" style="margin-bottom:10px;">Optional: enter rooms at a different night count below</div>
+                    <div class="bedroom-grid">
+                        <div class="form-group">
+                            <label for="hensolSingleOccRooms2">Single Occ Rooms</label>
+                            <input type="number" id="hensolSingleOccRooms2" min="0" value="0" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="hensolDoubleOccRooms2">Double Occ Rooms</label>
+                            <input type="number" id="hensolDoubleOccRooms2" min="0" value="0" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="hensolNights2">Nights</label>
+                            <input type="number" id="hensolNights2" min="1" value="1" oninput="recalculate();">
                         </div>
                     </div>
                 </div>
@@ -1416,12 +1455,20 @@
             const delegates = Math.max(0, parseInt(document.getElementById('delegates').value) || 0);
             const ddrEnabled = document.getElementById('ddrEnabled').checked;
             const ddrRate = Math.max(0, parseFloat(document.getElementById('ddrRate').value) || 0);
-            const valeSingleOccPrice  = Math.max(0, parseFloat(document.getElementById('valeSingleOccPrice').value) || 0);
-            const valeSingleOccRooms  = Math.max(0, parseInt(document.getElementById('valeSingleOccRooms').value) || 0);
-            const valeDoubleOccRooms  = Math.max(0, parseInt(document.getElementById('valeDoubleOccRooms').value) || 0);
+            const valeSingleOccPrice   = Math.max(0, parseFloat(document.getElementById('valeSingleOccPrice').value) || 0);
+            const valeSingleOccRooms   = Math.max(0, parseInt(document.getElementById('valeSingleOccRooms').value) || 0);
+            const valeDoubleOccRooms   = Math.max(0, parseInt(document.getElementById('valeDoubleOccRooms').value) || 0);
+            const valeNights           = Math.max(1, parseInt(document.getElementById('valeNights').value) || 1);
+            const valeSingleOccRooms2  = Math.max(0, parseInt(document.getElementById('valeSingleOccRooms2').value) || 0);
+            const valeDoubleOccRooms2  = Math.max(0, parseInt(document.getElementById('valeDoubleOccRooms2').value) || 0);
+            const valeNights2          = Math.max(1, parseInt(document.getElementById('valeNights2').value) || 1);
             const hensolSingleOccPrice = Math.max(0, parseFloat(document.getElementById('hensolSingleOccPrice').value) || 0);
             const hensolSingleOccRooms = Math.max(0, parseInt(document.getElementById('hensolSingleOccRooms').value) || 0);
             const hensolDoubleOccRooms = Math.max(0, parseInt(document.getElementById('hensolDoubleOccRooms').value) || 0);
+            const hensolNights         = Math.max(1, parseInt(document.getElementById('hensolNights').value) || 1);
+            const hensolSingleOccRooms2 = Math.max(0, parseInt(document.getElementById('hensolSingleOccRooms2').value) || 0);
+            const hensolDoubleOccRooms2 = Math.max(0, parseInt(document.getElementById('hensolDoubleOccRooms2').value) || 0);
+            const hensolNights2         = Math.max(1, parseInt(document.getElementById('hensolNights2').value) || 1);
 
             selectedOptions.delegates = delegates;
             selectedOptions.ddrEnabled = ddrEnabled;
@@ -1578,39 +1625,74 @@
 
             // Bedrooms (Vale)
             const pkg = selectedOptions.bedroomPackage;
+            const nightsLabel = (n) => `${n} night${n !== 1 ? 's' : ''}`;
             if (valeSingleOccPrice > 0 && valeSingleOccRooms > 0) {
-                const t = valeSingleOccPrice * valeSingleOccRooms;
+                const t = valeSingleOccPrice * valeSingleOccRooms * valeNights;
                 total += t;
                 summary.push({
-                    label: `Single Occupancy ${pkg} at The Vale Resort (${valeSingleOccRooms} x £${valeSingleOccPrice.toFixed(2)})`,
+                    label: `Single Occ ${pkg} \u2014 The Vale Resort (${valeSingleOccRooms} room${valeSingleOccRooms !== 1 ? 's' : ''} \u00D7 ${nightsLabel(valeNights)} \u00D7 \u00A3${valeSingleOccPrice.toFixed(2)})`,
                     price: t, qty: valeSingleOccRooms, unitPrice: valeSingleOccPrice
                 });
             }
             if (valeSingleOccPrice > 0 && valeDoubleOccRooms > 0) {
                 const dp = valeSingleOccPrice + 11;
-                const t = dp * valeDoubleOccRooms;
+                const t = dp * valeDoubleOccRooms * valeNights;
                 total += t;
                 summary.push({
-                    label: `Double Occupancy ${pkg} at The Vale Resort (${valeDoubleOccRooms} x £${dp.toFixed(2)})`,
+                    label: `Double Occ ${pkg} \u2014 The Vale Resort (${valeDoubleOccRooms} room${valeDoubleOccRooms !== 1 ? 's' : ''} \u00D7 ${nightsLabel(valeNights)} \u00D7 \u00A3${dp.toFixed(2)})`,
                     price: t, qty: valeDoubleOccRooms, unitPrice: dp
+                });
+            }
+            if (valeSingleOccPrice > 0 && valeSingleOccRooms2 > 0) {
+                const t = valeSingleOccPrice * valeSingleOccRooms2 * valeNights2;
+                total += t;
+                summary.push({
+                    label: `Single Occ ${pkg} \u2014 The Vale Resort (${valeSingleOccRooms2} room${valeSingleOccRooms2 !== 1 ? 's' : ''} \u00D7 ${nightsLabel(valeNights2)} \u00D7 \u00A3${valeSingleOccPrice.toFixed(2)})`,
+                    price: t, qty: valeSingleOccRooms2, unitPrice: valeSingleOccPrice
+                });
+            }
+            if (valeSingleOccPrice > 0 && valeDoubleOccRooms2 > 0) {
+                const dp = valeSingleOccPrice + 11;
+                const t = dp * valeDoubleOccRooms2 * valeNights2;
+                total += t;
+                summary.push({
+                    label: `Double Occ ${pkg} \u2014 The Vale Resort (${valeDoubleOccRooms2} room${valeDoubleOccRooms2 !== 1 ? 's' : ''} \u00D7 ${nightsLabel(valeNights2)} \u00D7 \u00A3${dp.toFixed(2)})`,
+                    price: t, qty: valeDoubleOccRooms2, unitPrice: dp
                 });
             }
             // Bedrooms (Hensol)
             if (hensolSingleOccPrice > 0 && hensolSingleOccRooms > 0) {
-                const t = hensolSingleOccPrice * hensolSingleOccRooms;
+                const t = hensolSingleOccPrice * hensolSingleOccRooms * hensolNights;
                 total += t;
                 summary.push({
-                    label: `Single Occupancy ${pkg} at Hensol Castle (${hensolSingleOccRooms} x £${hensolSingleOccPrice.toFixed(2)})`,
+                    label: `Single Occ ${pkg} \u2014 Hensol Castle (${hensolSingleOccRooms} room${hensolSingleOccRooms !== 1 ? 's' : ''} \u00D7 ${nightsLabel(hensolNights)} \u00D7 \u00A3${hensolSingleOccPrice.toFixed(2)})`,
                     price: t, qty: hensolSingleOccRooms, unitPrice: hensolSingleOccPrice
                 });
             }
             if (hensolSingleOccPrice > 0 && hensolDoubleOccRooms > 0) {
                 const dp = hensolSingleOccPrice + 11;
-                const t = dp * hensolDoubleOccRooms;
+                const t = dp * hensolDoubleOccRooms * hensolNights;
                 total += t;
                 summary.push({
-                    label: `Double Occupancy ${pkg} at Hensol Castle (${hensolDoubleOccRooms} x £${dp.toFixed(2)})`,
+                    label: `Double Occ ${pkg} \u2014 Hensol Castle (${hensolDoubleOccRooms} room${hensolDoubleOccRooms !== 1 ? 's' : ''} \u00D7 ${nightsLabel(hensolNights)} \u00D7 \u00A3${dp.toFixed(2)})`,
                     price: t, qty: hensolDoubleOccRooms, unitPrice: dp
+                });
+            }
+            if (hensolSingleOccPrice > 0 && hensolSingleOccRooms2 > 0) {
+                const t = hensolSingleOccPrice * hensolSingleOccRooms2 * hensolNights2;
+                total += t;
+                summary.push({
+                    label: `Single Occ ${pkg} \u2014 Hensol Castle (${hensolSingleOccRooms2} room${hensolSingleOccRooms2 !== 1 ? 's' : ''} \u00D7 ${nightsLabel(hensolNights2)} \u00D7 \u00A3${hensolSingleOccPrice.toFixed(2)})`,
+                    price: t, qty: hensolSingleOccRooms2, unitPrice: hensolSingleOccPrice
+                });
+            }
+            if (hensolSingleOccPrice > 0 && hensolDoubleOccRooms2 > 0) {
+                const dp = hensolSingleOccPrice + 11;
+                const t = dp * hensolDoubleOccRooms2 * hensolNights2;
+                total += t;
+                summary.push({
+                    label: `Double Occ ${pkg} \u2014 Hensol Castle (${hensolDoubleOccRooms2} room${hensolDoubleOccRooms2 !== 1 ? 's' : ''} \u00D7 ${nightsLabel(hensolNights2)} \u00D7 \u00A3${dp.toFixed(2)})`,
+                    price: t, qty: hensolDoubleOccRooms2, unitPrice: dp
                 });
             }
 
@@ -1753,9 +1835,17 @@
             document.getElementById('valeSingleOccPrice').value = '0';
             document.getElementById('valeSingleOccRooms').value = '0';
             document.getElementById('valeDoubleOccRooms').value = '0';
+            document.getElementById('valeNights').value = '1';
+            document.getElementById('valeSingleOccRooms2').value = '0';
+            document.getElementById('valeDoubleOccRooms2').value = '0';
+            document.getElementById('valeNights2').value = '1';
             document.getElementById('hensolSingleOccPrice').value = '0';
             document.getElementById('hensolSingleOccRooms').value = '0';
             document.getElementById('hensolDoubleOccRooms').value = '0';
+            document.getElementById('hensolNights').value = '1';
+            document.getElementById('hensolSingleOccRooms2').value = '0';
+            document.getElementById('hensolDoubleOccRooms2').value = '0';
+            document.getElementById('hensolNights2').value = '1';
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             ['preDinner', 'dinner'].forEach(type => {
                 document.getElementById(type + 'DrinkRows').innerHTML = '';
@@ -1775,8 +1865,10 @@
                 canapes: [], cheeses: [], grazing: [], flipcharts: [],
                 extraQtys: {},
                 bedroomPackage: 'BB',
-                valeSingleOccPrice: 0, valeSingleOccRooms: 0, valeDoubleOccRooms: 0,
-                hensolSingleOccPrice: 0, hensolSingleOccRooms: 0, hensolDoubleOccRooms: 0,
+                valeSingleOccPrice: 0, valeSingleOccRooms: 0, valeDoubleOccRooms: 0, valeNights: 1,
+                valeSingleOccRooms2: 0, valeDoubleOccRooms2: 0, valeNights2: 1,
+                hensolSingleOccPrice: 0, hensolSingleOccRooms: 0, hensolDoubleOccRooms: 0, hensolNights: 1,
+                hensolSingleOccRooms2: 0, hensolDoubleOccRooms2: 0, hensolNights2: 1,
                 quote: {}
             };
             DDR_INCLUSIONS.forEach(i => selectedOptions.ddrIncluded[i.key] = true);
