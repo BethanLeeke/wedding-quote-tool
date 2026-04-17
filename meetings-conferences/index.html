@@ -155,9 +155,60 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
+            margin-bottom: 25px;
         }
 
         .date-grid .form-group { margin-bottom: 0; }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .grid-3 .form-group { margin-bottom: 0; }
+
+        .section-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35em;
+            margin-top: 35px;
+            margin-bottom: 22px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--accent-light);
+        }
+
+        .package-box {
+            background: var(--bg-light);
+            border: 1px solid var(--accent-light);
+            border-radius: 6px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+
+        .validation-error {
+            background: #fbeaec;
+            color: var(--primary-burgundy);
+            border: 2px solid var(--primary-burgundy);
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 10px 0 0 0;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .venue-subtitle {
+            color: var(--primary-green-dark);
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            margin-top: 6px;
+        }
 
         .ddr-checkbox-wrap {
             display: flex;
@@ -619,22 +670,22 @@
 
         <div class="content">
             <div class="form-section">
-                <h2>Your Event Details</h2>
+                <h2 class="section-heading" style="margin-top:0;">Event Details</h2>
 
-                <div class="date-grid">
+                <div class="grid-3">
                     <div class="form-group">
                         <label for="arrivalDate">Arrival Date</label>
-                        <input type="date" id="arrivalDate" onchange="recalculate();">
+                        <input type="date" id="arrivalDate" onchange="updateDepartureDate(); recalculate();">
+                    </div>
+                    <div class="form-group">
+                        <label for="numberOfNights">Number of Nights</label>
+                        <input type="number" id="numberOfNights" min="0" value="0" oninput="updateDepartureDate(); recalculate();">
                     </div>
                     <div class="form-group">
                         <label for="departureDate">Departure Date</label>
-                        <input type="date" id="departureDate" onchange="recalculate();">
+                        <input type="date" id="departureDate" readonly style="background:#f5f1e8; cursor:not-allowed;">
+                        <div class="helper-text">Auto-filled from arrival + nights</div>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="delegates">Total Number of Delegates</label>
-                    <input type="number" id="delegates" min="1" value="30" onchange="recalculate(); refreshRoomsAndRefresh();">
                 </div>
 
                 <div class="form-group">
@@ -659,10 +710,12 @@
                     </select>
                 </div>
 
+                <h2 class="section-heading">Package Details</h2>
+
                 <div class="form-group">
-                    <label for="ddrFunctionRoomPicker">Function Room (DDR) <span style="font-weight:400; color:var(--text-light);">(main conference room)</span></label>
+                    <label for="ddrFunctionRoomPicker">Function Room <span style="font-weight:400; color:var(--text-light);">(main conference room)</span></label>
                     <select id="ddrFunctionRoomPicker" onchange="selectDdrFunctionRoom();">
-                        <option value="">Select DDR function room...</option>
+                        <option value="">Select function room...</option>
                         <optgroup label="Vale Resort">
                             <option value="Vale Resort|Castle Suite">Castle Suite</option>
                             <option value="Vale Resort|Castle 1">Castle 1</option>
@@ -697,61 +750,95 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label style="margin-bottom:10px;">Day Delegate Package Rate (DDR)</label>
-                    <div class="ddr-checkbox-wrap">
+                <div class="package-box">
+                    <div class="ddr-checkbox-wrap" style="margin-bottom:0;">
                         <input type="checkbox" id="ddrEnabled" onchange="toggleDDR();">
-                        <label for="ddrEnabled">Apply Day Delegate Package Rate</label>
+                        <label for="ddrEnabled" style="font-weight:600;">Apply Day Delegate Package Rate (DDR)</label>
+                    </div>
+                    <div id="ddrFields" style="display:none; margin-top:14px;">
+                        <div class="date-grid">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="ddrRate">DDR Price per Delegate (&pound;)</label>
+                                <input type="number" id="ddrRate" min="0" step="0.01" value="0" oninput="recalculate();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="dayDelegates">Number of Day Delegates</label>
+                                <input type="number" id="dayDelegates" min="0" value="0" oninput="recalculate();">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group" id="ddrRateGroup" style="display:none;">
-                    <label for="ddrRate">DDR Price per Delegate (&pound;)</label>
-                    <input type="number" id="ddrRate" min="0" step="0.01" value="0" oninput="recalculate();">
-                    <div class="helper-text">Enter the agreed day-delegate rate. This will be multiplied by the delegate count.</div>
+                <div class="package-box">
+                    <div class="ddr-checkbox-wrap" style="margin-bottom:0;">
+                        <input type="checkbox" id="twentyFourHourEnabled" onchange="toggleTwentyFourHour();">
+                        <label for="twentyFourHourEnabled" style="font-weight:600;">Apply 24 Hour Rate</label>
+                    </div>
+                    <div id="twentyFourHourFields" style="display:none; margin-top:14px;">
+                        <div class="date-grid">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="twentyFourHourRate">24 Hour Rate per Delegate (&pound;)</label>
+                                <input type="number" id="twentyFourHourRate" min="0" step="0.01" value="0" oninput="recalculate();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="overnightDelegates">Number of Overnight Delegates</label>
+                                <input type="number" id="overnightDelegates" min="0" value="0" oninput="recalculate();">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="ddr-panel" id="ddrInclusionsPanel" style="display:none;">
-                    <div class="section-subtitle">DDR Package Inclusions <span style="color:var(--text-light); font-weight:500; text-transform:none;">(&pound;0 &mdash; untick any item to exclude)</span></div>
-                    <div id="ddrInclusionsList"></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="functionRoomPicker">Function Room (extra) <span style="font-weight:400; color:var(--text-light);">(add additional rooms)</span></label>
-                    <select id="functionRoomPicker" onchange="addFunctionRoom();">
-                        <option value="">+ Add an extra function room...</option>
-                        <optgroup label="Vale Resort">
-                            <option value="Vale Resort|Castle Suite">Castle Suite</option>
-                            <option value="Vale Resort|Castle 1">Castle 1</option>
-                            <option value="Vale Resort|Castle 2">Castle 2</option>
-                            <option value="Vale Resort|Castle 1 &amp; 2">Castle 1 &amp; 2</option>
-                            <option value="Vale Resort|Castle 3 &amp; 4">Castle 3 &amp; 4</option>
-                            <option value="Vale Resort|Morgannwg Suite &amp; Lounge">Morgannwg Suite &amp; Lounge</option>
-                            <option value="Vale Resort|Morgannwg Suite">Morgannwg Suite</option>
-                            <option value="Vale Resort|Morgannwg Lounge">Morgannwg Lounge</option>
-                            <option value="Vale Resort|Pendoylan Suite">Pendoylan Suite</option>
-                            <option value="Vale Resort|Hensol Suite">Hensol Suite</option>
-                            <option value="Vale Resort|The Boardroom">The Boardroom</option>
-                            <option value="Vale Resort|Dyffryn Suite">Dyffryn Suite</option>
-                            <option value="Vale Resort|Cowbridge Lounge">Cowbridge Lounge</option>
-                            <option value="Vale Resort|Conservatory">Conservatory</option>
-                            <option value="Vale Resort|Trecastell Suite">Trecastell Suite</option>
-                            <option value="Vale Resort|Tre-Dodridge Suite">Tre-Dodridge Suite</option>
-                        </optgroup>
-                        <optgroup label="Hensol Castle">
-                            <option value="Hensol Castle|Drawing Room">Drawing Room</option>
-                            <option value="Hensol Castle|Courtyard Hall">Courtyard Hall</option>
-                            <option value="Hensol Castle|Courtyard Hall 1">Courtyard Hall 1</option>
-                            <option value="Hensol Castle|Courtyard Hall 2">Courtyard Hall 2</option>
-                            <option value="Hensol Castle|Oak Room">Oak Room</option>
-                            <option value="Hensol Castle|Morning Room">Morning Room</option>
-                            <option value="Hensol Castle|The Buttery">The Buttery</option>
-                            <option value="Hensol Castle|Coach House">Coach House</option>
-                            <option value="Hensol Castle|West Tower Boardroom">West Tower Boardroom</option>
-                            <option value="Hensol Castle|Reading Room">Reading Room</option>
-                            <option value="Hensol Castle|Garden Room">Garden Room</option>
-                        </optgroup>
+                <div class="form-group" id="lunchMenuChoiceGroup" style="display:none;">
+                    <label for="lunchMenuChoice">Lunch Menu Choice</label>
+                    <select id="lunchMenuChoice" onchange="recalculate();">
+                        <option value="">Select lunch menu...</option>
+                        <option value="Working Lunch Menu">Working Lunch Menu</option>
+                        <option value="Lunch Buffet Menu">Lunch Buffet Menu</option>
+                        <option value="Vale Grill Delegate Lunch">Vale Grill Delegate Lunch</option>
                     </select>
+                </div>
+
+                <div class="form-group" id="dinnerMenuChoiceGroup" style="display:none;">
+                    <label for="dinnerMenuChoice">Dinner Menu Choice</label>
+                    <select id="dinnerMenuChoice" onchange="recalculate();">
+                        <option value="">Select dinner menu...</option>
+                        <option value="Menu A|0">Menu A (+&pound;0 pp)</option>
+                        <option value="Menu B|3">Menu B (+&pound;3 pp)</option>
+                        <option value="Menu C|16.45">Menu C (+&pound;16.45 pp)</option>
+                        <option value="Choice Menu|6">Choice Menu (+&pound;6 pp)</option>
+                        <option value="Evening Buffet|0">Evening Buffet (+&pound;0 pp)</option>
+                        <option value="Vegetarian Menu|0">Vegetarian Menu (+&pound;0 pp)</option>
+                    </select>
+                </div>
+
+                <div id="packageBedroomsGroup" style="display:none;">
+                    <div class="section-subtitle" style="margin-top:20px;">Package Bedrooms <span style="color:var(--text-light); font-weight:500; text-transform:none;">(included in 24 hour rate)</span></div>
+
+                    <div class="venue-subtitle">The Vale Resort</div>
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="pkgValeSingleOcc">Single Occupancy Rooms</label>
+                            <input type="number" id="pkgValeSingleOcc" min="0" value="0" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="pkgValeDoubleOcc">Double Occupancy Rooms</label>
+                            <input type="number" id="pkgValeDoubleOcc" min="0" value="0" oninput="recalculate();">
+                        </div>
+                    </div>
+
+                    <div class="venue-subtitle">Hensol Castle</div>
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="pkgHensolSingleOcc">Single Occupancy Rooms</label>
+                            <input type="number" id="pkgHensolSingleOcc" min="0" value="0" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="pkgHensolDoubleOcc">Double Occupancy Rooms</label>
+                            <input type="number" id="pkgHensolDoubleOcc" min="0" value="0" oninput="recalculate();">
+                        </div>
+                    </div>
+
+                    <div id="bedroomValidation" class="validation-error" style="display:none;"></div>
                 </div>
 
                 <div class="tabs">
@@ -764,9 +851,46 @@
                 </div>
 
                 <div id="roomHire" class="tab-content active">
+                    <div class="form-group">
+                        <label for="functionRoomPicker">Function Room (extra) <span style="font-weight:400; color:var(--text-light);">(add additional rooms with hire fees)</span></label>
+                        <select id="functionRoomPicker" onchange="addFunctionRoom();">
+                            <option value="">+ Add an extra function room...</option>
+                            <optgroup label="Vale Resort">
+                                <option value="Vale Resort|Castle Suite">Castle Suite</option>
+                                <option value="Vale Resort|Castle 1">Castle 1</option>
+                                <option value="Vale Resort|Castle 2">Castle 2</option>
+                                <option value="Vale Resort|Castle 1 &amp; 2">Castle 1 &amp; 2</option>
+                                <option value="Vale Resort|Castle 3 &amp; 4">Castle 3 &amp; 4</option>
+                                <option value="Vale Resort|Morgannwg Suite &amp; Lounge">Morgannwg Suite &amp; Lounge</option>
+                                <option value="Vale Resort|Morgannwg Suite">Morgannwg Suite</option>
+                                <option value="Vale Resort|Morgannwg Lounge">Morgannwg Lounge</option>
+                                <option value="Vale Resort|Pendoylan Suite">Pendoylan Suite</option>
+                                <option value="Vale Resort|Hensol Suite">Hensol Suite</option>
+                                <option value="Vale Resort|The Boardroom">The Boardroom</option>
+                                <option value="Vale Resort|Dyffryn Suite">Dyffryn Suite</option>
+                                <option value="Vale Resort|Cowbridge Lounge">Cowbridge Lounge</option>
+                                <option value="Vale Resort|Conservatory">Conservatory</option>
+                                <option value="Vale Resort|Trecastell Suite">Trecastell Suite</option>
+                                <option value="Vale Resort|Tre-Dodridge Suite">Tre-Dodridge Suite</option>
+                            </optgroup>
+                            <optgroup label="Hensol Castle">
+                                <option value="Hensol Castle|Drawing Room">Drawing Room</option>
+                                <option value="Hensol Castle|Courtyard Hall">Courtyard Hall</option>
+                                <option value="Hensol Castle|Courtyard Hall 1">Courtyard Hall 1</option>
+                                <option value="Hensol Castle|Courtyard Hall 2">Courtyard Hall 2</option>
+                                <option value="Hensol Castle|Oak Room">Oak Room</option>
+                                <option value="Hensol Castle|Morning Room">Morning Room</option>
+                                <option value="Hensol Castle|The Buttery">The Buttery</option>
+                                <option value="Hensol Castle|Coach House">Coach House</option>
+                                <option value="Hensol Castle|West Tower Boardroom">West Tower Boardroom</option>
+                                <option value="Hensol Castle|Reading Room">Reading Room</option>
+                                <option value="Hensol Castle|Garden Room">Garden Room</option>
+                            </optgroup>
+                        </select>
+                    </div>
                     <div class="section-subtitle">Extra Function Rooms</div>
                     <div id="selectedRoomsList">
-                        <div class="helper-text" id="noRoomsMessage">No extra function rooms added. Use the "Function Room (extra)" dropdown above.</div>
+                        <div class="helper-text" id="noRoomsMessage">No extra function rooms added. Use the dropdown above to add one.</div>
                     </div>
                 </div>
 
@@ -1009,16 +1133,6 @@
             ]
         };
 
-        // DDR default inclusions (all priced at £0 when DDR is enabled)
-        const DDR_INCLUSIONS = [
-            { key: 'functionRoom', label: 'Function Room Hire', qtyMode: 'flat' },
-            { key: 'lunchBuffet',  label: 'Lunch Buffet Menu', qtyMode: 'delegates' },
-            { key: 'arrivalTC',    label: 'Arrival Tea & Coffee (Danish/Welsh Cakes)', qtyMode: 'delegates' },
-            { key: 'midMorningTC', label: 'Mid-Morning Tea & Coffee (Biscuits)', qtyMode: 'delegates' },
-            { key: 'afternoonTC',  label: 'Afternoon Tea & Coffee (Biscuits)', qtyMode: 'delegates' },
-            { key: 'flipchart',    label: 'Flipchart x 1', qtyMode: 'flat' }
-        ];
-
         const refreshmentSlots = [
             { id: 'arrival',     label: 'Arrival' },
             { id: 'midMorning',  label: 'Mid-Morning' },
@@ -1028,18 +1142,27 @@
 
         let selectedOptions = {
             arrivalDate: '',
+            numberOfNights: 0,
             departureDate: '',
-            delegates: 30,
             bookingName: '',
             preparedBy: '',
-            ddrFunctionRoom: null,   // { venue, name } — the DDR room shown at £0
+            ddrFunctionRoom: null,   // { venue, name } — the main package room
             functionRooms: [],       // [{ venue, name, price }] — extra rooms with prices
             ddrEnabled: false,
             ddrRate: 0,
-            ddrIncluded: {},         // { key: true/false } - which inclusions are active
+            dayDelegates: 0,
+            twentyFourHourEnabled: false,
+            twentyFourHourRate: 0,
+            overnightDelegates: 0,
+            lunchMenuChoice: '',
+            dinnerMenuChoice: '',     // "Menu A|0" format
+            pkgValeSingleOcc: 0,
+            pkgValeDoubleOcc: 0,
+            pkgHensolSingleOcc: 0,
+            pkgHensolDoubleOcc: 0,
             lunchMenus: [],
             dinnerMenus: [],
-            refreshments: {          // { arrival: [], midMorning: [], lunch: [], afternoon: [] }
+            refreshments: {
                 arrival: [], midMorning: [], lunch: [], afternoon: []
             },
             preDinnerDrinks: [],
@@ -1053,14 +1176,19 @@
             valeSingleOccPrice: 0,
             valeSingleOccRooms: 0,
             valeDoubleOccRooms: 0,
+            valeNights: 1,
+            valeSingleOccRooms2: 0,
+            valeDoubleOccRooms2: 0,
+            valeNights2: 1,
             hensolSingleOccPrice: 0,
             hensolSingleOccRooms: 0,
             hensolDoubleOccRooms: 0,
+            hensolNights: 1,
+            hensolSingleOccRooms2: 0,
+            hensolDoubleOccRooms2: 0,
+            hensolNights2: 1,
             quote: {}
         };
-
-        // Initialise DDR inclusions state (all ticked by default)
-        DDR_INCLUSIONS.forEach(i => selectedOptions.ddrIncluded[i.key] = true);
 
         let drinkRowCounter = 0;
 
@@ -1076,8 +1204,25 @@
             populateCheckboxGroup('cheesesOptions', pricingData.cheeses, formatExtraLabel, 'cheeses');
             populateCheckboxGroup('grazingOptions', pricingData.grazing, formatExtraLabel, 'grazing');
             populateCheckboxGroup('flipchartsOptions', pricingData.flipcharts, formatExtraLabel, 'flipcharts');
+        }
 
-            populateDDRInclusions();
+        function updateDepartureDate() {
+            const arrival = document.getElementById('arrivalDate').value;
+            const nights = Math.max(0, parseInt(document.getElementById('numberOfNights').value) || 0);
+            const dep = document.getElementById('departureDate');
+            if (!arrival) { dep.value = ''; return; }
+            const d = new Date(arrival);
+            if (isNaN(d.getTime())) { dep.value = ''; return; }
+            d.setDate(d.getDate() + nights);
+            dep.value = d.toISOString().split('T')[0];
+        }
+
+        function updateConditionalSections() {
+            const ddr = document.getElementById('ddrEnabled').checked;
+            const tfh = document.getElementById('twentyFourHourEnabled').checked;
+            document.getElementById('lunchMenuChoiceGroup').style.display = (ddr || tfh) ? 'block' : 'none';
+            document.getElementById('dinnerMenuChoiceGroup').style.display = tfh ? 'block' : 'none';
+            document.getElementById('packageBedroomsGroup').style.display = tfh ? 'block' : 'none';
         }
 
         function formatExtraLabel(item) {
@@ -1212,43 +1357,14 @@
             });
         }
 
-        function populateDDRInclusions() {
-            const container = document.getElementById('ddrInclusionsList');
-            container.innerHTML = '';
-            DDR_INCLUSIONS.forEach(inc => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'ddr-inclusion-item';
-
-                const cb = document.createElement('input');
-                cb.type = 'checkbox';
-                cb.id = `ddr-inc-${inc.key}`;
-                cb.checked = !!selectedOptions.ddrIncluded[inc.key];
-                cb.onchange = () => {
-                    selectedOptions.ddrIncluded[inc.key] = cb.checked;
-                    recalculate();
-                };
-
-                const lbl = document.createElement('label');
-                lbl.htmlFor = `ddr-inc-${inc.key}`;
-                if (inc.key === 'functionRoom' && selectedOptions.ddrFunctionRoom) {
-                    lbl.textContent = `${inc.label} \u2014 ${selectedOptions.ddrFunctionRoom.name}`;
-                } else {
-                    lbl.textContent = inc.label;
-                }
-
-                const tag = document.createElement('span');
-                tag.className = 'ddr-zero-tag';
-                tag.textContent = '£0.00';
-
-                wrapper.appendChild(cb);
-                wrapper.appendChild(lbl);
-                wrapper.appendChild(tag);
-                container.appendChild(wrapper);
-            });
+        function totalDelegates() {
+            const day = Math.max(0, parseInt(document.getElementById('dayDelegates').value) || 0);
+            const overnight = Math.max(0, parseInt(document.getElementById('overnightDelegates').value) || 0);
+            return Math.max(1, day + overnight);
         }
 
         function defaultExtraQty(item) {
-            const delegates = Math.max(0, parseInt(document.getElementById('delegates').value) || 0);
+            const delegates = totalDelegates();
             if (item.unit === 'PerPerson') return delegates;
             if (item.unit === 'PerPlatter10') return Math.max(1, Math.ceil(delegates / 10));
             if (item.unit === 'PerUnit') return Math.max(1, Math.ceil(delegates / 6));
@@ -1260,8 +1376,16 @@
         function toggleDDR() {
             const enabled = document.getElementById('ddrEnabled').checked;
             selectedOptions.ddrEnabled = enabled;
-            document.getElementById('ddrRateGroup').style.display = enabled ? 'block' : 'none';
-            document.getElementById('ddrInclusionsPanel').style.display = enabled ? 'block' : 'none';
+            document.getElementById('ddrFields').style.display = enabled ? 'block' : 'none';
+            updateConditionalSections();
+            recalculate();
+        }
+
+        function toggleTwentyFourHour() {
+            const enabled = document.getElementById('twentyFourHourEnabled').checked;
+            selectedOptions.twentyFourHourEnabled = enabled;
+            document.getElementById('twentyFourHourFields').style.display = enabled ? 'block' : 'none';
+            updateConditionalSections();
             recalculate();
         }
 
@@ -1272,13 +1396,11 @@
             } else {
                 const [venue, name] = picker.value.split('|');
                 selectedOptions.ddrFunctionRoom = { venue, name };
-                // Remove from extras if it was already added there
                 selectedOptions.functionRooms = selectedOptions.functionRooms.filter(
                     r => !(r.venue === venue && r.name === name)
                 );
                 renderSelectedRooms();
             }
-            populateDDRInclusions();
             recalculate();
         }
 
@@ -1400,8 +1522,7 @@
             qtyLabel.className = 'drink-qty-label';
             qtyLabel.textContent = 'bottles:';
 
-            const delegates = Math.max(0, parseInt(document.getElementById('delegates').value) || 0);
-            const defaultBottles = Math.max(1, Math.ceil(delegates / 6));
+            const defaultBottles = Math.max(1, Math.ceil(totalDelegates() / 6));
 
             const qtyInput = document.createElement('input');
             qtyInput.type = 'number';
@@ -1452,9 +1573,19 @@
         }
 
         function recalculate() {
-            const delegates = Math.max(0, parseInt(document.getElementById('delegates').value) || 0);
             const ddrEnabled = document.getElementById('ddrEnabled').checked;
             const ddrRate = Math.max(0, parseFloat(document.getElementById('ddrRate').value) || 0);
+            const dayDelegates = Math.max(0, parseInt(document.getElementById('dayDelegates').value) || 0);
+            const tfhEnabled = document.getElementById('twentyFourHourEnabled').checked;
+            const tfhRate = Math.max(0, parseFloat(document.getElementById('twentyFourHourRate').value) || 0);
+            const overnightDelegates = Math.max(0, parseInt(document.getElementById('overnightDelegates').value) || 0);
+            const lunchMenuChoice = document.getElementById('lunchMenuChoice').value;
+            const dinnerMenuChoice = document.getElementById('dinnerMenuChoice').value;
+            const pkgValeSingleOcc = Math.max(0, parseInt(document.getElementById('pkgValeSingleOcc').value) || 0);
+            const pkgValeDoubleOcc = Math.max(0, parseInt(document.getElementById('pkgValeDoubleOcc').value) || 0);
+            const pkgHensolSingleOcc = Math.max(0, parseInt(document.getElementById('pkgHensolSingleOcc').value) || 0);
+            const pkgHensolDoubleOcc = Math.max(0, parseInt(document.getElementById('pkgHensolDoubleOcc').value) || 0);
+
             const valeSingleOccPrice   = Math.max(0, parseFloat(document.getElementById('valeSingleOccPrice').value) || 0);
             const valeSingleOccRooms   = Math.max(0, parseInt(document.getElementById('valeSingleOccRooms').value) || 0);
             const valeDoubleOccRooms   = Math.max(0, parseInt(document.getElementById('valeDoubleOccRooms').value) || 0);
@@ -1470,13 +1601,25 @@
             const hensolDoubleOccRooms2 = Math.max(0, parseInt(document.getElementById('hensolDoubleOccRooms2').value) || 0);
             const hensolNights2         = Math.max(1, parseInt(document.getElementById('hensolNights2').value) || 1);
 
-            selectedOptions.delegates = delegates;
-            selectedOptions.ddrEnabled = ddrEnabled;
-            selectedOptions.ddrRate = ddrRate;
+            const totalDel = dayDelegates + overnightDelegates;
+
             selectedOptions.arrivalDate = document.getElementById('arrivalDate').value;
+            selectedOptions.numberOfNights = Math.max(0, parseInt(document.getElementById('numberOfNights').value) || 0);
             selectedOptions.departureDate = document.getElementById('departureDate').value;
             selectedOptions.bookingName = document.getElementById('bookingName').value;
             selectedOptions.preparedBy = document.getElementById('preparedBy').value;
+            selectedOptions.ddrEnabled = ddrEnabled;
+            selectedOptions.ddrRate = ddrRate;
+            selectedOptions.dayDelegates = dayDelegates;
+            selectedOptions.twentyFourHourEnabled = tfhEnabled;
+            selectedOptions.twentyFourHourRate = tfhRate;
+            selectedOptions.overnightDelegates = overnightDelegates;
+            selectedOptions.lunchMenuChoice = lunchMenuChoice;
+            selectedOptions.dinnerMenuChoice = dinnerMenuChoice;
+            selectedOptions.pkgValeSingleOcc = pkgValeSingleOcc;
+            selectedOptions.pkgValeDoubleOcc = pkgValeDoubleOcc;
+            selectedOptions.pkgHensolSingleOcc = pkgHensolSingleOcc;
+            selectedOptions.pkgHensolDoubleOcc = pkgHensolDoubleOcc;
             selectedOptions.bedroomPackage = document.getElementById('bedroomPackage').value;
             selectedOptions.valeSingleOccPrice  = valeSingleOccPrice;
             selectedOptions.valeSingleOccRooms  = valeSingleOccRooms;
@@ -1485,33 +1628,115 @@
             selectedOptions.hensolSingleOccRooms = hensolSingleOccRooms;
             selectedOptions.hensolDoubleOccRooms = hensolDoubleOccRooms;
 
+            // Bedroom validation: overnight delegates == single + 2*double
+            const totalPkgRooms = pkgValeSingleOcc + pkgValeDoubleOcc + pkgHensolSingleOcc + pkgHensolDoubleOcc;
+            const expectedDelegates = pkgValeSingleOcc + (2 * pkgValeDoubleOcc) + pkgHensolSingleOcc + (2 * pkgHensolDoubleOcc);
+            const validationDiv = document.getElementById('bedroomValidation');
+            if (tfhEnabled && totalPkgRooms > 0 && expectedDelegates !== overnightDelegates) {
+                validationDiv.style.display = 'block';
+                validationDiv.textContent = `\u26A0 Mismatch: ${pkgValeSingleOcc} + ${pkgValeDoubleOcc}\u00D72 + ${pkgHensolSingleOcc} + ${pkgHensolDoubleOcc}\u00D72 = ${expectedDelegates} delegates, but ${overnightDelegates} overnight delegates entered.`;
+            } else {
+                validationDiv.style.display = 'none';
+            }
+
             let total = 0;
             const summary = [];
 
-            // DDR: add delegate-rate revenue line
-            if (ddrEnabled && ddrRate > 0 && delegates > 0) {
-                const ddrTotal = ddrRate * delegates;
-                total += ddrTotal;
+            // Main package room (always included if selected)
+            if (selectedOptions.ddrFunctionRoom) {
                 summary.push({
-                    label: `Day Delegate Package (${delegates} x £${ddrRate.toFixed(2)})`,
-                    price: ddrTotal, qty: delegates, unitPrice: ddrRate
+                    label: `Function Room Hire \u2014 ${selectedOptions.ddrFunctionRoom.name} (included in package)`,
+                    price: 0, qty: 1, unitPrice: 0, ddrZero: true
                 });
             }
 
-            // DDR: inject £0 inclusion lines
-            if (ddrEnabled) {
-                DDR_INCLUSIONS.forEach(inc => {
-                    if (!selectedOptions.ddrIncluded[inc.key]) return;
-                    const qty = inc.qtyMode === 'delegates' ? delegates : 1;
-                    let label = inc.label;
-                    if (inc.key === 'functionRoom' && selectedOptions.ddrFunctionRoom) {
-                        label = `${inc.label} \u2014 ${selectedOptions.ddrFunctionRoom.name}`;
-                    }
+            // DDR: add delegate-rate revenue line + inclusions
+            if (ddrEnabled && ddrRate > 0 && dayDelegates > 0) {
+                const ddrTotal = ddrRate * dayDelegates;
+                total += ddrTotal;
+                summary.push({
+                    label: `Day Delegate Package (${dayDelegates} \u00D7 \u00A3${ddrRate.toFixed(2)})`,
+                    price: ddrTotal, qty: dayDelegates, unitPrice: ddrRate
+                });
+            }
+
+            // 24 Hour Rate: add delegate-rate revenue line
+            if (tfhEnabled && tfhRate > 0 && overnightDelegates > 0) {
+                const tfhTotal = tfhRate * overnightDelegates;
+                total += tfhTotal;
+                summary.push({
+                    label: `24 Hour Package (${overnightDelegates} \u00D7 \u00A3${tfhRate.toFixed(2)})`,
+                    price: tfhTotal, qty: overnightDelegates, unitPrice: tfhRate
+                });
+            }
+
+            // Lunch menu (included in DDR / 24 hour, applied to total delegates)
+            if ((ddrEnabled || tfhEnabled) && lunchMenuChoice && totalDel > 0) {
+                summary.push({
+                    label: `${lunchMenuChoice} (\u00D7 ${totalDel} delegates) (included in package)`,
+                    price: 0, qty: totalDel, unitPrice: 0, ddrZero: true
+                });
+            }
+
+            // Standard refreshments included in package (Arrival, Mid-Morning, Afternoon T&C)
+            if ((ddrEnabled || tfhEnabled) && totalDel > 0) {
+                ['Arrival Tea & Coffee', 'Mid-Morning Tea & Coffee', 'Afternoon Tea & Coffee'].forEach(label => {
                     summary.push({
-                        label: `  ${label} (included in DDR)`,
-                        price: 0, qty, unitPrice: 0, ddrZero: true
+                        label: `${label} (\u00D7 ${totalDel} delegates) (included in package)`,
+                        price: 0, qty: totalDel, unitPrice: 0, ddrZero: true
                     });
                 });
+                summary.push({
+                    label: `Flipchart \u00D7 1 (included in package)`,
+                    price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                });
+            }
+
+            // Dinner menu — surcharge added on top of 24 hour rate
+            if (tfhEnabled && dinnerMenuChoice && overnightDelegates > 0) {
+                const [dName, dSurStr] = dinnerMenuChoice.split('|');
+                const dSur = parseFloat(dSurStr) || 0;
+                if (dSur > 0) {
+                    const dTotal = dSur * overnightDelegates;
+                    total += dTotal;
+                    summary.push({
+                        label: `${dName} (\u00D7 ${overnightDelegates} overnight delegates \u00D7 \u00A3${dSur.toFixed(2)} surcharge) (included in 24 hour rate)`,
+                        price: dTotal, qty: overnightDelegates, unitPrice: dSur
+                    });
+                } else {
+                    summary.push({
+                        label: `${dName} (\u00D7 ${overnightDelegates} overnight delegates) (included in 24 hour rate)`,
+                        price: 0, qty: overnightDelegates, unitPrice: 0, ddrZero: true
+                    });
+                }
+            }
+
+            // Package bedrooms — included in 24 hour rate (B&B), zero-cost lines
+            if (tfhEnabled) {
+                if (pkgValeSingleOcc > 0) {
+                    summary.push({
+                        label: `Single Occ Rooms at The Vale Resort (B&B) \u00D7 ${pkgValeSingleOcc} (included in 24 hour rate)`,
+                        price: 0, qty: pkgValeSingleOcc, unitPrice: 0, ddrZero: true
+                    });
+                }
+                if (pkgValeDoubleOcc > 0) {
+                    summary.push({
+                        label: `Double Occ Rooms at The Vale Resort (B&B) \u00D7 ${pkgValeDoubleOcc} (included in 24 hour rate)`,
+                        price: 0, qty: pkgValeDoubleOcc, unitPrice: 0, ddrZero: true
+                    });
+                }
+                if (pkgHensolSingleOcc > 0) {
+                    summary.push({
+                        label: `Single Occ Rooms at Hensol Castle (B&B) \u00D7 ${pkgHensolSingleOcc} (included in 24 hour rate)`,
+                        price: 0, qty: pkgHensolSingleOcc, unitPrice: 0, ddrZero: true
+                    });
+                }
+                if (pkgHensolDoubleOcc > 0) {
+                    summary.push({
+                        label: `Double Occ Rooms at Hensol Castle (B&B) \u00D7 ${pkgHensolDoubleOcc} (included in 24 hour rate)`,
+                        price: 0, qty: pkgHensolDoubleOcc, unitPrice: 0, ddrZero: true
+                    });
+                }
             }
 
             // Function Room Hire
@@ -1723,16 +1948,28 @@
                 return;
             }
             if (!document.getElementById('departureDate').value) {
-                alert('Please select a departure date.');
+                alert('Please select arrival date and number of nights so the departure date can be calculated.');
                 return;
             }
             if (!selectedOptions.ddrFunctionRoom && selectedOptions.functionRooms.length === 0) {
-                alert('Please select at least one function room (DDR or extra).');
+                alert('Please select at least one function room.');
                 return;
             }
             if (selectedOptions.ddrEnabled && selectedOptions.ddrRate <= 0) {
                 alert('Please enter a DDR price per delegate, or uncheck DDR.');
                 return;
+            }
+            if (selectedOptions.twentyFourHourEnabled && selectedOptions.twentyFourHourRate <= 0) {
+                alert('Please enter a 24 Hour rate per delegate, or uncheck the 24 Hour Rate.');
+                return;
+            }
+            if (selectedOptions.twentyFourHourEnabled) {
+                const expected = selectedOptions.pkgValeSingleOcc + (2 * selectedOptions.pkgValeDoubleOcc) + selectedOptions.pkgHensolSingleOcc + (2 * selectedOptions.pkgHensolDoubleOcc);
+                const totalRooms = selectedOptions.pkgValeSingleOcc + selectedOptions.pkgValeDoubleOcc + selectedOptions.pkgHensolSingleOcc + selectedOptions.pkgHensolDoubleOcc;
+                if (totalRooms > 0 && expected !== selectedOptions.overnightDelegates) {
+                    alert(`Bedroom mismatch: package bedrooms account for ${expected} delegates, but ${selectedOptions.overnightDelegates} overnight delegates entered. Please correct before generating the quote.`);
+                    return;
+                }
             }
 
             displayQuoteModal();
@@ -1751,14 +1988,17 @@
         }
 
         function displayQuoteModal() {
-            const delegates = selectedOptions.delegates;
+            const dayDelegates = selectedOptions.dayDelegates;
+            const overnightDelegates = selectedOptions.overnightDelegates;
+            const totalDel = dayDelegates + overnightDelegates;
             const bookingName = selectedOptions.bookingName || '—';
             const preparedBy = selectedOptions.preparedBy || '—';
             const arrivalStr = formatDate(selectedOptions.arrivalDate);
             const departureStr = formatDate(selectedOptions.departureDate);
+            const nights = selectedOptions.numberOfNights;
 
             const ddrRoomLine = selectedOptions.ddrFunctionRoom
-                ? `${selectedOptions.ddrFunctionRoom.name} (${selectedOptions.ddrFunctionRoom.venue}) — DDR`
+                ? `${selectedOptions.ddrFunctionRoom.name} (${selectedOptions.ddrFunctionRoom.venue}) — main package room`
                 : '';
             const extraRoomLines = selectedOptions.functionRooms.map(r => `${r.name} (${r.venue}) - £${r.price.toFixed(2)}`);
             const allRoomLines = [ddrRoomLine, ...extraRoomLines].filter(Boolean);
@@ -1773,12 +2013,17 @@
                     <div class="modal-item-label">Event Dates</div>
                     <div class="modal-item-value">
                         Arrival: ${arrivalStr}<br>
-                        Departure: ${departureStr}
+                        Departure: ${departureStr}<br>
+                        Nights: ${nights}
                     </div>
                 </div>
                 <div class="modal-item">
                     <div class="modal-item-label">Delegates</div>
-                    <div class="modal-item-value">${delegates}</div>
+                    <div class="modal-item-value">
+                        Day Delegates: ${dayDelegates}<br>
+                        Overnight Delegates: ${overnightDelegates}<br>
+                        <strong>Total Delegates: ${totalDel}</strong>
+                    </div>
                 </div>
                 <div class="modal-item">
                     <div class="modal-item-label">Function Rooms</div>
@@ -1789,7 +2034,13 @@
             if (selectedOptions.ddrEnabled) {
                 modalHTML += `<div class="modal-item" style="background:#eef5e8; border-left:4px solid var(--primary-green);">
                     <div class="modal-item-label">Day Delegate Package</div>
-                    <div class="modal-item-value">£${selectedOptions.ddrRate.toFixed(2)} per delegate × ${delegates} = £${(selectedOptions.ddrRate * delegates).toFixed(2)}</div>
+                    <div class="modal-item-value">£${selectedOptions.ddrRate.toFixed(2)} per delegate × ${dayDelegates} = £${(selectedOptions.ddrRate * dayDelegates).toFixed(2)}</div>
+                </div>`;
+            }
+            if (selectedOptions.twentyFourHourEnabled) {
+                modalHTML += `<div class="modal-item" style="background:#eef5e8; border-left:4px solid var(--primary-green);">
+                    <div class="modal-item-label">24 Hour Package</div>
+                    <div class="modal-item-value">£${selectedOptions.twentyFourHourRate.toFixed(2)} per delegate × ${overnightDelegates} = £${(selectedOptions.twentyFourHourRate * overnightDelegates).toFixed(2)}</div>
                 </div>`;
             }
 
@@ -1822,14 +2073,28 @@
 
         function resetForm() {
             document.getElementById('arrivalDate').value = '';
+            document.getElementById('numberOfNights').value = '0';
             document.getElementById('departureDate').value = '';
-            document.getElementById('delegates').value = '30';
             document.getElementById('bookingName').value = '';
             document.getElementById('preparedBy').value = '';
             document.getElementById('ddrEnabled').checked = false;
             document.getElementById('ddrRate').value = '0';
-            document.getElementById('ddrRateGroup').style.display = 'none';
-            document.getElementById('ddrInclusionsPanel').style.display = 'none';
+            document.getElementById('dayDelegates').value = '0';
+            document.getElementById('ddrFields').style.display = 'none';
+            document.getElementById('twentyFourHourEnabled').checked = false;
+            document.getElementById('twentyFourHourRate').value = '0';
+            document.getElementById('overnightDelegates').value = '0';
+            document.getElementById('twentyFourHourFields').style.display = 'none';
+            document.getElementById('lunchMenuChoice').value = '';
+            document.getElementById('dinnerMenuChoice').value = '';
+            document.getElementById('lunchMenuChoiceGroup').style.display = 'none';
+            document.getElementById('dinnerMenuChoiceGroup').style.display = 'none';
+            document.getElementById('packageBedroomsGroup').style.display = 'none';
+            document.getElementById('pkgValeSingleOcc').value = '0';
+            document.getElementById('pkgValeDoubleOcc').value = '0';
+            document.getElementById('pkgHensolSingleOcc').value = '0';
+            document.getElementById('pkgHensolDoubleOcc').value = '0';
+            document.getElementById('bedroomValidation').style.display = 'none';
             document.getElementById('ddrFunctionRoomPicker').value = '';
             document.getElementById('bedroomPackage').value = 'BB';
             document.getElementById('valeSingleOccPrice').value = '0';
@@ -1855,10 +2120,14 @@
             });
 
             selectedOptions = {
-                arrivalDate: '', departureDate: '', delegates: 30,
+                arrivalDate: '', numberOfNights: 0, departureDate: '',
                 bookingName: '', preparedBy: '',
-                ddrFunctionRoom: null, functionRooms: [], ddrEnabled: false, ddrRate: 0,
-                ddrIncluded: {},
+                ddrFunctionRoom: null, functionRooms: [],
+                ddrEnabled: false, ddrRate: 0, dayDelegates: 0,
+                twentyFourHourEnabled: false, twentyFourHourRate: 0, overnightDelegates: 0,
+                lunchMenuChoice: '', dinnerMenuChoice: '',
+                pkgValeSingleOcc: 0, pkgValeDoubleOcc: 0,
+                pkgHensolSingleOcc: 0, pkgHensolDoubleOcc: 0,
                 lunchMenus: [], dinnerMenus: [],
                 refreshments: { arrival: [], midMorning: [], lunch: [], afternoon: [] },
                 preDinnerDrinks: [], dinnerDrinks: [],
@@ -1871,10 +2140,8 @@
                 hensolSingleOccRooms2: 0, hensolDoubleOccRooms2: 0, hensolNights2: 1,
                 quote: {}
             };
-            DDR_INCLUSIONS.forEach(i => selectedOptions.ddrIncluded[i.key] = true);
 
             renderSelectedRooms();
-            populateDDRInclusions();
 
             document.getElementById('generateBtn').textContent = 'Generate Quote';
             document.getElementById('quoteSummary').innerHTML = '<div class="quote-item" style="color: #999;">Select options to see price summary</div>';
@@ -1893,7 +2160,10 @@
 
             const arrivalStr = formatDate(selectedOptions.arrivalDate);
             const departureStr = formatDate(selectedOptions.departureDate);
-            const delegates = selectedOptions.delegates;
+            const dayDelegates = selectedOptions.dayDelegates;
+            const overnightDelegates = selectedOptions.overnightDelegates;
+            const totalDel = dayDelegates + overnightDelegates;
+            const nights = selectedOptions.numberOfNights;
             const bookingName = selectedOptions.bookingName || '—';
             const preparedBy = selectedOptions.preparedBy || '—';
             const pdfDdrRoom = selectedOptions.ddrFunctionRoom
@@ -2074,12 +2344,24 @@
                 <span class="meta-value">${arrivalStr}</span>
             </div>
             <div class="meta-row">
+                <span class="meta-label">Number of Nights</span>
+                <span class="meta-value">${nights}</span>
+            </div>
+            <div class="meta-row">
                 <span class="meta-label">Departure Date</span>
                 <span class="meta-value">${departureStr}</span>
             </div>
             <div class="meta-row">
-                <span class="meta-label">Delegates</span>
-                <span class="meta-value">${delegates}</span>
+                <span class="meta-label">Day Delegates</span>
+                <span class="meta-value">${dayDelegates}</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Overnight Delegates</span>
+                <span class="meta-value">${overnightDelegates}</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Total Delegates</span>
+                <span class="meta-value">${totalDel}</span>
             </div>
             <div class="meta-row">
                 <span class="meta-label">Function Rooms</span>
@@ -2088,6 +2370,10 @@
             ${selectedOptions.ddrEnabled ? `<div class="meta-row">
                 <span class="meta-label">DDR Rate</span>
                 <span class="meta-value">£${selectedOptions.ddrRate.toFixed(2)} per delegate</span>
+            </div>` : ''}
+            ${selectedOptions.twentyFourHourEnabled ? `<div class="meta-row">
+                <span class="meta-label">24 Hour Rate</span>
+                <span class="meta-value">£${selectedOptions.twentyFourHourRate.toFixed(2)} per delegate</span>
             </div>` : ''}
         </div>
         <div class="meta-col">
@@ -2175,7 +2461,7 @@
                 <tr style="background:#f7f4eb;">
                     <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
                         <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
-                        Built-in Screen / Projector
+                        Built-in Screen / LCD Projector
                     </td>
                 </tr>
                 <tr>
