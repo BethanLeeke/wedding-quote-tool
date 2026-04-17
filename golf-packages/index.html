@@ -795,12 +795,6 @@
                 summary.push({ label: `Buggies (${buggies} x \u00A350.00)`, price: bt });
             }
 
-            if (drinksVoucher && totalGuests > 0) {
-                const dv = totalGuests * 10;
-                total += dv;
-                summary.push({ label: `Drinks Voucher (${totalGuests} x \u00A310.00)`, price: dv });
-            }
-
             if (courseMaintenance) {
                 summary.push({ label: 'Course Maintenance', price: null, type: 'info', text: 'Yes \u2014 may be taking place' });
             }
@@ -812,6 +806,9 @@
                 '3 course dinner served at the Golf Club',
                 'Bed & Breakfast Accommodation at The Vale Resort'
             ];
+            if (drinksVoucher) {
+                packageIncludes.push('\u00A310 per person drinks voucher');
+            }
 
             renderSummary(summary, total, deposit, packageIncludes, {
                 twinRooms, singleRooms, teeTimeLake, teeTimeWN
@@ -1271,9 +1268,6 @@
             if (q.buggies > 0) {
                 lineRows += pdfRow('Buggies', q.buggies, 50, q.buggies * 50);
             }
-            if (q.drinksVoucher && q.totalGuests > 0) {
-                lineRows += pdfRow('Drinks Voucher', q.totalGuests, 10, q.totalGuests * 10);
-            }
             if (q.courseMaintenance) {
                 lineRows += `<tr style="font-style:italic; color:#6d8062;"><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">Course Maintenance</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">Noted</td></tr>`;
             }
@@ -1352,6 +1346,7 @@
                                 Bed &amp; Breakfast Accommodation at The Vale Resort
                             </td>
                         </tr>
+                        ${q.drinksVoucher ? `<tr style="background:#f7f4eb;"><td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;"><span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>\u00A310 per person drinks voucher</td></tr>` : ''}
                     </tbody>
                 </table>
 
