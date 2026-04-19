@@ -779,10 +779,11 @@
                             <div class="form-group" style="margin-bottom:0;">
                                 <label for="twentyFourHourRate">24 Hour Rate per Delegate (&pound;)</label>
                                 <input type="number" id="twentyFourHourRate" min="0" step="0.01" value="0" oninput="recalculate();">
+                                <div class="helper-text">Based on single occupancy rate</div>
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
                                 <label for="overnightDelegates">Number of Overnight Delegates</label>
-                                <input type="number" id="overnightDelegates" min="0" value="0" oninput="recalculate();">
+                                <input type="number" id="overnightDelegates" min="0" value="0" oninput="syncOvernightToSingleOcc(); recalculate();">
                             </div>
                         </div>
                     </div>
@@ -836,6 +837,10 @@
                             <label for="pkgHensolDoubleOcc">Double Occupancy Rooms</label>
                             <input type="number" id="pkgHensolDoubleOcc" min="0" value="0" oninput="recalculate();">
                         </div>
+                    </div>
+
+                    <div id="totalSleepersBadge" style="display:none; margin-top:12px; padding:10px 14px; background:var(--primary-cream); border:1px solid var(--accent-light); border-radius:4px; font-size:0.9em;">
+                        <strong>Total overnight sleepers from rooms:</strong> <span id="totalSleepersCount">0</span>
                     </div>
 
                     <div id="bedroomValidation" class="validation-error" style="display:none;"></div>
@@ -1389,6 +1394,13 @@
             recalculate();
         }
 
+        function syncOvernightToSingleOcc() {
+            const n = Math.max(0, parseInt(document.getElementById('overnightDelegates').value) || 0);
+            const singleOccEl = document.getElementById('pkgValeSingleOcc');
+            singleOccEl.value = n;
+            singleOccEl.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
         function selectDdrFunctionRoom() {
             const picker = document.getElementById('ddrFunctionRoomPicker');
             if (!picker.value) {
@@ -1660,7 +1672,8 @@
                 });
             }
 
-            // 24 Hour Rate: add delegate-rate revenue line
+            // 24 Hour Rate: add delegate-rate revenue line + double occ discount
+            const totalDoubleOccRooms = pkgValeDoubleOcc + pkgHensolDoubleOcc;
             if (tfhEnabled && tfhRate > 0 && overnightDelegates > 0) {
                 const tfhTotal = tfhRate * overnightDelegates;
                 total += tfhTotal;
@@ -1668,6 +1681,25 @@
                     label: `24 Hour Package (${overnightDelegates} \u00D7 \u00A3${tfhRate.toFixed(2)})`,
                     price: tfhTotal, qty: overnightDelegates, unitPrice: tfhRate
                 });
+            }
+            if (tfhEnabled && totalDoubleOccRooms > 0) {
+                const doubleDiscount = totalDoubleOccRooms * 80;
+                total -= doubleDiscount;
+                summary.push({
+                    label: `Double Occupancy Discount (${totalDoubleOccRooms} room${totalDoubleOccRooms !== 1 ? 's' : ''} \u00D7 \u00A3${(80).toFixed(2)})`,
+                    price: -doubleDiscount, qty: totalDoubleOccRooms, unitPrice: -80
+                });
+            }
+
+            // Update total sleepers counter
+            const totalSleepers = pkgValeSingleOcc + (pkgValeDoubleOcc * 2) + pkgHensolSingleOcc + (pkgHensolDoubleOcc * 2);
+            const sleeperBadge = document.getElementById('totalSleepersBadge');
+            const sleeperCount = document.getElementById('totalSleepersCount');
+            if (tfhEnabled && (pkgValeSingleOcc + pkgValeDoubleOcc + pkgHensolSingleOcc + pkgHensolDoubleOcc) > 0) {
+                sleeperBadge.style.display = 'block';
+                sleeperCount.textContent = totalSleepers;
+            } else {
+                sleeperBadge.style.display = 'none';
             }
 
             // Lunch menu (included in DDR / 24 hour, applied to total delegates)
