@@ -2549,6 +2549,14 @@
         document.getElementById('bookingName').addEventListener('input', recalculate);
         document.getElementById('preparedBy').addEventListener('change', recalculate);
 
+        // Prevent mouse-wheel from changing focused number inputs
+        document.addEventListener('wheel', function(e) {
+            if (document.activeElement && document.activeElement.type === 'number' && document.activeElement === e.target) {
+                e.preventDefault();
+                document.activeElement.blur();
+            }
+        }, { passive: false });
+
         populateOptions();
         renderSelectedRooms();
         recalculate();
