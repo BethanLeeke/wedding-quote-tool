@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hensol Castle Wedding Quoting Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #1a1a1a;
+            --primary-gold: #d4af37;
+            --primary-cream: #f5f1e8;
+            --primary-burgundy: #8b5a5a;
+            --primary-rose: #c9a9a0;
+            --accent-light: #f0e8dc;
+            --text-dark: #3a3a3a;
+            --text-light: #7a7a7a;
+            --border-color: #d4af37;
+            --bg-light: #faf8f3;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Montserrat:wght@300;400;500;600&display=swap');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #faf8f3 0%, #f5f1e8 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* Header with Castle Banner */
+        .header {
+            background: linear-gradient(rgba(360, 360, 360, 0.25), rgba(212, 175, 55, 0.15)), url('https://res.cloudinary.com/dnpcsbkz4/image/upload/v1772654084/Hensol_Castle_1_lgueas.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 100px 40px;
+            text-align: center;
+            color: white;
+            border-bottom: 3px solid var(--primary-rose);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(201, 169, 160, 0.08) 0%, transparent 50%);
+            opacity: 0.7;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 40px 50px;
+            border-radius: 8px;
+            backdrop-filter: blur(2px);
+        }
+
+        .header-logo {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: brightness(0.95) drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 4px 4px 15px rgba(0, 0, 0, 0.7), 2px 2px 4px rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 1;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .header-tagline {
+            font-size: 0.95em;
+            color: #f5f5f5;
+            margin-top: 15px;
+            font-weight: 500;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px;
+            padding: 0;
+        }
+
+        .form-section, .quote-section {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0e8dc;
+        }
+
+        .form-section {
+            border-top: 4px solid var(--primary-rose);
+        }
+
+        .quote-section {
+            border-top: 4px solid var(--primary-burgundy);
+        }
+
+        .form-section h2, .quote-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            color: var(--primary-burgundy);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-rose);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #f0e8dc;
+            border-radius: 4px;
+            font-size: 1em;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+            background: #faf8f3;
+            color: var(--text-dark);
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+            background: #fffbf7;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--accent-light);
+        }
+
+        .tab-btn {
+            padding: 14px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            margin-bottom: -2px;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-gold);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-burgundy);
+            border-bottom-color: var(--primary-burgundy);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .checkbox-group, .radio-group {
+            display: grid;
+            gap: 12px;
+        }
+
+        .drink-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f5f3ed;
+            border-radius: 4px;
+            border: 2px solid transparent;
+        }
+
+        .drink-section-title {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: var(--primary-burgundy);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.85em;
+        }
+
+        .drink-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .add-drink-btn {
+            margin-top: 8px;
+            padding: 7px 14px;
+            background: none;
+            border: 2px dashed var(--primary-rose);
+            border-radius: 4px;
+            color: var(--primary-burgundy);
+            font-size: 0.85em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .add-drink-btn:hover {
+            background: #f0e8dc;
+            border-style: solid;
+        }
+
+        .remove-drink-btn {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            background: none;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            color: #999;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .remove-drink-btn:hover {
+            background: #fee;
+            border-color: #c9a9a0;
+            color: #8b5a5a;
+        }
+
+        .drink-row select {
+            padding: 10px 12px;
+            border: 2px solid #f0e8dc;
+            border-radius: 4px;
+            font-size: 0.95em;
+            font-family: 'Montserrat', sans-serif;
+            background: #faf8f3;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .drink-row select:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        }
+
+        .drink-qty-label {
+            font-size: 0.85em;
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+
+        .drink-qty-input {
+            width: 75px;
+            padding: 10px 8px;
+            border: 2px solid #f0e8dc;
+            border-radius: 4px;
+            font-size: 0.95em;
+            font-family: 'Montserrat', sans-serif;
+            background: #faf8f3;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        .drink-qty-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        }
+
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            background: #f5f3ed;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .checkbox-item:hover, .radio-item:hover {
+            background: #f0e8dc;
+            border-color: var(--primary-rose);
+        }
+
+        .checkbox-item input[type="checkbox"],
+        .radio-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin-right: 14px;
+            accent-color: var(--primary-burgundy);
+            flex-shrink: 0;
+        }
+
+        .checkbox-item label, .radio-item label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .quote-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0e8dc;
+            color: var(--text-dark);
+            font-size: 0.95em;
+        }
+
+        .quote-item.total {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            padding-top: 20px;
+            padding-bottom: 20px;
+            border-top: 2px solid var(--primary-rose);
+            border-bottom: none;
+            margin-top: 15px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button.btn {
+            flex: 1;
+            padding: 14px 28px;
+            border: 2px solid var(--primary-rose);
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-burgundy) 0%, #a07070 100%);
+            color: white;
+            border-color: var(--primary-burgundy);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 90, 90, 0.3);
+            background: linear-gradient(135deg, #9a5050 0%, #c98080 100%);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-burgundy);
+            border-color: var(--primary-rose);
+        }
+
+        .btn-secondary:hover {
+            background: #f5f3ed;
+            border-color: var(--primary-burgundy);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(58, 58, 58, 0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 50px;
+            border-radius: 8px;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            border-top: 4px solid var(--primary-rose);
+        }
+
+        .modal-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            color: var(--primary-burgundy);
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--primary-rose);
+            padding-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .modal-item {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f5f3ed;
+            border-radius: 4px;
+            border-left: 4px solid var(--primary-rose);
+        }
+
+        .modal-item-label {
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            margin-bottom: 6px;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-item-value {
+            color: var(--text-dark);
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .modal-total {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid var(--primary-rose);
+            text-align: right;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2.5em;
+            }
+        }
+
+        .notice {
+            background: #fef5e6;
+            color: #9a7f5a;
+            padding: 14px 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-rose);
+            font-size: 0.95em;
+        }
+
+        .section-subtitle {
+            color: var(--primary-burgundy);
+            font-size: 0.9em;
+            font-weight: 700;
+            margin-top: 15px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .quote-section {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .quote-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .quote-section::-webkit-scrollbar-track {
+            background: var(--primary-cream);
+        }
+
+        .quote-section::-webkit-scrollbar-thumb {
+            background: var(--primary-gold);
+            border-radius: 3px;
+        }
+
+        #venueDisplay {
+            padding: 14px 16px;
+            background: #f5f3ed;
+            border-radius: 4px;
+            font-weight: 500;
+            color: var(--text-dark);
+            border: 2px solid #f0e8dc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1772653940/hensol_castle_logo_hryxza.png" alt="Hensol Castle Logo" class="header-logo">
+                <h1>HENSOL CASTLE</h1>
+                <p>Wedding Quotation Assistant</p>
+                <p class="header-tagline">Create your bespoke wedding proposal in minutes</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="form-section">
+                <h2>Your Wedding Details</h2>
+
+                <!-- Date Selection -->
+                <div class="form-group">
+                    <label for="date">Wedding Date</label>
+                    <input type="date" id="date" onchange="updateVenueOptions(); recalculate();">
+                </div>
+
+                <!-- Day Guest Count -->
+                <div class="form-group">
+                    <label for="dayGuests">Number of Day Guests (Wedding Breakfast)</label>
+                    <input type="number" id="dayGuests" min="20" value="80" onchange="recalculate();">
+                </div>
+
+                <!-- Evening Guest Count -->
+                <div class="form-group">
+                    <label for="eveningGuests">Number of Evening Guests</label>
+                    <input type="number" id="eveningGuests" min="20" value="80" onchange="recalculate();">
+                </div>
+
+                <!-- Junior Guest Count -->
+                <div class="form-group">
+                    <label for="juniorGuests">Juniors (8-12 years)</label>
+                    <input type="number" id="juniorGuests" min="0" value="0" onchange="recalculate();">
+                </div>
+
+                <!-- Under 8 Guest Count -->
+                <div class="form-group">
+                    <label for="under8Guests">Under 8 years</label>
+                    <input type="number" id="under8Guests" min="0" value="0" onchange="recalculate();">
+                </div>
+
+                <!-- Name 1 -->
+                <div class="form-group">
+                    <label for="brideName">Name 1 (Full Name)</label>
+                    <input type="text" id="brideName" placeholder="Enter full name">
+                </div>
+
+                <!-- Name 2 -->
+                <div class="form-group">
+                    <label for="groomName">Name 2 (Full Name)</label>
+                    <input type="text" id="groomName" placeholder="Enter full name">
+                </div>
+
+                <!-- Prepared By -->
+                <div class="form-group">
+                    <label for="preparedBy">Prepared By</label>
+                    <select id="preparedBy">
+                        <option value="">Select team member</option>
+                        <option value="Naomi Jones">Naomi Jones</option>
+                        <option value="Hollie Crowe">Hollie Crowe</option>
+                        <option value="Laura Williams">Laura Williams</option>
+                        <option value="Katie Thomas">Katie Thomas</option>
+                    </select>
+                </div>
+
+                <!-- Venue Hire -->
+                <div class="form-group">
+                    <label>Venue Hire <span style="color: #667eea; font-weight: 600;" id="venuePrice"></span></label>
+                    <div style="padding: 12px; background: #f8f9fa; border-radius: 6px; font-weight: 500; color: #333;" id="venueDisplay">Select a wedding date to see available packages</div>
+                    <div class="notice" id="venueNotice" style="margin-top: 10px; display: none;"></div>
+                </div>
+
+                <!-- Tabs for Menu Options -->
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('breakfast')">Breakfast</button>
+                    <button class="tab-btn" onclick="switchTab('evening')">Evening</button>
+                    <button class="tab-btn" onclick="switchTab('drinks')">Drinks</button>
+                    <button class="tab-btn" onclick="switchTab('extras')">Extras</button>
+                </div>
+
+                <!-- Wedding Breakfast Tab -->
+                <div id="breakfast" class="tab-content active">
+                    <div class="section-subtitle">Select Wedding Breakfast Menu</div>
+                    <div class="radio-group" id="breakfastOptions"></div>
+                </div>
+
+                <!-- Evening Meal Tab -->
+                <div id="evening" class="tab-content">
+                    <div class="section-subtitle">Select Evening Meal</div>
+                    <div class="radio-group" id="eveningOptions"></div>
+                </div>
+
+                <!-- Drinks Tab -->
+                <div id="drinks" class="tab-content">
+                    <div class="section-subtitle">Select Drinks & Beverages</div>
+
+                    <div class="drink-section">
+                        <div class="drink-section-title">Arrival Drinks</div>
+                        <div id="arrivalDrinkRows"></div>
+                        <button class="add-drink-btn" onclick="addDrinkRow('arrival')">+ Add Drink</button>
+                    </div>
+
+                    <div class="drink-section">
+                        <div class="drink-section-title">Wedding Breakfast Drink</div>
+                        <div id="breakfastDrinkRows"></div>
+                        <button class="add-drink-btn" onclick="addDrinkRow('breakfast')">+ Add Drink</button>
+                    </div>
+
+                    <div class="drink-section">
+                        <div class="drink-section-title">Reception Drinks</div>
+                        <div id="receptionDrinkRows"></div>
+                        <button class="add-drink-btn" onclick="addDrinkRow('reception')">+ Add Drink</button>
+                    </div>
+
+                    <div class="drink-section">
+                        <div class="drink-section-title">Drink with Toast</div>
+                        <div id="toastDrinkRows"></div>
+                        <button class="add-drink-btn" onclick="addDrinkRow('toast')">+ Add Drink</button>
+                    </div>
+                </div>
+
+                <!-- Extras Tab -->
+                <div id="extras" class="tab-content">
+                    <div class="section-subtitle">Add Optional Extras</div>
+                    <div class="checkbox-group" id="extrasOptions"></div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">Generate Quote</button>
+                    <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Quote Summary -->
+            <div class="quote-section">
+                <h2>Quote Summary</h2>
+                <div class="quote-status" id="quoteStatus" style="display: none; background: #e8f4fd; color: #2c5aa0; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 0.9em; text-align: center;">
+                    ✓ Quote generated - make changes above to update
+                </div>
+                <div id="quoteSummary">
+                    <div class="quote-item" style="color: #999;">Select options to see price summary</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quote Modal -->
+    <div id="quoteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Your Hensol Castle Wedding Quote</div>
+            <div id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Edit Quote</button>
+                <button class="btn btn-primary" onclick="downloadPDFQuote()">Download PDF Quote</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pricing Data
+        const pricingData = {
+            venue: [
+                { year: 2026, season: "Spring Romance", dayType: "Thu-Sun", days: ["Thursday", "Friday", "Saturday", "Sunday"], price: 6995, dateFrom: "2026-04-01", dateTo: "2026-05-31" },
+                { year: 2026, season: "Spring Romance", dayType: "Fri-Sat", days: ["Friday", "Saturday"], price: 8995, dateFrom: "2026-04-01", dateTo: "2026-05-31" },
+                { year: 2026, season: "Summer Romance", dayType: "Sun–Wed", days: ["Sunday", "Monday", "Tuesday", "Wednesday"], price: 6995, dateFrom: "2026-06-01", dateTo: "2026-08-31" },
+                { year: 2026, season: "Summer Romance", dayType: "Thu–Fri", days: ["Thursday", "Friday"], price: 8995, dateFrom: "2026-06-01", dateTo: "2026-08-31" },
+                { year: 2026, season: "Summer Romance", dayType: "Sat", days: ["Saturday"], price: 9995, dateFrom: "2026-06-01", dateTo: "2026-08-31" },
+                { year: 2026, season: "Autumn Romance", dayType: "Thu-Sun", days: ["Thursday", "Friday", "Saturday", "Sunday"], price: 6995, dateFrom: "2026-09-01", dateTo: "2026-10-31" },
+                { year: 2026, season: "Autumn Romance", dayType: "Fri-Sat", days: ["Friday", "Saturday"], price: 8995, dateFrom: "2026-09-01", dateTo: "2026-10-31" },
+                { year: 2026, season: "Winter Romance", dayType: "Thu-Sun", days: ["Thursday", "Friday", "Saturday", "Sunday"], price: 4995, dateFrom: "2026-01-01", dateTo: "2026-03-31", dateFrom2: "2026-11-01", dateTo2: "2026-12-31" },
+                { year: 2026, season: "Winter Romance", dayType: "Wed", days: ["Wednesday"], price: 5995, dateFrom: "2026-01-01", dateTo: "2026-03-31", dateFrom2: "2026-11-01", dateTo2: "2026-12-31" },
+                { year: 2026, season: "Winter Romance", dayType: "Fri-Sat", days: ["Friday", "Saturday"], price: 6995, dateFrom: "2026-01-01", dateTo: "2026-03-31", dateFrom2: "2026-11-01", dateTo2: "2026-12-31" },
+                { year: 2026, season: "Winter Romance NYE", dayType: "NYE", days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], price: 14000, dateFrom: "2026-12-31", dateTo: "2027-01-01" },
+                { year: 2027, season: "Winter Romance", dayType: "Thu–Sun", days: ["Thursday", "Friday", "Saturday", "Sunday"], price: 4995, dateFrom: "2027-01-01", dateTo: "2027-03-31", dateFrom2: "2027-11-01", dateTo2: "2027-12-31" },
+                { year: 2027, season: "Winter Romance", dayType: "Wed", days: ["Wednesday"], price: 5995, dateFrom: "2027-01-01", dateTo: "2027-03-31", dateFrom2: "2027-11-01", dateTo2: "2027-12-31" },
+                { year: 2027, season: "Winter Romance", dayType: "Fri–Sat", days: ["Friday", "Saturday"], price: 6995, dateFrom: "2027-01-01", dateTo: "2027-03-31", dateFrom2: "2027-11-01", dateTo2: "2027-12-31" },
+                { year: 2027, season: "Winter Romance NYE", dayType: "NYE", days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], price: 14000, dateFrom: "2027-12-31", dateTo: "2028-01-01" },
+                { year: 2027, season: "Spring Romance", dayType: "Thu-Sun", days: ["Thursday", "Friday", "Saturday", "Sunday"], price: 6995, dateFrom: "2027-04-01", dateTo: "2027-05-31" },
+                { year: 2027, season: "Spring Romance", dayType: "Fri-Sat", days: ["Friday", "Saturday"], price: 8995, dateFrom: "2027-04-01", dateTo: "2027-05-31" },
+                { year: 2027, season: "Summer Romance", dayType: "Mon-Thu", days: ["Monday", "Tuesday", "Wednesday", "Thursday"], price: 6995, dateFrom: "2027-06-01", dateTo: "2027-08-31" },
+                { year: 2027, season: "Summer Romance", dayType: "Sun", days: ["Sunday"], price: 8995, dateFrom: "2027-06-01", dateTo: "2027-08-31" },
+                { year: 2027, season: "Summer Romance", dayType: "Fri-Sat", days: ["Friday", "Saturday"], price: 9995, dateFrom: "2027-06-01", dateTo: "2027-08-31" },
+                { year: 2027, season: "Autumn Romance", dayType: "Thu-Sun", days: ["Thursday", "Friday", "Saturday", "Sunday"], price: 6995, dateFrom: "2027-09-01", dateTo: "2027-10-31" },
+                { year: 2027, season: "Autumn Romance", dayType: "Fri-Sat", days: ["Friday", "Saturday"], price: 8995, dateFrom: "2027-09-01", dateTo: "2027-10-31" },
+                { year: 2028, season: "Winter Romance", dayType: "Thu–Sun", days: ["Thursday", "Friday", "Saturday", "Sunday"], price: 5495, dateFrom: "2028-01-01", dateTo: "2028-03-31", dateFrom2: "2028-11-01", dateTo2: "2028-12-31" },
+                { year: 2028, season: "Winter Romance", dayType: "Wed", days: ["Wednesday"], price: 6595, dateFrom: "2028-01-01", dateTo: "2028-03-31", dateFrom2: "2028-11-01", dateTo2: "2028-12-31" },
+                { year: 2028, season: "Winter Romance", dayType: "Fri–Sat", days: ["Friday", "Saturday"], price: 7695, dateFrom: "2028-01-01", dateTo: "2028-03-31", dateFrom2: "2028-11-01", dateTo2: "2028-12-31" },
+                { year: 2028, season: "Winter Romance NYE", dayType: "NYE", days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], price: 15400, dateFrom: "2028-12-31", dateTo: "2029-01-01" },
+                { year: 2028, season: "Spring Romance", dayType: "Thu-Sun", days: ["Thursday", "Friday", "Saturday", "Sunday"], price: 7695, dateFrom: "2028-04-01", dateTo: "2028-05-31" },
+                { year: 2028, season: "Spring Romance", dayType: "Fri-Sat", days: ["Friday", "Saturday"], price: 9895, dateFrom: "2028-04-01", dateTo: "2028-05-31" },
+                { year: 2028, season: "Summer Romance", dayType: "Mon-Thu", days: ["Monday", "Tuesday", "Wednesday", "Thursday"], price: 7695, dateFrom: "2028-06-01", dateTo: "2028-08-31" },
+                { year: 2028, season: "Summer Romance", dayType: "Sun", days: ["Sunday"], price: 9895, dateFrom: "2028-06-01", dateTo: "2028-08-31" },
+                { year: 2028, season: "Summer Romance", dayType: "Fri-Sat", days: ["Friday", "Saturday"], price: 10995, dateFrom: "2028-06-01", dateTo: "2028-08-31" },
+                { year: 2028, season: "Autumn Romance", dayType: "Thu-Sun", days: ["Thursday", "Friday", "Saturday", "Sunday"], price: 7695, dateFrom: "2028-09-01", dateTo: "2028-10-31" },
+                { year: 2028, season: "Autumn Romance", dayType: "Fri-Sat", days: ["Friday", "Saturday"], price: 9895, dateFrom: "2028-09-01", dateTo: "2028-10-31" }
+            ],
+            breakfast: [
+                { year: 2026, name: "SANDRINGHAM", adult: 64.95, junior: 24.95, under8: 19.95, description: "Choice menu - Select two from each course" },
+                { year: 2026, name: "BALMORAL", adult: 68.95, junior: 24.95, under8: 19.95, description: "Choice menu - Select two from each course" },
+                { year: 2026, name: "7 COURSE WEDDING FEAST", adult: 85.00, junior: 24.95, under8: 19.95, description: "Set menu - One selection from each course" },
+                { year: 2027, name: "SANDRINGHAM", adult: 69.00, junior: 21.95, under8: 14.95, description: "Choice menu - Select two from each course" },
+                { year: 2027, name: "BALMORAL", adult: 89.00, junior: 21.95, under8: 14.95, description: "Choice menu - Select two from each course" },
+                { year: 2027, name: "7 COURSE WEDDING FEAST", adult: 90.00, junior: 21.95, under8: 14.95, description: "Set menu - One selection from each course" },
+                { year: 2028, name: "SANDRINGHAM", adult: 75.90, junior: 24.15, under8: 16.45, description: "Choice menu - Select two from each course" },
+                { year: 2028, name: "BALMORAL", adult: 97.90, junior: 24.15, under8: 16.45, description: "Choice menu - Select two from each course" },
+                { year: 2028, name: "7 COURSE WEDDING FEAST", adult: 99.00, junior: 24.15, under8: 16.45, description: "Set menu - One selection from each course" }
+            ],
+            evening: [
+                { year: 2026, name: "Tex-Mex", price: 24.00, dessert: 4.00 },
+                { year: 2026, name: "Hog Roast", price: 24.00, dessert: 4.00 },
+                { year: 2026, name: "British Hamper", price: 24.00, dessert: 4.00 },
+                { year: 2026, name: "Mini BBQ", price: 24.00, dessert: 4.00 },
+                { year: 2026, name: "Asian Street", price: 24.00, dessert: 4.00 },
+                { year: 2027, name: "FAJITA AND TACO BAR", price: 25.00, dessert: 4.00 },
+                { year: 2027, name: "Hog Roast", price: 25.00, dessert: 4.00 },
+                { year: 2027, name: "British Hamper", price: 25.00, dessert: 4.00 },
+                { year: 2027, name: "BYO Burger", price: 25.00, dessert: 4.00 },
+                { year: 2027, name: "Asian Street", price: 25.00, dessert: 4.00 },
+                { year: 2027, name: "AMERICAN BBQ", price: 34.50, dessert: 4.00 },
+                { year: 2028, name: "FAJITA AND TACO BAR", price: 27.50, dessert: 4.40 },
+                { year: 2028, name: "Hog Roast", price: 27.50, dessert: 4.40 },
+                { year: 2028, name: "British Hamper", price: 27.50, dessert: 4.40 },
+                { year: 2028, name: "BYO Burger", price: 27.50, dessert: 4.40 },
+                { year: 2028, name: "Asian Street", price: 27.50, dessert: 4.40 },
+                { year: 2028, name: "AMERICAN BBQ", price: 37.95, dessert: 4.40 }
+            ],
+            drinks: [
+                { year: 2026, name: "LAURENT-PERRIER CHAMPAGNE", bottle: 85.00, glass: 14.17, type: "Wine" },
+                { year: 2026, name: "SPARKLING WINE", bottle: 36.50, glass: 6.08, type: "Wine" },
+                { year: 2026, name: "RED WINE", bottle: 27.50, glass: 4.58, type: "Wine" },
+                { year: 2026, name: "WHITE WINE", bottle: 27.50, glass: 4.58, type: "Wine" },
+                { year: 2026, name: "ROSÉ WINE", bottle: 29.95, glass: 4.99, type: "Wine" },
+                { year: 2026, name: "COCKTAILS", bottle: 0, glass: 7.50, type: "Other" },
+                { year: 2026, name: "NON ALCOHOLIC", bottle: 0, glass: 6.95, type: "Other" },
+                { year: 2026, name: "SOFT DRINKS", bottle: 0, glass: 3.50, type: "Other" },
+                { year: 2026, name: "Bottled Beer/Larger", bottle: 58.00, glass: 6.00, type: "Beer" },
+                { year: 2026, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 58.00, glass: 0, type: "Beer", unit: "quantity" },
+                { year: 2026, name: "Staropramen Zero", bottle: 0, glass: 4.80, type: "Beer" },
+                { year: 2027, name: "LAURENT-PERRIER CHAMPAGNE", bottle: 85.00, glass: 14.17, type: "Wine" },
+                { year: 2027, name: "SPARKLING WINE", bottle: 36.50, glass: 6.08, type: "Wine" },
+                { year: 2027, name: "RED WINE", bottle: 27.50, glass: 4.58, type: "Wine" },
+                { year: 2027, name: "WHITE WINE", bottle: 27.50, glass: 4.58, type: "Wine" },
+                { year: 2027, name: "ROSÉ WINE", bottle: 29.95, glass: 4.99, type: "Wine" },
+                { year: 2027, name: "COCKTAILS", bottle: 0, glass: 7.50, type: "Other" },
+                { year: 2027, name: "NON ALCOHOLIC", bottle: 0, glass: 6.95, type: "Other" },
+                { year: 2027, name: "SOFT DRINKS", bottle: 0, glass: 3.50, type: "Other" },
+                { year: 2027, name: "Bottled Beer/Larger", bottle: 58.00, glass: 6.00, type: "Beer" },
+                { year: 2027, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 58.00, glass: 0, type: "Beer", unit: "quantity" },
+                { year: 2027, name: "Staropramen Zero", bottle: 0, glass: 4.80, type: "Beer" },
+                { year: 2028, name: "LAURENT-PERRIER CHAMPAGNE", bottle: 93.50, glass: 15.59, type: "Wine" },
+                { year: 2028, name: "SPARKLING WINE", bottle: 40.15, glass: 6.69, type: "Wine" },
+                { year: 2028, name: "RED WINE", bottle: 30.25, glass: 5.04, type: "Wine" },
+                { year: 2028, name: "WHITE WINE", bottle: 30.25, glass: 5.04, type: "Wine" },
+                { year: 2028, name: "ROSÉ WINE", bottle: 32.95, glass: 5.49, type: "Wine" },
+                { year: 2028, name: "COCKTAILS", bottle: 0, glass: 8.25, type: "Other" },
+                { year: 2028, name: "NON ALCOHOLIC", bottle: 0, glass: 7.65, type: "Other" },
+                { year: 2028, name: "SOFT DRINKS", bottle: 0, glass: 3.85, type: "Other" },
+                { year: 2028, name: "Bottled Beer/Larger", bottle: 63.80, glass: 6.60, type: "Beer" },
+                { year: 2028, name: "Bucket of 10 Beers/Lager (Madri, Staropramen, Pravha)", bottle: 63.80, glass: 0, type: "Beer", unit: "quantity" },
+                { year: 2028, name: "Staropramen Zero", bottle: 0, glass: 5.28, type: "Beer" }
+            ],
+            extras: [
+                { year: 2026, name: "BRIDAL BREAKFAST", unit: "PerPerson", price: 10.95 },
+                { year: 2026, name: "CANAPES STANDARD 3pc", unit: "Per3Canape", price: 11.00 },
+                { year: 2026, name: "CANAPES STANDARD 5pc", unit: "Per5Canape", price: 14.00 },
+                { year: 2026, name: "CANAPES LUXURY 3pc", unit: "Per3Canape", price: 13.00 },
+                { year: 2026, name: "CANAPES LUXURY 5pc", unit: "Per5Canape", price: 16.50 },
+                { year: 2026, name: "THE CHEESE TABLE (100 ppl)", unit: "Per100People", price: 1300.00 },
+                { year: 2026, name: "THE CHEESE TABLE (150 ppl)", unit: "Per150People", price: 1500.00 },
+                { year: 2026, name: "CHEESE & PATE TABLE (100 ppl)", unit: "Per100People", price: 1500.00 },
+                { year: 2026, name: "CHEESE & PATE TABLE (150 ppl)", unit: "Per150People", price: 1900.00 },
+                { year: 2026, name: "TRADITIONAL CHEESE PLATTER", unit: "PerTable", price: 85.00 },
+                { year: 2027, name: "BRIDAL BREAKFAST", unit: "PerPerson", price: 10.95 },
+                { year: 2027, name: "ARRIVAL ANTIPASTI TABLE", unit: "PerPerson", price: 17.00 },
+                { year: 2027, name: "ARRIVAL CHEESE TABLE", unit: "PerPerson", price: 13.00 },
+                { year: 2027, name: "ARRIVAL MEZZE TABLE", unit: "PerPerson", price: 15.00 },
+                { year: 2027, name: "CANAPES STANDARD 3pc", unit: "Per3Canape", price: 11.50 },
+                { year: 2027, name: "CANAPES STANDARD 5pc", unit: "Per5Canape", price: 14.50 },
+                { year: 2027, name: "CANAPES LUXURY 3pc", unit: "Per3Canape", price: 13.50 },
+                { year: 2027, name: "CANAPES LUXURY 5pc", unit: "Per5Canape", price: 17.00 },
+                { year: 2027, name: "THE CHEESE TABLE (100 ppl)", unit: "Per100People", price: 1300.00 },
+                { year: 2027, name: "THE CHEESE TABLE (150 ppl)", unit: "Per150People", price: 1500.00 },
+                { year: 2027, name: "CHEESE & PATE TABLE (100 ppl)", unit: "Per100People", price: 1500.00 },
+                { year: 2027, name: "CHEESE & PATE TABLE (150 ppl)", unit: "Per150People", price: 1500.00 },
+                { year: 2027, name: "TRADITIONAL CHEESE PLATTER", unit: "PerTable", price: 95.00 },
+                { year: 2028, name: "BRIDAL BREAKFAST", unit: "PerPerson", price: 12.05 },
+                { year: 2028, name: "ARRIVAL ANTIPASTI TABLE", unit: "PerPerson", price: 18.70 },
+                { year: 2028, name: "ARRIVAL CHEESE TABLE", unit: "PerPerson", price: 14.30 },
+                { year: 2028, name: "ARRIVAL MEZZE TABLE", unit: "PerPerson", price: 16.50 },
+                { year: 2028, name: "CANAPES STANDARD 3pc", unit: "Per3Canape", price: 12.65 },
+                { year: 2028, name: "CANAPES STANDARD 5pc", unit: "Per5Canape", price: 15.95 },
+                { year: 2028, name: "CANAPES LUXURY 3pc", unit: "Per3Canape", price: 14.85 },
+                { year: 2028, name: "CANAPES LUXURY 5pc", unit: "Per5Canape", price: 18.70 },
+                { year: 2028, name: "THE CHEESE TABLE (100 ppl)", unit: "Per100People", price: 1430.00 },
+                { year: 2028, name: "THE CHEESE TABLE (150 ppl)", unit: "Per150People", price: 1650.00 },
+                { year: 2028, name: "CHEESE & PATE TABLE (100 ppl)", unit: "Per100People", price: 1650.00 },
+                { year: 2028, name: "CHEESE & PATE TABLE (150 ppl)", unit: "Per150People", price: 1650.00 },
+                { year: 2028, name: "TRADITIONAL CHEESE PLATTER", unit: "PerTable", price: 104.50 }
+            ]
+        };
+
+        let selectedOptions = {
+            date: '',
+            dayGuests: 80,
+            eveningGuests: 80,
+            juniorGuests: 0,
+            under8Guests: 0,
+            brideName: '',
+            groomName: '',
+            preparedBy: '',
+            venue: null,
+            breakfast: null,
+            evening: null,
+            includeDessert: true,
+            arrivalDrinks: [],
+            breakfastDrinks: [],
+            receptionDrinks: [],
+            toastDrinks: [],
+            extras: [],
+            extraQtys: {},
+            quote: {}
+        };
+
+        function updateVenueOptions() {
+            const dateStr = document.getElementById('date').value;
+            // silently ignore if empty
+            const venueDisplay = document.getElementById('venueDisplay');
+            // debug remove
+            // console.log('venueDisplay element:', venueDisplay);
+
+            // debug logging removed
+            // console.log('pricingData.venue length:', pricingData.venue ? pricingData.venue.length : 'undefined');
+            // console.log('pricingData exists:', typeof pricingData);
+            // if (pricingData.venue && pricingData.venue.length > 0) {
+            //     console.log('First venue:', pricingData.venue[0]);
+            // }
+
+            if (!dateStr) {
+                venueDisplay.textContent = 'Select a wedding date to see available packages';
+                document.getElementById('venueNotice').style.display = 'none';
+                selectedOptions.venue = null;
+                document.getElementById('venuePrice').textContent = '';
+                return;
+            }
+
+            // Parse date to avoid timezone issues
+            const [year, month, day] = dateStr.split('-');
+            const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+            const dayName = getDayName(date);
+
+            populateOptions();
+
+            const availableVenues = pricingData.venue.filter(v => {
+                if (parseInt(v.year) !== parseInt(year)) return false;
+
+                // Parse dates manually to avoid timezone issues
+                const [fromYear, fromMonth, fromDay] = v.dateFrom.split('-');
+                const dateFrom = new Date(fromYear, fromMonth - 1, fromDay);
+                const [toYear, toMonth, toDay] = v.dateTo.split('-');
+                const dateTo = new Date(toYear, toMonth - 1, toDay);
+
+                let isInRange = date >= dateFrom && date <= dateTo;
+                if (v.dateFrom2 && v.dateTo2) {
+                    const [fromYear2, fromMonth2, fromDay2] = v.dateFrom2.split('-');
+                    const dateFrom2 = new Date(fromYear2, fromMonth2 - 1, fromDay2);
+                    const [toYear2, toMonth2, toDay2] = v.dateTo2.split('-');
+                    const dateTo2 = new Date(toYear2, toMonth2 - 1, toDay2);
+                    isInRange = isInRange || (date >= dateFrom2 && date <= dateTo2);
+                }
+
+                // debugging removed for date comparison
+                const dayMatch = v.days.includes(dayName);
+
+                return isInRange && dayMatch;
+            });
+
+            console.log('Available venues found:', availableVenues.length, availableVenues);
+            console.log('All venues for year', year, ':', pricingData.venue.filter(v => parseInt(v.year) === parseInt(year)));
+
+            if (availableVenues.length === 0) {
+                const notice = document.getElementById('venueNotice');
+                notice.style.display = 'block';
+                notice.textContent = 'No available packages for this date. Please select a different date.';
+                venueDisplay.textContent = 'No packages available';
+                selectedOptions.venue = null;
+                document.getElementById('venuePrice').textContent = '';
+            } else {
+                document.getElementById('venueNotice').style.display = 'none';
+                // Sort by specificity: fewer days = more specific (e.g. "Fri-Sat" beats "Thu-Sun")
+                availableVenues.sort((a, b) => a.days.length - b.days.length);
+                const firstVenue = availableVenues[0];
+                selectedOptions.venue = firstVenue;
+                venueDisplay.textContent = `${firstVenue.season} (${firstVenue.dayType})`;
+                document.getElementById('venuePrice').textContent = `£${firstVenue.price.toLocaleString('en-GB')}`;
+            }
+        }
+
+        function getDayName(date) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return days[date.getDay()];
+        }
+
+        function populateOptions() {
+            const dateStr = document.getElementById('date').value;
+            if (!dateStr) return;
+            const date = new Date(dateStr);
+            const year = date.getFullYear();
+
+            // Clear stale selections from a previous date/year
+            selectedOptions.breakfast = null;
+            selectedOptions.evening = null;
+            selectedOptions.arrivalDrinks = [];
+            selectedOptions.breakfastDrinks = [];
+            selectedOptions.receptionDrinks = [];
+            selectedOptions.toastDrinks = [];
+            selectedOptions.extras = [];
+            selectedOptions.extraQtys = {};
+            selectedOptions.includeDessert = true;
+
+            // Breakfast
+            const breakfastOptions = pricingData.breakfast.filter(b => b.year == year);
+            populateRadioGroup('breakfastOptions', breakfastOptions, (item) => {
+                return `${item.name} - £${item.adult.toFixed(2)}/person`;
+            }, 'breakfast');
+
+            // Evening
+            const eveningOptions = pricingData.evening.filter(e => e.year == year);
+            populateRadioGroup('eveningOptions', eveningOptions, (item) => {
+                return `${item.name} - £${item.price.toFixed(2)}/person`;
+            }, 'evening');
+            
+            // Add dessert checkbox for evening
+            const eveningContainer = document.getElementById('eveningOptions');
+            const dessertWrapper = document.createElement('div');
+            dessertWrapper.className = 'checkbox-item';
+            dessertWrapper.style.marginTop = '20px';
+            dessertWrapper.style.paddingTop = '20px';
+            dessertWrapper.style.borderTop = '1px solid var(--accent-light)';
+            const dessertCheckbox = document.createElement('input');
+            dessertCheckbox.type = 'checkbox';
+            dessertCheckbox.id = 'dessert-addon';
+            dessertCheckbox.checked = true;
+            dessertCheckbox.onchange = () => {
+                selectedOptions.includeDessert = dessertCheckbox.checked;
+                recalculate();
+                // Reset button text to indicate quote needs regeneration
+                document.getElementById('generateBtn').textContent = 'Update Quote';
+            };
+            const dessertLabel = document.createElement('label');
+            dessertLabel.htmlFor = 'dessert-addon';
+            dessertLabel.textContent = 'Include £4.00 Dessert Add-on per Person';
+            dessertWrapper.appendChild(dessertCheckbox);
+            dessertWrapper.appendChild(dessertLabel);
+            if (eveningContainer.children.length > 0) {
+                eveningContainer.appendChild(dessertWrapper);
+            }
+
+            // Drinks — clear existing rows and add one default row per category
+            ['arrival', 'reception', 'toast'].forEach(type => {
+                document.getElementById(type + 'DrinkRows').innerHTML = '';
+                selectedOptions[type + 'Drinks'] = [];
+            });
+            addDrinkRow('arrival');
+            addDrinkRow('reception');
+            addDrinkRow('toast');
+
+            // Extras
+            const extrasOptions = pricingData.extras.filter(e => e.year == year);
+            populateCheckboxGroup('extrasOptions', extrasOptions, (item) => {
+                let unitLabel = item.unit;
+                if (item.unit === 'PerPerson') unitLabel = 'person';
+                else if (item.unit.includes('Canape')) unitLabel = item.unit;
+                else if (item.unit === 'PerTable') unitLabel = 'table';
+                else if (item.unit.includes('People')) unitLabel = item.unit.replace('Per', '');
+                
+                return `${item.name} - £${item.price.toFixed(2)}/${unitLabel}`;
+            }, 'extras');
+        }
+
+        function populateRadioGroup(containerId, items, labelFn, category) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            items.forEach((item, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'radio-item';
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = category;
+                radio.id = `${category}-${index}`;
+                radio.value = JSON.stringify(item);
+                radio.onchange = () => {
+                    updateSelection(category, item);
+                    recalculate();
+                    // Reset button text to indicate quote needs regeneration
+                    document.getElementById('generateBtn').textContent = 'Update Quote';
+                };
+
+                const label = document.createElement('label');
+                label.htmlFor = radio.id;
+                label.textContent = labelFn(item);
+
+                wrapper.appendChild(radio);
+                wrapper.appendChild(label);
+                container.appendChild(wrapper);
+            });
+        }
+
+        function populateCheckboxGroup(containerId, items, labelFn, category) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            items.forEach((item, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'checkbox-item';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `${category}-${index}`;
+                checkbox.value = JSON.stringify(item);
+                checkbox.onchange = () => {
+                    updateSelection(category, index, checkbox.checked, item);
+                    recalculate();
+                    // Reset button text to indicate quote needs regeneration
+                    document.getElementById('generateBtn').textContent = 'Update Quote';
+                };
+
+                const label = document.createElement('label');
+                label.htmlFor = checkbox.id;
+                label.textContent = labelFn(item);
+
+                wrapper.appendChild(checkbox);
+                wrapper.appendChild(label);
+
+                // Add custom qty input for PerPerson and PerTable extras
+                if (category === 'extras' && (item.unit === 'PerPerson' || item.unit === 'PerTable')) {
+                    const isPerPerson = item.unit === 'PerPerson';
+                    const defaultQty = isPerPerson
+                        ? Math.max(0, parseInt(document.getElementById('dayGuests').value) || 0)
+                        : 1;
+                    const key = `${item.name}-${item.year}`;
+                    selectedOptions.extraQtys[key] = defaultQty;
+
+                    const qtyLabel = document.createElement('span');
+                    qtyLabel.className = 'drink-qty-label';
+                    qtyLabel.textContent = isPerPerson ? 'Guests:' : 'Tables:';
+
+                    const qtyInput = document.createElement('input');
+                    qtyInput.type = 'number';
+                    qtyInput.className = 'drink-qty-input';
+                    qtyInput.min = '0';
+                    qtyInput.value = defaultQty;
+                    qtyInput.oninput = () => {
+                        selectedOptions.extraQtys[key] = Math.max(0, parseInt(qtyInput.value) || 0);
+                        recalculate();
+                        document.getElementById('generateBtn').textContent = 'Update Quote';
+                    };
+
+                    wrapper.appendChild(qtyLabel);
+                    wrapper.appendChild(qtyInput);
+                }
+
+                container.appendChild(wrapper);
+            });
+        }
+
+        function updateSelection(category, indexOrItem, checked, item) {
+            // Handle radio buttons (only 2 parameters passed)
+            if (arguments.length === 2) {
+                if (category === 'breakfast') {
+                    selectedOptions.breakfast = indexOrItem;
+                } else if (category === 'evening') {
+                    selectedOptions.evening = indexOrItem;
+                }
+                return;
+            }
+
+            // Handle checkboxes (4 parameters passed)
+            if (category === 'extras') {
+                if (checked) {
+                    selectedOptions.extras.push(item);
+                } else {
+                    selectedOptions.extras = selectedOptions.extras.filter(e => e.name !== item.name || e.year !== item.year);
+                }
+            }
+        }
+
+        let drinkRowCounter = 0;
+
+        function getDrinksForCurrentYear() {
+            const dateStr = document.getElementById('date').value;
+            if (!dateStr) return [];
+            const year = parseInt(dateStr.split('-')[0]);
+            return pricingData.drinks.filter(d => d.year == year);
+        }
+
+        function isByBottle(drink) {
+            return drink && drink.type === 'Wine' && drink.bottle > 0;
+        }
+
+        function isByQty(drink) {
+            return drink && drink.unit === 'quantity';
+        }
+
+        function defaultDrinkQty(drink) {
+            const dayGuests = Math.max(0, parseInt(document.getElementById('dayGuests').value) || 0);
+            if (isByQty(drink)) return 1;
+            if (isByBottle(drink)) return Math.ceil(dayGuests / 6);
+            return dayGuests;
+        }
+
+        function buildDrinkSelect(drinksOptions) {
+            const select = document.createElement('select');
+            const blank = document.createElement('option');
+            blank.value = '';
+            blank.textContent = '-- No drink selected --';
+            select.appendChild(blank);
+            drinksOptions.forEach((drink, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                const priceLabel = isByQty(drink)
+                    ? `£${drink.bottle.toFixed(2)}/bucket`
+                    : isByBottle(drink)
+                        ? `£${drink.bottle.toFixed(2)}/bottle`
+                        : `£${drink.glass.toFixed(2)}/glass`;
+                opt.textContent = `${drink.name} – ${priceLabel}`;
+                select.appendChild(opt);
+            });
+            return select;
+        }
+
+        function addDrinkRow(type) {
+            const drinksOptions = getDrinksForCurrentYear();
+            const defaultQty = Math.max(0, parseInt(document.getElementById('dayGuests').value) || 0);
+            const rowId = drinkRowCounter++;
+
+            // Add entry to state
+            selectedOptions[type + 'Drinks'].push({ id: rowId, drink: null, qty: defaultQty });
+
+            // Build row
+            const row = document.createElement('div');
+            row.className = 'drink-row';
+            row.id = `${type}Row_${rowId}`;
+
+            const select = buildDrinkSelect(drinksOptions);
+            select.onchange = () => updateDrinkRow(type, rowId);
+
+            const qtyLabel = document.createElement('span');
+            qtyLabel.className = 'drink-qty-label';
+            qtyLabel.textContent = 'Guests:';
+
+            const qtyInput = document.createElement('input');
+            qtyInput.type = 'number';
+            qtyInput.className = 'drink-qty-input';
+            qtyInput.min = '0';
+            qtyInput.value = defaultQty;
+            qtyInput.oninput = () => updateDrinkRow(type, rowId);
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-drink-btn';
+            removeBtn.textContent = '×';
+            removeBtn.title = 'Remove';
+            removeBtn.onclick = () => removeDrinkRow(type, rowId);
+
+            row.appendChild(select);
+            row.appendChild(qtyLabel);
+            row.appendChild(qtyInput);
+            row.appendChild(removeBtn);
+            document.getElementById(type + 'DrinkRows').appendChild(row);
+
+            recalculate();
+        }
+
+        function removeDrinkRow(type, rowId) {
+            const row = document.getElementById(`${type}Row_${rowId}`);
+            if (row) row.remove();
+            selectedOptions[type + 'Drinks'] = selectedOptions[type + 'Drinks'].filter(d => d.id !== rowId);
+            recalculate();
+            document.getElementById('generateBtn').textContent = 'Update Quote';
+        }
+
+        function updateDrinkRow(type, rowId) {
+            const drinksOptions = getDrinksForCurrentYear();
+            const row = document.getElementById(`${type}Row_${rowId}`);
+            if (!row) return;
+            const select = row.querySelector('select');
+            const qtyInput = row.querySelector('input[type="number"]');
+            const qtyLabel = row.querySelector('.drink-qty-label');
+            const idx = select.value === '' ? -1 : parseInt(select.value);
+            const drink = idx >= 0 ? drinksOptions[idx] : null;
+            const entry = selectedOptions[type + 'Drinks'].find(d => d.id === rowId);
+
+            // If the drink selection changed, reset qty to appropriate default and update label
+            if (entry && entry.drink !== drink) {
+                if (qtyLabel) {
+                    if (isByQty(drink)) qtyLabel.textContent = 'Qty:';
+                    else if (isByBottle(drink)) qtyLabel.textContent = 'Bottles:';
+                    else qtyLabel.textContent = 'Guests:';
+                }
+                qtyInput.value = defaultDrinkQty(drink);
+            }
+
+            const qty = Math.max(0, parseInt(qtyInput.value) || 0);
+            if (entry) { entry.drink = drink; entry.qty = qty; }
+            recalculate();
+            document.getElementById('generateBtn').textContent = 'Update Quote';
+        }
+
+        function recalculate() {
+            const dayGuests = Math.max(0, parseInt(document.getElementById('dayGuests').value) || 0);
+            const eveningGuests = Math.max(0, parseInt(document.getElementById('eveningGuests').value) || 0);
+            let total = 0;
+            let summary = [];
+
+            // Venue
+            if (selectedOptions.venue) {
+                total += selectedOptions.venue.price;
+                summary.push({
+                    label: `Venue Hire (${selectedOptions.venue.season})`,
+                    price: selectedOptions.venue.price,
+                    qty: 1,
+                    unitPrice: selectedOptions.venue.price
+                });
+            }
+
+            // Breakfast
+            if (selectedOptions.breakfast) {
+                const juniorGuests = parseInt(document.getElementById('juniorGuests').value) || 0;
+                const under8Guests = parseInt(document.getElementById('under8Guests').value) || 0;
+
+                const adultPrice = selectedOptions.breakfast.adult * dayGuests;
+                const juniorPrice = selectedOptions.breakfast.junior * juniorGuests;
+                const under8Price = selectedOptions.breakfast.under8 * under8Guests;
+                const breakfastTotal = adultPrice + juniorPrice + under8Price;
+
+                total += breakfastTotal;
+                summary.push({
+                    label: `Wedding Breakfast - ${selectedOptions.breakfast.name}`,
+                    price: breakfastTotal,
+                    qty: null,
+                    unitPrice: null
+                });
+                if (dayGuests > 0) {
+                    summary.push({
+                        label: `  ├─ Adults (${dayGuests} × £${selectedOptions.breakfast.adult.toFixed(2)})`,
+                        price: adultPrice,
+                        qty: dayGuests,
+                        unitPrice: selectedOptions.breakfast.adult
+                    });
+                }
+                if (juniorGuests > 0) {
+                    summary.push({
+                        label: `  ├─ Juniors (${juniorGuests} × £${selectedOptions.breakfast.junior.toFixed(2)})`,
+                        price: juniorPrice,
+                        qty: juniorGuests,
+                        unitPrice: selectedOptions.breakfast.junior
+                    });
+                }
+                if (under8Guests > 0) {
+                    summary.push({
+                        label: `  └─ Under 8's (${under8Guests} × £${selectedOptions.breakfast.under8.toFixed(2)})`,
+                        price: under8Price,
+                        qty: under8Guests,
+                        unitPrice: selectedOptions.breakfast.under8
+                    });
+                }
+            }
+
+            // Evening
+            if (selectedOptions.evening) {
+                const eveningPrice = selectedOptions.evening.price * eveningGuests;
+                total += eveningPrice;
+                summary.push({
+                    label: `Evening Meal - ${selectedOptions.evening.name} (${eveningGuests} guests)`,
+                    price: eveningPrice,
+                    qty: eveningGuests,
+                    unitPrice: selectedOptions.evening.price
+                });
+                if (selectedOptions.includeDessert) {
+                    const dessertPrice = selectedOptions.evening.dessert * eveningGuests;
+                    total += dessertPrice;
+                    summary.push({
+                        label: `  ├─ Dessert Add-on (${eveningGuests} guests)`,
+                        price: dessertPrice,
+                        qty: eveningGuests,
+                        unitPrice: selectedOptions.evening.dessert
+                    });
+                }
+            }
+
+            // Drinks (three categories, each supporting multiple selections)
+            const drinkCategories = [
+                { key: 'arrivalDrinks',    label: 'Arrival Drinks' },
+                { key: 'breakfastDrinks',  label: 'Wedding Breakfast Drink' },
+                { key: 'receptionDrinks',  label: 'Reception Drinks' },
+                { key: 'toastDrinks',      label: 'Drink with Toast' }
+            ];
+            drinkCategories.forEach(({ key, label }) => {
+                selectedOptions[key].forEach(({ drink, qty }) => {
+                    if (drink) {
+                        const byBottle = isByBottle(drink);
+                        const byQty = isByQty(drink);
+                        const unitPrice = (byBottle || byQty) ? drink.bottle : drink.glass;
+                        const drinkPrice = unitPrice * qty;
+                        const qtyLabel = byQty
+                            ? `×${qty}`
+                            : byBottle
+                                ? `${qty} bottle${qty !== 1 ? 's' : ''}`
+                                : `${qty} guests`;
+                        total += drinkPrice;
+                        summary.push({
+                            label: `${label}: ${drink.name} (${qtyLabel})`,
+                            price: drinkPrice,
+                            qty: qty,
+                            unitPrice: unitPrice
+                        });
+                    }
+                });
+            });
+
+            // Extras (uses day guest count for most items)
+            selectedOptions.extras.forEach(extra => {
+                let extraPrice = 0;
+                let extraLabel = extra.name;
+                let extraQty = null;
+                let extraUnit = null;
+
+                if (extra.unit === 'PerPerson') {
+                    const key = `${extra.name}-${extra.year}`;
+                    const qty = selectedOptions.extraQtys[key] !== undefined ? selectedOptions.extraQtys[key] : dayGuests;
+                    extraPrice = extra.price * qty;
+                    extraLabel = `${extra.name} (${qty} guests)`;
+                    extraQty = qty;
+                    extraUnit = extra.price;
+                } else if (extra.unit === 'Per100People') {
+                    const quantity = Math.ceil(dayGuests / 100);
+                    extraPrice = extra.price * quantity;
+                    extraLabel = `${extra.name}`;
+                    extraQty = quantity;
+                    extraUnit = extra.price;
+                } else if (extra.unit === 'Per150People') {
+                    const quantity = Math.ceil(dayGuests / 150);
+                    extraPrice = extra.price * quantity;
+                    extraLabel = `${extra.name}`;
+                    extraQty = quantity;
+                    extraUnit = extra.price;
+                } else if (extra.unit === 'PerTable') {
+                    const key = `${extra.name}-${extra.year}`;
+                    const qty = selectedOptions.extraQtys[key] !== undefined ? selectedOptions.extraQtys[key] : 1;
+                    extraPrice = extra.price * qty;
+                    extraLabel = qty > 1 ? `${extra.name} (×${qty} tables)` : extra.name;
+                    extraQty = qty;
+                    extraUnit = extra.price;
+                } else if (extra.unit.includes('Canape')) {
+                    const quantity = parseInt(extra.unit.match(/\d+/)[0]);
+                    extraPrice = extra.price * Math.ceil(dayGuests / quantity);
+                    extraLabel = `${extra.name} (${Math.ceil(dayGuests / quantity)} x ${quantity})`;
+                    extraQty = Math.ceil(dayGuests / quantity);
+                    extraUnit = extra.price;
+                }
+
+                total += extraPrice;
+                summary.push({
+                    label: extraLabel,
+                    price: extraPrice,
+                    qty: extraQty,
+                    unitPrice: extraUnit
+                });
+            });
+
+            // Update summary display
+            const summaryDiv = document.getElementById('quoteSummary');
+            if (summary.length === 0) {
+                summaryDiv.innerHTML = '<div class="quote-item" style="color: #999;">Select options to see price summary</div>';
+            } else {
+                summaryDiv.innerHTML = summary.map(item => {
+                    return `<div class="quote-item">
+                        <span>${item.label}</span>
+                        <span>£${item.price.toFixed(2)}</span>
+                    </div>`;
+                }).join('');
+
+                summaryDiv.innerHTML += `<div class="quote-item total">
+                    <span class="label">TOTAL</span>
+                    <span>£${total.toFixed(2)}</span>
+                </div>`;
+            }
+
+            selectedOptions.quote = { summary, total };
+            document.getElementById('venuePrice').textContent = selectedOptions.venue ? `£${selectedOptions.venue.price.toLocaleString('en-GB')}` : '£0';
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function generateQuote() {
+            if (!selectedOptions.venue) {
+                alert('Please select a venue package');
+                return;
+            }
+            if (!selectedOptions.breakfast) {
+                alert('Please select a wedding breakfast menu');
+                return;
+            }
+            if (!selectedOptions.evening) {
+                alert('Please select an evening meal');
+                return;
+            }
+
+            displayQuoteModal();
+            // Update button text to indicate quote can be regenerated
+            document.getElementById('generateBtn').textContent = 'Regenerate Quote';
+            // Show quote status indicator
+            document.getElementById('quoteStatus').style.display = 'block';
+        }
+
+        function displayQuoteModal() {
+            const dateStr = document.getElementById('date').value;
+            const dayGuests = document.getElementById('dayGuests').value;
+            const eveningGuests = document.getElementById('eveningGuests').value;
+            const juniorGuests = document.getElementById('juniorGuests').value;
+            const under8Guests = document.getElementById('under8Guests').value;
+            const brideName = document.getElementById('brideName').value;
+            const groomName = document.getElementById('groomName').value;
+            const preparedBy = document.getElementById('preparedBy').value;
+
+            const date = new Date(dateStr);
+            const formattedDate = date.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            let modalHTML = '';
+
+            if (brideName || groomName) {
+                modalHTML += `<div class="modal-item">
+                    <div class="modal-item-label">Couple</div>
+                    <div class="modal-item-value">${brideName || '—'} &amp; ${groomName || '—'}</div>
+                </div>`;
+            }
+
+            modalHTML += `
+                <div class="modal-item">
+                    <div class="modal-item-label">Wedding Date</div>
+                    <div class="modal-item-value">${formattedDate}</div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-label">Guest Breakdown</div>
+                    <div class="modal-item-value">
+                        Adults (Day): ${dayGuests}<br>
+                        Juniors (8-12): ${juniorGuests}<br>
+                        Under 8's: ${under8Guests}<br>
+                        Evening Guests: ${eveningGuests}
+                    </div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-label">Venue Hire</div>
+                    <div class="modal-item-value">${selectedOptions.venue.season} (${selectedOptions.venue.dayType})</div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-label">Wedding Breakfast</div>
+                    <div class="modal-item-value">${selectedOptions.breakfast.name}</div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-label">Evening Meal</div>
+                    <div class="modal-item-value">${selectedOptions.evening.name}</div>
+                </div>
+            `;
+
+            const drinkSummaryParts = [];
+            [['arrivalDrinks', 'Arrival'], ['breakfastDrinks', 'Breakfast Drink'], ['receptionDrinks', 'Reception'], ['toastDrinks', 'Toast']].forEach(([key, lbl]) => {
+                selectedOptions[key].forEach(({ drink, qty }) => {
+                    if (drink) drinkSummaryParts.push(`${lbl}: ${drink.name} ×${qty}`);
+                });
+            });
+            if (drinkSummaryParts.length > 0) {
+                modalHTML += `<div class="modal-item">
+                    <div class="modal-item-label">Beverages</div>
+                    <div class="modal-item-value">${drinkSummaryParts.join('<br>')}</div>
+                </div>`;
+            }
+
+            if (selectedOptions.extras.length > 0) {
+                modalHTML += `<div class="modal-item">
+                    <div class="modal-item-label">Additional Extras</div>
+                    <div class="modal-item-value">${selectedOptions.extras.map(e => e.name).join(', ')}</div>
+                </div>`;
+            }
+
+            modalHTML += `<div class="modal-item" style="background: #f0f1fa; border-left: 4px solid #667eea;">
+                <div class="modal-item-label">Cost Breakdown:</div>
+                ${selectedOptions.quote.summary.map(item => {
+                    return `<div class="modal-item-value" style="margin: 5px 0;">• ${item.label}: £${item.price.toFixed(2)}</div>`;
+                }).join('')}
+            </div>`;
+
+            const totalIncVat = selectedOptions.quote.total;
+            const exVat = totalIncVat / 1.2;
+            const vatAmount = totalIncVat - exVat;
+            modalHTML += `<div class="modal-item" style="background: #f8f9fa; border-left: 3px solid #667eea; font-size: 0.9em;">
+                <div class="modal-item-value" style="display:flex; justify-content:space-between; margin:3px 0;"><span>Subtotal (ex. VAT)</span><span>£${exVat.toFixed(2)}</span></div>
+                <div class="modal-item-value" style="display:flex; justify-content:space-between; margin:3px 0;"><span>VAT (20%)</span><span>£${vatAmount.toFixed(2)}</span></div>
+            </div>`;
+            modalHTML += `<div class="modal-total">
+                TOTAL (inc. VAT): £${totalIncVat.toFixed(2)}
+            </div>`;
+
+            document.getElementById('modalBody').innerHTML = modalHTML;
+            document.getElementById('quoteModal').classList.add('active');
+            // Prevent body scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('quoteModal').classList.remove('active');
+            // Ensure form remains interactive after modal closes
+            document.body.style.overflow = '';
+            document.body.style.pointerEvents = '';
+        }
+
+        function resetForm() {
+            document.getElementById('date').value = '';
+            document.getElementById('dayGuests').value = '80';
+            document.getElementById('eveningGuests').value = '80';
+            document.getElementById('juniorGuests').value = '0';
+            document.getElementById('under8Guests').value = '0';
+            document.getElementById('brideName').value = '';
+            document.getElementById('groomName').value = '';
+            document.getElementById('preparedBy').value = '';
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[type="radio"]').forEach(rb => rb.checked = false);
+            ['arrival', 'breakfast', 'reception', 'toast'].forEach(type => {
+                document.getElementById(type + 'DrinkRows').innerHTML = '';
+            });
+            const dessertAddon = document.getElementById('dessert-addon');
+            if (dessertAddon) dessertAddon.checked = true;
+            selectedOptions = {
+                date: '',
+                dayGuests: 80,
+                eveningGuests: 80,
+                juniorGuests: 0,
+                under8Guests: 0,
+                brideName: '',
+                groomName: '',
+                preparedBy: '',
+                venue: null,
+                breakfast: null,
+                evening: null,
+                includeDessert: true,
+                arrivalDrinks: [],
+                breakfastDrinks: [],
+                receptionDrinks: [],
+                toastDrinks: [],
+                extras: [],
+                extraQtys: {},
+                quote: {}
+            };
+            // Reset button text
+            document.getElementById('generateBtn').textContent = 'Generate Quote';
+            // Clear quote summary
+            document.getElementById('quoteSummary').innerHTML = '<div class="quote-item" style="color: #999;">Select options to see price summary</div>';
+            // Clear venue display
+            document.getElementById('venueDisplay').textContent = 'Select a wedding date to see available packages';
+            document.getElementById('venuePrice').textContent = '';
+            document.getElementById('venueNotice').style.display = 'none';
+            // Hide quote status indicator
+            document.getElementById('quoteStatus').style.display = 'none';
+            // Close modal if open
+            closeModal();
+        }
+
+        function downloadPDFQuote() {
+            // Ensure quote data is calculated
+            recalculate();
+
+            // Check if we have quote data
+            if (!selectedOptions.quote || !selectedOptions.quote.summary || selectedOptions.quote.summary.length === 0) {
+                alert('Please generate a quote first before downloading the PDF.');
+                return;
+            }
+
+            const dateStr = document.getElementById('date').value;
+            if (!dateStr) {
+                alert('Please select a wedding date first.');
+                return;
+            }
+
+            const dayGuests = document.getElementById('dayGuests').value;
+            const eveningGuests = document.getElementById('eveningGuests').value;
+            const juniorGuests = document.getElementById('juniorGuests').value;
+            const under8Guests = document.getElementById('under8Guests').value;
+            const brideName = document.getElementById('brideName').value || '—';
+            const groomName = document.getElementById('groomName').value || '—';
+            const preparedBy = document.getElementById('preparedBy').value || '—';
+
+            // Parse date safely
+            let formattedDate = 'Date not selected';
+            try {
+                const date = new Date(dateStr);
+                if (!isNaN(date.getTime())) {
+                    formattedDate = date.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                }
+            } catch (e) {
+                console.error('Date parsing error:', e);
+            }
+
+            const quoteDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            const total = selectedOptions.quote.total;
+            const exVat = total / 1.2;
+            const vatAmount = total - exVat;
+
+            // Build line items table rows
+            const lineRows = selectedOptions.quote.summary.map(item => {
+                const isHeader = item.qty === null && item.unitPrice === null;
+                const qtyCell = item.qty != null ? item.qty : '—';
+                const unitCell = item.unitPrice != null ? `£${item.unitPrice.toFixed(2)}` : '—';
+                const rowStyle = isHeader
+                    ? 'background:#f0ebe3; font-weight:bold;'
+                    : '';
+                // Clean display label (strip tree chars for PDF)
+                const displayLabel = item.label.replace(/^  [├└]─ /, '  ');
+                return `<tr style="${rowStyle}">
+                    <td style="padding:9px 10px; border-bottom:1px solid #e8e0d5;">${displayLabel}</td>
+                    <td style="padding:9px 10px; border-bottom:1px solid #e8e0d5; text-align:center;">${qtyCell}</td>
+                    <td style="padding:9px 10px; border-bottom:1px solid #e8e0d5; text-align:right;">${unitCell}</td>
+                    <td style="padding:9px 10px; border-bottom:1px solid #e8e0d5; text-align:right;">${isHeader ? '' : `£${item.price.toFixed(2)}`}</td>
+                </tr>`;
+            }).join('');
+
+            // Create a new window with the quote content
+            const printWindow = window.open('', '_blank', 'width=850,height=1100');
+            if (!printWindow) {
+                alert('Please allow popups for this site to download the PDF.');
+                return;
+            }
+
+            const quoteHTML = `<!DOCTYPE html>
+<html>
+<head>
+    <title>Hensol Castle Wedding Quotation</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Georgia', serif;
+            font-size: 13px;
+            color: #2c2c2c;
+            background: #fff;
+            padding: 48px 52px;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        /* Header */
+        .logo-area {
+            text-align: center;
+            border-bottom: 2px solid #8b5a5a;
+            padding-bottom: 18px;
+            margin-bottom: 22px;
+        }
+        .logo-area h1 {
+            font-size: 28px;
+            letter-spacing: 4px;
+            color: #5a2d2d;
+            text-transform: uppercase;
+            font-weight: normal;
+        }
+        .logo-area .tagline {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #8b5a5a;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        .doc-title {
+            text-align: center;
+            font-size: 16px;
+            letter-spacing: 3px;
+            color: #5a2d2d;
+            text-transform: uppercase;
+            margin-bottom: 26px;
+            font-weight: normal;
+        }
+        /* Meta two-column */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border: 1px solid #d4c5b0;
+            margin-bottom: 20px;
+        }
+        .meta-col {
+            padding: 14px 18px;
+        }
+        .meta-col:first-child {
+            border-right: 1px solid #d4c5b0;
+        }
+        .meta-row {
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+        .meta-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8b5a5a;
+            display: block;
+            margin-bottom: 1px;
+        }
+        .meta-value {
+            font-size: 13px;
+            color: #2c2c2c;
+        }
+        /* Names band */
+        .names-band {
+            background: #f7f2eb;
+            border: 1px solid #d4c5b0;
+            border-top: none;
+            padding: 12px 18px;
+            display: flex;
+            gap: 40px;
+            margin-bottom: 26px;
+        }
+        .names-band .meta-label { margin-bottom: 2px; }
+        /* Line item table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+        thead tr {
+            background: #5a2d2d;
+            color: #fff;
+        }
+        thead th {
+            padding: 10px 10px;
+            font-weight: normal;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        thead th:last-child, thead th:nth-child(3), thead th:nth-child(2) {
+            text-align: right;
+        }
+        thead th:nth-child(2) { text-align: center; }
+        tbody tr:nth-child(even) { background: #faf7f2; }
+        /* Totals */
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0;
+            border: 1px solid #d4c5b0;
+            border-top: none;
+        }
+        .totals-table td {
+            padding: 8px 10px;
+            font-size: 13px;
+        }
+        .totals-table .tot-label { color: #5a5a5a; }
+        .totals-table .tot-value { text-align: right; }
+        .totals-table tr.grand-total td {
+            background: #5a2d2d;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            border-top: 2px solid #5a2d2d;
+        }
+        .totals-table tr.sub-row td {
+            border-bottom: 1px solid #e8e0d5;
+        }
+        /* Footer */
+        .footer {
+            margin-top: 36px;
+            padding-top: 16px;
+            border-top: 1px solid #d4c5b0;
+            text-align: center;
+            font-size: 11px;
+            color: #8b5a5a;
+            line-height: 1.8;
+            letter-spacing: 0.5px;
+        }
+        @media print {
+            body { padding: 24px 32px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-area">
+        <h1>Hensol Castle</h1>
+        <div class="tagline">Hensol Castle Park &bull; Vale of Glamorgan</div>
+    </div>
+
+    <div class="doc-title">Wedding Quotation</div>
+
+    <div class="meta-grid">
+        <div class="meta-col">
+            <div class="meta-row">
+                <span class="meta-label">Quote Date</span>
+                <span class="meta-value">${quoteDate}</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Wedding Date</span>
+                <span class="meta-value">${formattedDate}</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Day Guests (Adults)</span>
+                <span class="meta-value">${dayGuests}</span>
+            </div>
+            ${parseInt(juniorGuests) > 0 ? `<div class="meta-row">
+                <span class="meta-label">Juniors 8–12</span>
+                <span class="meta-value">${juniorGuests}</span>
+            </div>` : ''}
+            ${parseInt(under8Guests) > 0 ? `<div class="meta-row">
+                <span class="meta-label">Under 8s</span>
+                <span class="meta-value">${under8Guests}</span>
+            </div>` : ''}
+            <div class="meta-row">
+                <span class="meta-label">Evening Guests</span>
+                <span class="meta-value">${eveningGuests}</span>
+            </div>
+        </div>
+        <div class="meta-col">
+            <div class="meta-row">
+                <span class="meta-label">Prepared By</span>
+                <span class="meta-value">${preparedBy}</span>
+            </div>
+            <div class="meta-row" style="margin-top:8px;">
+                <span class="meta-label">Contact</span>
+                <span class="meta-value">weddings@hensolcastle.com</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Telephone</span>
+                <span class="meta-value">01443 665803</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Website</span>
+                <span class="meta-value">hensolcastle.com/weddings</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="names-band">
+        <div>
+            <span class="meta-label">Couple</span>
+            <span class="meta-value">${brideName} &amp; ${groomName}</span>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:left; width:55%;">Description</th>
+                <th style="text-align:center; width:10%;">Qty</th>
+                <th style="text-align:right; width:17%;">Unit Price</th>
+                <th style="text-align:right; width:18%;">Total (inc VAT)</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${lineRows}
+        </tbody>
+    </table>
+
+    <table class="totals-table">
+        <tr class="sub-row">
+            <td class="tot-label">Subtotal (ex. VAT)</td>
+            <td class="tot-value">£${exVat.toFixed(2)}</td>
+        </tr>
+        <tr class="sub-row">
+            <td class="tot-label">VAT (20%)</td>
+            <td class="tot-value">£${vatAmount.toFixed(2)}</td>
+        </tr>
+        <tr class="grand-total">
+            <td>Total (inc. VAT)</td>
+            <td style="text-align:right;">£${total.toFixed(2)}</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        Hensol Castle Park, Hensol, Vale of Glamorgan, CF72 8JX<br>
+        weddings@hensolcastle.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; hensolcastle.com/weddings
+    </div>
+</body>
+</html>`;
+
+            printWindow.document.write(quoteHTML);
+            printWindow.document.close();
+
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        }
+
+
+
+        // Close modal on outside click
+        document.getElementById('quoteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Apply initial styling to ensure CSS variables work
+        document.documentElement.style.setProperty('--primary-dark', '#1a1a1a');
+        document.documentElement.style.setProperty('--primary-gold', '#d4af37');
+        document.documentElement.style.setProperty('--primary-cream', '#f5f1e8');
+        document.documentElement.style.setProperty('--primary-burgundy', '#8b5a5a');
+        document.documentElement.style.setProperty('--primary-rose', '#c9a9a0');
+        document.documentElement.style.setProperty('--accent-light', '#f0e8dc');
+        document.documentElement.style.setProperty('--text-dark', '#3a3a3a');
+        document.documentElement.style.setProperty('--text-light', '#7a7a7a');
+        document.documentElement.style.setProperty('--border-color', '#d4af37');
+        document.documentElement.style.setProperty('--bg-light', '#faf8f3');
+
+        // Restrict date picker to today onwards
+        document.getElementById('date').min = new Date().toISOString().split('T')[0];
+
+        // Add event listener for date input (script runs after element exists)
+        document.getElementById('date').addEventListener('change', function() {
+            updateVenueOptions();
+            recalculate();
+        });
+
+        // Initialize with default date if pre-filled
+        updateVenueOptions();
+        recalculate();
+    </script>
+</body>
+</html>
