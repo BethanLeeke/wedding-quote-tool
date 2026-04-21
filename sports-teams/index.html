@@ -849,6 +849,9 @@
         };
 
         let rowCounter = 0;
+        let prevBookingArrival = '';
+        let prevBookingDeparture = '';
+        let prevBookingNights = 1;
 
         // ============ UTILS ============
         function todayISO() { return new Date().toISOString().split('T')[0]; }
@@ -883,12 +886,19 @@
             const departure = addDays(arrival, nights);
             document.getElementById('departureDate').value = departure;
 
+            const oldArrival = prevBookingArrival;
+            const oldDeparture = prevBookingDeparture;
+
             selectedOptions.arrivalDate = arrival;
             selectedOptions.nights = nights;
             selectedOptions.departureDate = departure;
 
-            // Propagate defaults into existing rows that still have the old defaults
-            propagateDateDefaults();
+            propagateDateDefaults(oldArrival, oldDeparture);
+
+            prevBookingArrival = arrival;
+            prevBookingDeparture = departure;
+            prevBookingNights = nights;
+
             recalculate();
         }
 
@@ -908,52 +918,52 @@
             recalculate();
         }
 
-        function propagateDateDefaults() {
+        function propagateDateDefaults(oldArrival, oldDeparture) {
             const arrival = selectedOptions.arrivalDate;
             const departure = selectedOptions.departureDate;
 
+            // Helper: update a row only if its dates are empty or still match the previous booking range
+            const updateRowDates = (row, startInpId, endInpId, daysInpId) => {
+                const startInp = document.getElementById(startInpId);
+                const endInp = document.getElementById(endInpId);
+                if (!startInp || !endInp) return;
+                const startMatches = !startInp.value || startInp.value === oldArrival;
+                const endMatches = !endInp.value || endInp.value === oldDeparture;
+                if (startMatches) { startInp.value = arrival; row.start = arrival; }
+                if (endMatches) { endInp.value = departure; row.end = departure; }
+                row.days = daysBetween(row.start, row.end);
+                const daysInp = document.getElementById(daysInpId);
+                if (daysInp) daysInp.value = row.days;
+            };
+
             // Bedrooms default dates
             const twinArrival = document.getElementById('twinArrival');
-            if (twinArrival && !twinArrival.value) twinArrival.value = arrival;
+            if (twinArrival && (!twinArrival.value || twinArrival.value === oldArrival)) twinArrival.value = arrival;
             const singleArrival = document.getElementById('singleArrival');
-            if (singleArrival && !singleArrival.value) singleArrival.value = arrival;
+            if (singleArrival && (!singleArrival.value || singleArrival.value === oldArrival)) singleArrival.value = arrival;
             const dayLetDate = document.getElementById('dayLetDate');
-            if (dayLetDate && !dayLetDate.value) {
-                // Default day let to last day (departure date)
+            if (dayLetDate && (!dayLetDate.value || dayLetDate.value === oldDeparture || dayLetDate.value === oldArrival)) {
                 dayLetDate.value = departure || arrival;
             }
-            // Update bedroom nights defaults if still at 1
             const twinNights = document.getElementById('twinNights');
-            if (twinNights && parseInt(twinNights.value) <= 1) twinNights.value = selectedOptions.nights;
+            if (twinNights && (!twinNights.value || parseInt(twinNights.value) === parseInt(prevBookingNights))) twinNights.value = selectedOptions.nights;
             const singleNights = document.getElementById('singleNights');
-            if (singleNights && parseInt(singleNights.value) <= 1) singleNights.value = selectedOptions.nights;
+            if (singleNights && (!singleNights.value || parseInt(singleNights.value) === parseInt(prevBookingNights))) singleNights.value = selectedOptions.nights;
 
-            // Menus - update any row whose dates are empty or equal to booking range
+            // Menus
             selectedOptions.menus.forEach(m => {
-                const startInp = document.getElementById(`menu-start-${m.key}`);
-                const endInp = document.getElementById(`menu-end-${m.key}`);
-                if (startInp && !startInp.value) { startInp.value = arrival; m.start = arrival; }
-                if (endInp && !endInp.value) { endInp.value = departure; m.end = departure; }
-                m.days = daysBetween(m.start, m.end) || selectedOptions.nights;
-                const daysInp = document.getElementById(`menu-days-${m.key}`);
-                if (daysInp) daysInp.value = m.days;
+                updateRowDates(m, `menu-start-${m.key}`, `menu-end-${m.key}`, `menu-days-${m.key}`);
             });
 
             // Team / physio / pitch rows
             [...selectedOptions.teamRooms, ...selectedOptions.physioRooms, ...selectedOptions.pitches].forEach(r => {
-                const startInp = document.getElementById(`row-start-${r.id}`);
-                const endInp = document.getElementById(`row-end-${r.id}`);
-                if (startInp && !startInp.value) { startInp.value = arrival; r.start = arrival; }
-                if (endInp && !endInp.value) { endInp.value = departure; r.end = departure; }
-                r.days = daysBetween(r.start, r.end) || selectedOptions.nights;
-                const daysInp = document.getElementById(`row-days-${r.id}`);
-                if (daysInp) daysInp.value = r.days;
+                updateRowDates(r, `row-start-${r.id}`, `row-end-${r.id}`, `row-days-${r.id}`);
             });
 
             // Drinks days
             selectedOptions.drinks.forEach(d => {
                 const daysInp = document.getElementById(`drink-days-${d.id}`);
-                if (daysInp && (!daysInp.value || parseInt(daysInp.value) <= 1)) {
+                if (daysInp && (!daysInp.value || parseInt(daysInp.value) === parseInt(prevBookingNights))) {
                     daysInp.value = selectedOptions.nights;
                     d.days = selectedOptions.nights;
                 }
