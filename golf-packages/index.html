@@ -485,6 +485,7 @@
                             <select id="dayCourse" onchange="recalculate();">
                                 <option value="Wales National Course">Wales National Course</option>
                                 <option value="Lakes Course">Lakes Course</option>
+                                <option value="Lakes Course, Wales National">Lakes Course, Wales National</option>
                             </select>
                         </div>
                     </div>
@@ -1776,6 +1777,14 @@
 
         document.getElementById('dayEventDate').min = new Date().toISOString().split('T')[0];
         document.getElementById('breakArrivalDate').min = new Date().toISOString().split('T')[0];
+
+        // Prevent mouse-wheel from changing focused number inputs
+        document.addEventListener('wheel', function(e) {
+            if (document.activeElement && document.activeElement.type === 'number' && document.activeElement === e.target) {
+                e.preventDefault();
+                document.activeElement.blur();
+            }
+        }, { passive: false });
 
         buildBreakTeeTimes();
         recalculate();
