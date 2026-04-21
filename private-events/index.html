@@ -1,0 +1,2202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vale Resort Private Events Quoting Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #2a2e3a;
+            --primary-burgundy: #8b3a4a;
+            --primary-green: #8fa17e;
+            --primary-green-dark: #6d8062;
+            --primary-cream: #f5f1e8;
+            --accent-light: #e8e4d8;
+            --text-dark: #2a2e3a;
+            --text-light: #6b6b6b;
+            --bg-light: #faf8f3;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Montserrat:wght@300;400;500;600&display=swap');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #faf8f3 0%, #f5f1e8 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(rgba(42, 46, 58, 0.55), rgba(143, 161, 126, 0.35));
+            background-size: cover;
+            background-position: center;
+            padding: 80px 40px;
+            text-align: center;
+            color: white;
+            border-bottom: 3px solid var(--primary-green);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            background: rgba(42, 46, 58, 0.65);
+            padding: 40px 50px;
+            border-radius: 8px;
+            backdrop-filter: blur(2px);
+            display: inline-block;
+        }
+
+        .header-logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 20px;
+            background: white;
+            padding: 14px 22px;
+            border-radius: 6px;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 1.15em;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .header-tagline {
+            font-size: 0.95em;
+            color: #f5f5f5;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px;
+            padding: 0;
+        }
+
+        .form-section, .quote-section {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(42, 46, 58, 0.08);
+            border: 1px solid var(--accent-light);
+        }
+
+        .form-section {
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .quote-section {
+            border-top: 4px solid var(--primary-burgundy);
+        }
+
+        .form-section h2, .quote-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-green);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--accent-light);
+            border-radius: 4px;
+            font-size: 1em;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(143, 161, 126, 0.2);
+            background: #fffbf7;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--accent-light);
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 14px 13px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            margin-bottom: -2px;
+            font-size: 0.85em;
+            letter-spacing: 0.3px;
+            font-family: 'Montserrat', sans-serif;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-green-dark);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-burgundy);
+            border-bottom-color: var(--primary-burgundy);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .checkbox-group, .radio-group {
+            display: grid;
+            gap: 12px;
+        }
+
+        .drink-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--primary-cream);
+            border-radius: 4px;
+            border: 2px solid transparent;
+        }
+
+        .drink-section-title {
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.85em;
+        }
+
+        .drink-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .add-drink-btn {
+            margin-top: 8px;
+            padding: 7px 14px;
+            background: none;
+            border: 2px dashed var(--primary-green);
+            border-radius: 4px;
+            color: var(--primary-green-dark);
+            font-size: 0.85em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .add-drink-btn:hover {
+            background: var(--accent-light);
+            border-style: solid;
+        }
+
+        .remove-drink-btn {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            background: none;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            color: #999;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .remove-drink-btn:hover {
+            background: #fbeaec;
+            border-color: var(--primary-burgundy);
+            color: var(--primary-burgundy);
+        }
+
+        .drink-row select {
+            padding: 10px 12px;
+            border: 2px solid var(--accent-light);
+            border-radius: 4px;
+            font-size: 0.95em;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .drink-row select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(143, 161, 126, 0.2);
+        }
+
+        .drink-qty-label {
+            font-size: 0.85em;
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+
+        .drink-qty-input {
+            width: 75px;
+            padding: 10px 8px;
+            border: 2px solid var(--accent-light);
+            border-radius: 4px;
+            font-size: 0.95em;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        .drink-qty-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(143, 161, 126, 0.2);
+        }
+
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--primary-cream);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .checkbox-item:hover, .radio-item:hover {
+            background: var(--accent-light);
+            border-color: var(--primary-green);
+        }
+
+        .checkbox-item input[type="checkbox"],
+        .radio-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin-right: 14px;
+            accent-color: var(--primary-burgundy);
+            flex-shrink: 0;
+        }
+
+        .checkbox-item label, .radio-item label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .quote-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--accent-light);
+            color: var(--text-dark);
+            font-size: 0.95em;
+        }
+
+        .quote-item.total {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            padding-top: 20px;
+            padding-bottom: 20px;
+            border-top: 2px solid var(--primary-green);
+            border-bottom: none;
+            margin-top: 15px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button.btn {
+            flex: 1;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-burgundy) 0%, #a65060 100%);
+            color: white;
+            border-color: var(--primary-burgundy);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 58, 74, 0.3);
+            background: linear-gradient(135deg, #7a3040 0%, #b96070 100%);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-green-dark);
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-cream);
+            border-color: #ccc;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(42, 46, 58, 0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 50px;
+            border-radius: 8px;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .modal-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--primary-green);
+            padding-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .modal-item {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--primary-cream);
+            border-radius: 4px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .modal-item-label {
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            margin-bottom: 6px;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-item-value {
+            color: var(--text-dark);
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .modal-total {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid var(--primary-green);
+            text-align: right;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+        }
+
+        .notice {
+            background: #fef5e6;
+            color: #7d6a43;
+            padding: 14px 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-green);
+            font-size: 0.95em;
+        }
+
+        .section-subtitle {
+            color: var(--primary-burgundy);
+            font-size: 0.9em;
+            font-weight: 700;
+            margin-top: 15px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .quote-section {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .quote-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .quote-section::-webkit-scrollbar-track {
+            background: var(--primary-cream);
+        }
+
+        .quote-section::-webkit-scrollbar-thumb {
+            background: var(--primary-green);
+            border-radius: 3px;
+        }
+
+        .bedroom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .bedroom-grid .form-group {
+            margin-bottom: 0;
+        }
+
+        .helper-text {
+            font-size: 0.82em;
+            color: var(--text-light);
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        .room-multi-select {
+            max-height: 240px;
+            overflow-y: auto;
+            border: 2px solid var(--accent-light);
+            border-radius: 4px;
+            background: var(--bg-light);
+            padding: 10px 14px;
+        }
+
+        .room-group-title {
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.78em;
+            margin-top: 10px;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--accent-light);
+        }
+
+        .room-group-title:first-child {
+            margin-top: 0;
+        }
+
+        .room-check {
+            display: flex;
+            align-items: center;
+            padding: 6px 4px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .room-check:hover {
+            background: var(--accent-light);
+        }
+
+        .room-check input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin-right: 10px;
+            accent-color: var(--primary-burgundy);
+            cursor: pointer;
+        }
+
+        .room-check label {
+            margin: 0;
+            font-weight: 500;
+            font-size: 0.9em;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .lunch-option {
+            padding: 16px;
+            background: var(--primary-cream);
+            border-radius: 4px;
+            margin-bottom: 14px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .lunch-option.active {
+            border-color: var(--primary-green);
+            background: #eef2ea;
+        }
+
+        .lunch-option-header {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .lunch-option-header input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 14px;
+            accent-color: var(--primary-burgundy);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .lunch-option-header label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .lunch-option-body {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--accent-light);
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lunch-option.active .lunch-option-body {
+            display: flex;
+        }
+
+        .lunch-option-body span {
+            font-size: 0.9em;
+            color: var(--text-light);
+        }
+
+        .lunch-qty-input {
+            width: 90px;
+            padding: 8px 10px;
+            border: 2px solid var(--accent-light);
+            border-radius: 4px;
+            font-size: 0.95em;
+            font-family: 'Montserrat', sans-serif;
+            background: #fff;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        .sleeper-counter {
+            margin-top: 18px;
+            padding: 14px 18px;
+            background: #eef2ea;
+            border-radius: 4px;
+            border-left: 4px solid var(--primary-green);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .sleeper-counter .count {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            color: var(--primary-burgundy);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1776162028/vale_logo_April_2026_p4grbk.jpg" alt="Vale Resort Logo" class="header-logo">
+                <h1>THE VALE RESORT</h1>
+                <p>Private Events Quotation Assistant</p>
+                <p class="header-tagline">Baby Showers, Bridal Showers, Wakes, Dinner Dances, Birthdays, Anniversaries &amp; Evening Functions</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="form-section">
+                <h2>Your Event Details</h2>
+
+                <div class="form-group">
+                    <label for="eventType">Event Type <span style="color:var(--primary-burgundy);">*</span></label>
+                    <select id="eventType" onchange="recalculate();">
+                        <option value="">Select event type</option>
+                        <option value="Baby Shower">Baby Shower</option>
+                        <option value="Bridal Shower">Bridal Shower</option>
+                        <option value="Wake">Wake</option>
+                        <option value="Dinner Dance">Dinner Dance</option>
+                        <option value="Birthday Party">Birthday Party</option>
+                        <option value="Anniversary">Anniversary</option>
+                        <option value="Evening Function">Evening Function</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Event Date</label>
+                    <input type="date" id="date" onchange="recalculate();">
+                </div>
+
+                <div class="form-group">
+                    <label for="venue">Venue <span style="color:var(--primary-burgundy);">*</span></label>
+                    <select id="venue" onchange="onVenueChange();">
+                        <option value="Vale Resort">Vale Resort</option>
+                        <option value="Hensol Castle">Hensol Castle</option>
+                    </select>
+                    <div class="helper-text">Sets the default venue and drives Afternoon Tea pricing.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="guests">Total Number of Guests <span style="font-weight:400; color:var(--text-light);">(including children)</span></label>
+                    <input type="number" id="guests" min="1" value="40" onchange="onGuestsChange();" oninput="onGuestsChange();">
+                </div>
+
+                <div class="form-group">
+                    <label for="juniorGuests">Juniors (8-12 years)</label>
+                    <input type="number" id="juniorGuests" min="0" value="0" onchange="recalculate();" oninput="recalculate();">
+                </div>
+
+                <div class="form-group">
+                    <label for="under8Guests">Under 8 years</label>
+                    <input type="number" id="under8Guests" min="0" value="0" onchange="recalculate();" oninput="recalculate();">
+                </div>
+
+                <div class="form-group">
+                    <label for="bookingName">Booking Name</label>
+                    <input type="text" id="bookingName" placeholder="Enter booking name">
+                </div>
+
+                <div class="form-group">
+                    <label for="preparedBy">Prepared By</label>
+                    <select id="preparedBy">
+                        <option value="">Select team member</option>
+                        <option value="Liam Williams">Liam Williams</option>
+                        <option value="Richard Williams">Richard Williams</option>
+                        <option value="Natalie Williams">Natalie Williams</option>
+                        <option value="Linda Taylor">Linda Taylor</option>
+                        <option value="Ed Williams">Ed Williams</option>
+                        <option value="Callie Birt">Callie Birt</option>
+                        <option value="Naomi Jones">Naomi Jones</option>
+                        <option value="Hollie Crowe">Hollie Crowe</option>
+                        <option value="Laura Williams">Laura Williams</option>
+                        <option value="Katie Thomas">Katie Thomas</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Function Room <span style="color:var(--primary-burgundy);">*</span> <span style="font-weight:400; color:var(--text-light);">(select one or more)</span></label>
+                    <div id="functionRooms" class="room-multi-select"></div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 'roomHire')">Room Hire</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'lunchTea')">Lunch/Afternoon Tea</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'dinner')">Dinner</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'drinks')">Drinks</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'extras')">Extras</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'bedrooms')">Bedrooms</button>
+                </div>
+
+                <div id="roomHire" class="tab-content active">
+                    <div class="section-subtitle">Function Room Hire Fee</div>
+                    <div class="form-group">
+                        <label for="roomHirePrice">Room Hire Price (£) <span style="color:var(--primary-burgundy);">*</span></label>
+                        <input type="number" id="roomHirePrice" min="0" step="0.01" value="0" onchange="recalculate();" oninput="recalculate();">
+                        <div class="helper-text">Enter the agreed function room hire fee.</div>
+                    </div>
+                </div>
+
+                <div id="lunchTea" class="tab-content">
+                    <div class="section-subtitle">Lunch / Afternoon Tea Options</div>
+
+                    <div id="lunchBuffetOption" class="lunch-option">
+                        <div class="lunch-option-header">
+                            <input type="checkbox" id="lunchBuffetCheck" onchange="onLunchToggle('lunchBuffet');">
+                            <label for="lunchBuffetCheck">Lunch Buffet &mdash; £25.95 per person</label>
+                        </div>
+                        <div class="lunch-option-body">
+                            <span>Guests:</span>
+                            <input type="number" id="lunchBuffetQty" class="lunch-qty-input" min="0" value="0" oninput="recalculate();">
+                            <span id="lunchBuffetLine" style="flex:1; text-align:right; color:var(--primary-burgundy); font-weight:700;">&mdash;</span>
+                        </div>
+                    </div>
+
+                    <div id="afternoonTeaOption" class="lunch-option">
+                        <div class="lunch-option-header">
+                            <input type="checkbox" id="afternoonTeaCheck" onchange="onLunchToggle('afternoonTea');">
+                            <label for="afternoonTeaCheck">Afternoon Tea &mdash; <span id="afternoonTeaPriceLabel">£27.50</span> per person</label>
+                        </div>
+                        <div class="lunch-option-body">
+                            <span>Guests:</span>
+                            <input type="number" id="afternoonTeaQty" class="lunch-qty-input" min="0" value="0" oninput="recalculate();">
+                            <span id="afternoonTeaLine" style="flex:1; text-align:right; color:var(--primary-burgundy); font-weight:700;">&mdash;</span>
+                        </div>
+                    </div>
+
+                    <div class="helper-text">Afternoon Tea is £27.50 pp at the Vale Resort and £32.00 pp at Hensol Castle.</div>
+                </div>
+
+                <div id="dinner" class="tab-content">
+                    <div class="section-subtitle">Select Dinner Menu</div>
+                    <div class="radio-group" id="dinnerOptions"></div>
+                </div>
+
+                <div id="drinks" class="tab-content">
+                    <div class="section-subtitle">Select Drinks</div>
+
+                    <div class="drink-section">
+                        <div class="drink-section-title">Pre Dinner Drinks</div>
+                        <div id="preDinnerDrinkRows"></div>
+                        <button class="add-drink-btn" onclick="addDrinkRow('preDinner')">+ Add Drink</button>
+                    </div>
+
+                    <div class="drink-section">
+                        <div class="drink-section-title">Dinner Drinks</div>
+                        <div id="dinnerDrinkRows"></div>
+                        <button class="add-drink-btn" onclick="addDrinkRow('dinner')">+ Add Drink</button>
+                    </div>
+                </div>
+
+                <div id="extras" class="tab-content">
+                    <div class="section-subtitle">Canapes</div>
+                    <div class="checkbox-group" id="canapesOptions"></div>
+
+                    <div class="section-subtitle" style="margin-top:25px;">Cheeses</div>
+                    <div class="checkbox-group" id="cheesesOptions"></div>
+
+                    <div class="section-subtitle" style="margin-top:25px;">Grazing Tables</div>
+                    <div class="checkbox-group" id="grazingOptions"></div>
+
+                    <div class="section-subtitle" style="margin-top:25px;">Tea &amp; Coffee</div>
+                    <div class="checkbox-group" id="teaCoffeeOptions"></div>
+
+                    <div class="section-subtitle" style="margin-top:25px;">Entertainment</div>
+                    <div class="checkbox-group" id="entertainmentOptions"></div>
+                </div>
+
+                <div id="bedrooms" class="tab-content">
+
+                    <div class="form-group">
+                        <label for="bedroomPackage">Bedroom Package</label>
+                        <select id="bedroomPackage" onchange="recalculate();">
+                            <option value="Room Only">Room Only</option>
+                            <option value="B&B">B&amp;B</option>
+                        </select>
+                        <div class="helper-text">If "Room Only" is selected, the +£11 per double occupancy surcharge is NOT applied.</div>
+                    </div>
+
+                    <div class="section-subtitle">The Vale Resort</div>
+                    <div class="form-group">
+                        <label for="valeSingleOccPrice">Single Occupancy Price per Room (£)</label>
+                        <input type="number" id="valeSingleOccPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                        <div class="helper-text">Double occupancy adds +£11 per room on B&amp;B only.</div>
+                    </div>
+                    <div class="bedroom-grid">
+                        <div class="form-group">
+                            <label for="valeSingleOccRooms">Single Occ Rooms</label>
+                            <input type="number" id="valeSingleOccRooms" min="0" value="0" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="valeDoubleOccRooms">Double Occ Rooms</label>
+                            <input type="number" id="valeDoubleOccRooms" min="0" value="0" oninput="recalculate();">
+                        </div>
+                    </div>
+
+                    <div class="section-subtitle" style="margin-top:25px;">Hensol Castle</div>
+                    <div class="form-group">
+                        <label for="hensolSingleOccPrice">Single Occupancy Price per Room (£)</label>
+                        <input type="number" id="hensolSingleOccPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                        <div class="helper-text">Double occupancy adds +£11 per room on B&amp;B only.</div>
+                    </div>
+                    <div class="bedroom-grid">
+                        <div class="form-group">
+                            <label for="hensolSingleOccRooms">Single Occ Rooms</label>
+                            <input type="number" id="hensolSingleOccRooms" min="0" value="0" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="hensolDoubleOccRooms">Double Occ Rooms</label>
+                            <input type="number" id="hensolDoubleOccRooms" min="0" value="0" oninput="recalculate();">
+                        </div>
+                    </div>
+
+                    <div class="sleeper-counter">
+                        <span>Total Sleepers</span>
+                        <span class="count" id="sleeperCount">0</span>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">Generate Quote</button>
+                    <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                </div>
+            </div>
+
+            <div class="quote-section">
+                <h2>Quote Summary</h2>
+                <div class="quote-status" id="quoteStatus" style="display: none; background: var(--primary-cream); color: var(--primary-green-dark); padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 0.9em; text-align: center;">
+                    &#10003; Quote generated &mdash; make changes above to update
+                </div>
+                <div id="quoteSummary">
+                    <div class="quote-item" style="color: #999;">Select options to see price summary</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="quoteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Your Vale Resort Private Event Quote</div>
+            <div id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Edit Quote</button>
+                <button class="btn btn-primary" onclick="downloadPDFQuote()">Download PDF Quote</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const FUNCTION_ROOMS = {
+            'Vale Resort': [
+                'Castle Suite', 'Castle 1', 'Castle 2', 'Castle 1 & 2', 'Castle 3 & 4',
+                'Morgannwg Suite & Lounge', 'Morgannwg Suite', 'Morgannwg Lounge',
+                'Pendoylan Suite', 'Hensol Suite', 'The Boardroom', 'Dyffryn Suite',
+                'Cowbridge Lounge', 'Conservatory', 'Trecastell Suite', 'Tre-Dodridge Suite'
+            ],
+            'Hensol Castle': [
+                'Drawing Room', 'Courtyard Hall', 'Courtyard Hall 1 (2 sections)',
+                'Courtyard Hall 2 (Bottom Section)', 'Oak Room', 'Morning Room',
+                'The Buttery', 'Coach House', 'West Tower Boardroom', 'Reading Room',
+                'Garden Room'
+            ]
+        };
+
+        const ROOMS_WITH_DANCEFLOOR_BAR = new Set([
+            'Castle Suite', 'Morgannwg Suite & Lounge', 'Trecastell Suite', 'Courtyard Hall'
+        ]);
+
+        const ROOMS_WITH_PA = new Set([
+            'Castle Suite', 'Morgannwg Suite & Lounge', 'Hensol Suite', 'Courtyard Hall'
+        ]);
+
+        const AFTERNOON_TEA_PRICES = { 'Vale Resort': 27.50, 'Hensol Castle': 32.00 };
+        const LUNCH_BUFFET_PRICE = 25.95;
+        const DOUBLE_OCC_SURCHARGE = 11.00;
+
+        const pricingData = {
+            dinner: [
+                { name: "Dinner Menu A",   price: 39.50, junior: 21.95, under8: 14.95, description: "Three-course dinner" },
+                { name: "Dinner Menu B",   price: 42.50, junior: 21.95, under8: 14.95, description: "Three-course dinner" },
+                { name: "Dinner Menu C",   price: 55.95, junior: 21.95, under8: 14.95, description: "Premium three-course dinner" },
+                { name: "Choice Menu",     price: 45.50, junior: 21.95, under8: 14.95, description: "Pre-order required two weeks prior" },
+                { name: "Vegetarian Menu", price: 39.50, junior: 21.95, under8: 14.95, description: "Set menu for all vegetarians; pre-order required two weeks prior" },
+                { name: "Evening Buffet",  price: 35.95, junior: 21.95, under8: 14.95, description: "Evening buffet menu, served from 5pm" }
+            ],
+            drinks: [
+                { name: "Prosecco Spumante doc Borgo Alato", bottle: 35.00, type: "Sparkling & Champagne" },
+                { name: "Acquerello Prosecco DOC Rose", bottle: 37.00, type: "Sparkling & Champagne" },
+                { name: "Marques de Caceres Cava Brut", bottle: 45.00, type: "Sparkling & Champagne" },
+                { name: "Gruet Brut Champagne", bottle: 60.00, type: "Sparkling & Champagne" },
+                { name: "Laurent-Perrier La Cuvee Brut", bottle: 80.00, type: "Sparkling & Champagne" },
+                { name: "Laurent-Perrier Cuvee Rose", bottle: 120.00, type: "Sparkling & Champagne" },
+                { name: "Laurent-Perrier Heritage", bottle: 120.00, type: "Sparkling & Champagne" },
+                { name: "Laurent-Perrier Grand Siecle Iteration No.26", bottle: 230.00, type: "Sparkling & Champagne" },
+                { name: "Domaine Valor Tempranillo Syrah", bottle: 30.00, type: "Red Wine" },
+                { name: "Saint Marc Reserve Merlot", bottle: 30.50, type: "Red Wine" },
+                { name: "Lunaka Pinot Noir Reserva", bottle: 32.50, type: "Red Wine" },
+                { name: "Writers Block Shiraz", bottle: 32.50, type: "Red Wine" },
+                { name: "El Supremo Malbec Mendoza", bottle: 32.95, type: "Red Wine" },
+                { name: "Appassimento Ca Vittoria", bottle: 35.95, type: "Red Wine" },
+                { name: "Marques de Caceres Excellens Cuvee Especial Crianza", bottle: 39.50, type: "Red Wine" },
+                { name: "Domaine Valor Airen Castilla", bottle: 30.00, type: "White Wine" },
+                { name: "Saint Marc Reserve Sauvignon Pays d'Oc", bottle: 30.50, type: "White Wine" },
+                { name: "Pinot Grigio IGT Via Albini", bottle: 31.95, type: "White Wine" },
+                { name: "Marques de Caceres Excellens Blanco", bottle: 32.50, type: "White Wine" },
+                { name: "Writers Block Chenin Blanc", bottle: 32.50, type: "White Wine" },
+                { name: "Milton Park Chardonnay", bottle: 33.00, type: "White Wine" },
+                { name: "Allan Scott Estate Sauvignon Blanc", bottle: 39.95, type: "White Wine" },
+                { name: "Saint Marc Reserve Cinsault Rose", bottle: 30.50, type: "Rose Wine" },
+                { name: "Pinot Grigio Rosato IGT Via Albini", bottle: 31.95, type: "Rose Wine" },
+                { name: "Writers Block Pink Sauvignon Blanc Rose", bottle: 32.50, type: "Rose Wine" },
+                { name: "Beringer Classic Zinfandel Rose", bottle: 35.00, type: "Rose Wine" },
+                { name: "Spring Water (750ml bottle)", bottle: 5.75, type: "Refreshments" },
+                { name: "Chilled Orange Juice (per jug)", bottle: 7.95, type: "Refreshments" }
+            ],
+            canapes: [
+                { name: "Standard Canapes - Choice of 3", unit: "PerPerson", price: 11.95 },
+                { name: "Standard Canapes - Choice of 5", unit: "PerPerson", price: 14.95 },
+                { name: "Luxury Canapes - Choice of 3", unit: "PerPerson", price: 14.50 },
+                { name: "Luxury Canapes - Choice of 5", unit: "PerPerson", price: 17.50 }
+            ],
+            cheeses: [
+                { name: "Artisan Welsh Cheeses (individual course)", unit: "PerPerson", price: 13.00 },
+                { name: "Platter of Five Artisan Cheeses (serves 10)", unit: "PerPlatter10", price: 100.00 }
+            ],
+            grazing: [
+                { name: "Grazing Table", unit: "PerPerson", price: 13.00 },
+                { name: "Cheese Table", unit: "PerPerson", price: 13.00 },
+                { name: "Meze Table", unit: "PerPerson", price: 15.00 },
+                { name: "Antipasti Table", unit: "PerPerson", price: 19.50 }
+            ],
+            teaCoffee: [
+                { name: "Tea & Coffee with Biscuit Selection", unit: "PerPerson", price: 3.70 },
+                { name: "Tea & Coffee with Danish Pastries or Welsh Cakes", unit: "PerPerson", price: 5.20 },
+                { name: "Tea & Coffee with Bacon Rolls", unit: "PerPerson", price: 8.95 },
+                { name: "Tea & Coffee with Breakfast Pastries, Fruit, Muesli & Smoothie", unit: "PerPerson", price: 11.50 }
+            ],
+            entertainment: [
+                { name: "Disco in House", unit: "Flat", price: 500.00 }
+            ]
+        };
+
+        let selectedOptions = {
+            eventType: '',
+            date: '',
+            venue: 'Vale Resort',
+            guests: 40,
+            juniorGuests: 0,
+            under8Guests: 0,
+            bookingName: '',
+            preparedBy: '',
+            functionRooms: [],
+            roomHirePrice: 0,
+            lunchBuffet: { enabled: false, qty: 0 },
+            afternoonTea: { enabled: false, qty: 0 },
+            dinner: null,
+            preDinnerDrinks: [],
+            dinnerDrinks: [],
+            canapes: [],
+            cheeses: [],
+            grazing: [],
+            teaCoffee: [],
+            entertainment: [],
+            extraQtys: {},
+            bedroomPackage: 'Room Only',
+            valeSingleOccPrice: 0,
+            valeSingleOccRooms: 0,
+            valeDoubleOccRooms: 0,
+            hensolSingleOccPrice: 0,
+            hensolSingleOccRooms: 0,
+            hensolDoubleOccRooms: 0,
+            quote: {}
+        };
+
+        let drinkRowCounter = 0;
+
+        function populateFunctionRooms() {
+            const container = document.getElementById('functionRooms');
+            container.innerHTML = '';
+            Object.entries(FUNCTION_ROOMS).forEach(([venue, rooms]) => {
+                const title = document.createElement('div');
+                title.className = 'room-group-title';
+                title.textContent = venue;
+                container.appendChild(title);
+                rooms.forEach((room, idx) => {
+                    const wrap = document.createElement('div');
+                    wrap.className = 'room-check';
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.id = `room-${venue.replace(/\s+/g, '')}-${idx}`;
+                    cb.value = room;
+                    cb.onchange = () => {
+                        if (cb.checked) {
+                            if (!selectedOptions.functionRooms.includes(room)) {
+                                selectedOptions.functionRooms.push(room);
+                            }
+                        } else {
+                            selectedOptions.functionRooms = selectedOptions.functionRooms.filter(r => r !== room);
+                        }
+                        recalculate();
+                    };
+                    const lbl = document.createElement('label');
+                    lbl.htmlFor = cb.id;
+                    lbl.textContent = room;
+                    wrap.appendChild(cb);
+                    wrap.appendChild(lbl);
+                    container.appendChild(wrap);
+                });
+            });
+        }
+
+        function populateOptions() {
+            populateRadioGroup('dinnerOptions', pricingData.dinner,
+                d => d.name + ' - £' + d.price.toFixed(2) + ' pp',
+                'dinner');
+
+            populateCheckboxGroup('canapesOptions', pricingData.canapes, formatExtraLabel, 'canapes');
+            populateCheckboxGroup('cheesesOptions', pricingData.cheeses, formatExtraLabel, 'cheeses');
+            populateCheckboxGroup('grazingOptions', pricingData.grazing, formatExtraLabel, 'grazing');
+            populateCheckboxGroup('teaCoffeeOptions', pricingData.teaCoffee, formatExtraLabel, 'teaCoffee');
+            populateCheckboxGroup('entertainmentOptions', pricingData.entertainment, formatExtraLabel, 'entertainment');
+        }
+
+        function formatExtraLabel(item) {
+            let unitLabel = '';
+            if (item.unit === 'PerPerson') unitLabel = ' per person';
+            else if (item.unit === 'PerPlatter10') unitLabel = ' per platter (10 people)';
+            else if (item.unit === 'Flat') unitLabel = ' flat fee';
+            return `${item.name} - £${item.price.toFixed(2)}${unitLabel}`;
+        }
+
+        function populateRadioGroup(containerId, items, labelFn, category) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            items.forEach((item, idx) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'radio-item';
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = category;
+                radio.id = `${category}-${idx}`;
+                radio.value = idx;
+                radio.onchange = () => {
+                    selectedOptions[category] = item;
+                    recalculate();
+                };
+
+                const label = document.createElement('label');
+                label.htmlFor = `${category}-${idx}`;
+                label.textContent = labelFn(item);
+
+                wrapper.appendChild(radio);
+                wrapper.appendChild(label);
+                container.appendChild(wrapper);
+            });
+        }
+
+        function populateCheckboxGroup(containerId, items, labelFn, category) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            items.forEach((item, idx) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'checkbox-item';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `${category}-${idx}`;
+                checkbox.onchange = () => {
+                    if (checkbox.checked) {
+                        selectedOptions[category].push(item);
+                    } else {
+                        selectedOptions[category] = selectedOptions[category].filter(e => e.name !== item.name);
+                    }
+                    const key = `${category}::${item.name}`;
+                    const qtyInput = document.getElementById(`qty-${category}-${idx}`);
+                    if (checkbox.checked && qtyInput) {
+                        qtyInput.style.display = 'inline-block';
+                        if (selectedOptions.extraQtys[key] === undefined) {
+                            selectedOptions.extraQtys[key] = defaultExtraQty(item);
+                            qtyInput.value = selectedOptions.extraQtys[key];
+                        }
+                    } else if (qtyInput) {
+                        qtyInput.style.display = 'none';
+                    }
+                    recalculate();
+                };
+
+                const label = document.createElement('label');
+                label.htmlFor = `${category}-${idx}`;
+                label.textContent = labelFn(item);
+
+                wrapper.appendChild(checkbox);
+                wrapper.appendChild(label);
+
+                const qtyLabel = document.createElement('span');
+                qtyLabel.className = 'drink-qty-label';
+                qtyLabel.style.marginRight = '6px';
+                qtyLabel.textContent = item.unit === 'PerPlatter10' ? 'platters:' : 'qty:';
+
+                const qtyInput = document.createElement('input');
+                qtyInput.type = 'number';
+                qtyInput.min = '0';
+                qtyInput.id = `qty-${category}-${idx}`;
+                qtyInput.className = 'drink-qty-input';
+                qtyInput.style.display = 'none';
+                qtyInput.value = defaultExtraQty(item);
+                qtyInput.oninput = () => {
+                    const key = `${category}::${item.name}`;
+                    selectedOptions.extraQtys[key] = Math.max(0, parseInt(qtyInput.value) || 0);
+                    recalculate();
+                };
+
+                wrapper.appendChild(qtyLabel);
+                wrapper.appendChild(qtyInput);
+                container.appendChild(wrapper);
+            });
+        }
+
+        function defaultExtraQty(item) {
+            const guests = Math.max(0, parseInt(document.getElementById('guests').value) || 0);
+            if (item.unit === 'PerPerson') return guests;
+            if (item.unit === 'PerPlatter10') return Math.max(1, Math.ceil(guests / 10));
+            if (item.unit === 'Flat') return 1;
+            return 1;
+        }
+
+        function buildDrinkSelect() {
+            const select = document.createElement('select');
+            const blank = document.createElement('option');
+            blank.value = '';
+            blank.textContent = 'Select a drink...';
+            select.appendChild(blank);
+
+            const grouped = {};
+            pricingData.drinks.forEach((drink, idx) => {
+                if (!grouped[drink.type]) grouped[drink.type] = [];
+                grouped[drink.type].push({ drink, idx });
+            });
+
+            Object.keys(grouped).forEach(type => {
+                const group = document.createElement('optgroup');
+                group.label = type;
+                grouped[type].forEach(({ drink, idx }) => {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.textContent = `${drink.name} (£${drink.bottle.toFixed(2)} per bottle)`;
+                    group.appendChild(opt);
+                });
+                select.appendChild(group);
+            });
+            return select;
+        }
+
+        function addDrinkRow(type) {
+            const rowId = drinkRowCounter++;
+            const container = document.getElementById(type + 'DrinkRows');
+
+            const row = document.createElement('div');
+            row.className = 'drink-row';
+            row.id = `${type}Row_${rowId}`;
+
+            const select = buildDrinkSelect();
+            select.onchange = () => updateDrinkRow(type, rowId);
+
+            const qtyLabel = document.createElement('span');
+            qtyLabel.className = 'drink-qty-label';
+            qtyLabel.textContent = 'bottles:';
+
+            const guests = Math.max(0, parseInt(document.getElementById('guests').value) || 0);
+            const defaultBottles = Math.ceil(guests / 6);
+
+            const qtyInput = document.createElement('input');
+            qtyInput.type = 'number';
+            qtyInput.min = '0';
+            qtyInput.className = 'drink-qty-input';
+            qtyInput.value = defaultBottles;
+            qtyInput.oninput = () => updateDrinkRow(type, rowId);
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-drink-btn';
+            removeBtn.textContent = '\u00D7';
+            removeBtn.onclick = () => removeDrinkRow(type, rowId);
+
+            row.appendChild(select);
+            row.appendChild(qtyLabel);
+            row.appendChild(qtyInput);
+            row.appendChild(removeBtn);
+
+            container.appendChild(row);
+
+            selectedOptions[type + 'Drinks'].push({ id: rowId, drink: null, qty: defaultBottles });
+        }
+
+        function removeDrinkRow(type, rowId) {
+            const row = document.getElementById(`${type}Row_${rowId}`);
+            if (row) row.remove();
+            selectedOptions[type + 'Drinks'] = selectedOptions[type + 'Drinks'].filter(d => d.id !== rowId);
+            recalculate();
+        }
+
+        function updateDrinkRow(type, rowId) {
+            const row = document.getElementById(`${type}Row_${rowId}`);
+            if (!row) return;
+            const select = row.querySelector('select');
+            const qtyInput = row.querySelector('input[type="number"]');
+            const idx = select.value === '' ? -1 : parseInt(select.value);
+            const drink = idx >= 0 ? pricingData.drinks[idx] : null;
+            const entry = selectedOptions[type + 'Drinks'].find(d => d.id === rowId);
+            if (!entry) return;
+            entry.drink = drink;
+            entry.qty = Math.max(0, parseInt(qtyInput.value) || 0);
+            recalculate();
+        }
+
+        function onVenueChange() {
+            selectedOptions.venue = document.getElementById('venue').value;
+            document.getElementById('afternoonTeaPriceLabel').textContent = '£' + AFTERNOON_TEA_PRICES[selectedOptions.venue].toFixed(2);
+            recalculate();
+        }
+
+        function onGuestsChange() {
+            const guests = Math.max(0, parseInt(document.getElementById('guests').value) || 0);
+            // If lunch/afternoon tea options are enabled and qty was matching old guest count, keep them synced to new guest count
+            ['lunchBuffet', 'afternoonTea'].forEach(key => {
+                const state = selectedOptions[key];
+                const qtyInp = document.getElementById(key + 'Qty');
+                if (state.enabled) {
+                    // Keep qty in sync with guest count by default
+                    qtyInp.value = guests;
+                    state.qty = guests;
+                }
+            });
+            recalculate();
+        }
+
+        function onLunchToggle(key) {
+            const checkEl = document.getElementById(key + 'Check');
+            const optionEl = document.getElementById(key + 'Option');
+            const qtyEl = document.getElementById(key + 'Qty');
+            const guests = Math.max(0, parseInt(document.getElementById('guests').value) || 0);
+            const state = selectedOptions[key];
+            state.enabled = checkEl.checked;
+            if (state.enabled) {
+                optionEl.classList.add('active');
+                // Default qty to total guests when first enabled
+                if (!state.qty || state.qty === 0) {
+                    qtyEl.value = guests;
+                    state.qty = guests;
+                }
+            } else {
+                optionEl.classList.remove('active');
+            }
+            recalculate();
+        }
+
+        function getLunchBuffetPrice() { return LUNCH_BUFFET_PRICE; }
+        function getAfternoonTeaPrice() { return AFTERNOON_TEA_PRICES[selectedOptions.venue] || AFTERNOON_TEA_PRICES['Vale Resort']; }
+
+        function recalculate() {
+            const guests = Math.max(0, parseInt(document.getElementById('guests').value) || 0);
+            const juniorGuests = parseInt(document.getElementById('juniorGuests').value) || 0;
+            const under8Guests = parseInt(document.getElementById('under8Guests').value) || 0;
+            const roomHirePrice = Math.max(0, parseFloat(document.getElementById('roomHirePrice').value) || 0);
+            const valeSingleOccPrice  = Math.max(0, parseFloat(document.getElementById('valeSingleOccPrice').value) || 0);
+            const valeSingleOccRooms  = Math.max(0, parseInt(document.getElementById('valeSingleOccRooms').value) || 0);
+            const valeDoubleOccRooms  = Math.max(0, parseInt(document.getElementById('valeDoubleOccRooms').value) || 0);
+            const hensolSingleOccPrice = Math.max(0, parseFloat(document.getElementById('hensolSingleOccPrice').value) || 0);
+            const hensolSingleOccRooms = Math.max(0, parseInt(document.getElementById('hensolSingleOccRooms').value) || 0);
+            const hensolDoubleOccRooms = Math.max(0, parseInt(document.getElementById('hensolDoubleOccRooms').value) || 0);
+            const bedroomPackage = document.getElementById('bedroomPackage').value;
+
+            selectedOptions.eventType = document.getElementById('eventType').value;
+            selectedOptions.date = document.getElementById('date').value;
+            selectedOptions.venue = document.getElementById('venue').value;
+            selectedOptions.guests = guests;
+            selectedOptions.juniorGuests = juniorGuests;
+            selectedOptions.under8Guests = under8Guests;
+            selectedOptions.roomHirePrice = roomHirePrice;
+            selectedOptions.bedroomPackage = bedroomPackage;
+            selectedOptions.valeSingleOccPrice  = valeSingleOccPrice;
+            selectedOptions.valeSingleOccRooms  = valeSingleOccRooms;
+            selectedOptions.valeDoubleOccRooms  = valeDoubleOccRooms;
+            selectedOptions.hensolSingleOccPrice = hensolSingleOccPrice;
+            selectedOptions.hensolSingleOccRooms = hensolSingleOccRooms;
+            selectedOptions.hensolDoubleOccRooms = hensolDoubleOccRooms;
+            selectedOptions.bookingName = document.getElementById('bookingName').value;
+            selectedOptions.preparedBy = document.getElementById('preparedBy').value;
+
+            selectedOptions.lunchBuffet.qty = Math.max(0, parseInt(document.getElementById('lunchBuffetQty').value) || 0);
+            selectedOptions.lunchBuffet.enabled = document.getElementById('lunchBuffetCheck').checked;
+            selectedOptions.afternoonTea.qty = Math.max(0, parseInt(document.getElementById('afternoonTeaQty').value) || 0);
+            selectedOptions.afternoonTea.enabled = document.getElementById('afternoonTeaCheck').checked;
+
+            let total = 0;
+            const summary = [];
+
+            if (roomHirePrice > 0) {
+                const roomLabel = selectedOptions.functionRooms.length
+                    ? `Function Room Hire - ${selectedOptions.functionRooms.join(', ')}`
+                    : 'Function Room Hire';
+                total += roomHirePrice;
+                summary.push({ label: roomLabel, price: roomHirePrice, qty: 1, unitPrice: roomHirePrice });
+            }
+
+            // Lunch Buffet
+            if (selectedOptions.lunchBuffet.enabled) {
+                const qty = selectedOptions.lunchBuffet.qty;
+                const price = LUNCH_BUFFET_PRICE;
+                if (qty > 0) {
+                    const line = qty * price;
+                    total += line;
+                    summary.push({ label: `Lunch Buffet (${qty} x £${price.toFixed(2)})`, price: line, qty, unitPrice: price });
+                    document.getElementById('lunchBuffetLine').textContent = '£' + line.toFixed(2);
+                } else {
+                    document.getElementById('lunchBuffetLine').textContent = '£0.00';
+                }
+            } else {
+                document.getElementById('lunchBuffetLine').textContent = '—';
+            }
+
+            // Afternoon Tea
+            if (selectedOptions.afternoonTea.enabled) {
+                const qty = selectedOptions.afternoonTea.qty;
+                const price = getAfternoonTeaPrice();
+                if (qty > 0) {
+                    const line = qty * price;
+                    total += line;
+                    summary.push({ label: `Afternoon Tea at ${selectedOptions.venue} (${qty} x £${price.toFixed(2)})`, price: line, qty, unitPrice: price });
+                    document.getElementById('afternoonTeaLine').textContent = '£' + line.toFixed(2);
+                } else {
+                    document.getElementById('afternoonTeaLine').textContent = '£0.00';
+                }
+            } else {
+                document.getElementById('afternoonTeaLine').textContent = '—';
+            }
+
+            if (selectedOptions.dinner) {
+                const adultGuests = Math.max(0, guests - juniorGuests - under8Guests);
+                const d = selectedOptions.dinner;
+
+                const adultTotal   = d.price  * adultGuests;
+                const juniorTotal  = d.junior  * juniorGuests;
+                const under8Total  = d.under8  * under8Guests;
+                const dinnerTotal  = adultTotal + juniorTotal + under8Total;
+                total += dinnerTotal;
+
+                summary.push({ label: `Dinner - ${d.name}`, price: dinnerTotal, qty: null, unitPrice: null });
+                summary.push({ label: `  Adults (${adultGuests} x £${d.price.toFixed(2)})`, price: adultTotal, qty: adultGuests, unitPrice: d.price });
+                if (juniorGuests > 0) {
+                    summary.push({ label: `  Juniors 8-12 (${juniorGuests} x £${d.junior.toFixed(2)})`, price: juniorTotal, qty: juniorGuests, unitPrice: d.junior });
+                }
+                if (under8Guests > 0) {
+                    summary.push({ label: `  Under 8s (${under8Guests} x £${d.under8.toFixed(2)})`, price: under8Total, qty: under8Guests, unitPrice: d.under8 });
+                }
+            }
+
+            [['preDinnerDrinks', 'Pre Dinner'], ['dinnerDrinks', 'Dinner']].forEach(([key, label]) => {
+                selectedOptions[key].forEach(({ drink, qty }) => {
+                    if (drink && qty > 0) {
+                        const price = drink.bottle * qty;
+                        total += price;
+                        summary.push({
+                            label: `${label}: ${drink.name} (${qty} bottles x £${drink.bottle.toFixed(2)})`,
+                            price,
+                            qty,
+                            unitPrice: drink.bottle
+                        });
+                    }
+                });
+            });
+
+            ['canapes', 'cheeses', 'grazing', 'teaCoffee', 'entertainment'].forEach(category => {
+                selectedOptions[category].forEach(item => {
+                    const key = `${category}::${item.name}`;
+                    const qty = selectedOptions.extraQtys[key] !== undefined
+                        ? selectedOptions.extraQtys[key]
+                        : defaultExtraQty(item);
+                    if (qty <= 0) return;
+                    const price = item.price * qty;
+                    total += price;
+                    let label;
+                    if (item.unit === 'Flat') {
+                        label = item.name;
+                    } else {
+                        let qtyLabel = `${qty}`;
+                        if (item.unit === 'PerPerson') qtyLabel += ' pax';
+                        else if (item.unit === 'PerPlatter10') qtyLabel += ' platter(s)';
+                        label = `${item.name} (${qtyLabel} x £${item.price.toFixed(2)})`;
+                    }
+                    summary.push({ label, price, qty, unitPrice: item.price });
+                });
+            });
+
+            // Bedrooms — Room Only skips the +£11 double occ surcharge
+            const applySurcharge = bedroomPackage === 'B&B';
+            const pkgLabel = bedroomPackage === 'B&B' ? 'B&B' : 'Room Only';
+
+            // Vale Resort bedrooms
+            if (valeSingleOccPrice > 0 && valeSingleOccRooms > 0) {
+                const t = valeSingleOccPrice * valeSingleOccRooms;
+                total += t;
+                summary.push({ label: `Single Occupancy Bedroom - ${pkgLabel} at The Vale Resort (${valeSingleOccRooms} x £${valeSingleOccPrice.toFixed(2)})`, price: t, qty: valeSingleOccRooms, unitPrice: valeSingleOccPrice });
+            }
+            if (valeSingleOccPrice > 0 && valeDoubleOccRooms > 0) {
+                const dp = valeSingleOccPrice + (applySurcharge ? DOUBLE_OCC_SURCHARGE : 0);
+                const t = dp * valeDoubleOccRooms;
+                total += t;
+                summary.push({ label: `Double Occupancy Bedroom - ${pkgLabel} at The Vale Resort (${valeDoubleOccRooms} x £${dp.toFixed(2)})`, price: t, qty: valeDoubleOccRooms, unitPrice: dp });
+            }
+
+            // Hensol Castle bedrooms
+            if (hensolSingleOccPrice > 0 && hensolSingleOccRooms > 0) {
+                const t = hensolSingleOccPrice * hensolSingleOccRooms;
+                total += t;
+                summary.push({ label: `Single Occupancy Bedroom - ${pkgLabel} at Hensol Castle (${hensolSingleOccRooms} x £${hensolSingleOccPrice.toFixed(2)})`, price: t, qty: hensolSingleOccRooms, unitPrice: hensolSingleOccPrice });
+            }
+            if (hensolSingleOccPrice > 0 && hensolDoubleOccRooms > 0) {
+                const dp = hensolSingleOccPrice + (applySurcharge ? DOUBLE_OCC_SURCHARGE : 0);
+                const t = dp * hensolDoubleOccRooms;
+                total += t;
+                summary.push({ label: `Double Occupancy Bedroom - ${pkgLabel} at Hensol Castle (${hensolDoubleOccRooms} x £${dp.toFixed(2)})`, price: t, qty: hensolDoubleOccRooms, unitPrice: dp });
+            }
+
+            // Sleeper counter
+            const sleepers = valeSingleOccRooms + (valeDoubleOccRooms * 2) + hensolSingleOccRooms + (hensolDoubleOccRooms * 2);
+            document.getElementById('sleeperCount').textContent = sleepers;
+
+            const summaryDiv = document.getElementById('quoteSummary');
+            if (summary.length === 0) {
+                summaryDiv.innerHTML = '<div class="quote-item" style="color: #999;">Select options to see price summary</div>';
+            } else {
+                summaryDiv.innerHTML = summary.map(item =>
+                    `<div class="quote-item"><span>${item.label}</span><span>£${item.price.toFixed(2)}</span></div>`
+                ).join('');
+                summaryDiv.innerHTML += `<div class="quote-item total"><span class="label">TOTAL</span><span>£${total.toFixed(2)}</span></div>`;
+            }
+
+            selectedOptions.quote = { summary, total };
+        }
+
+        function switchTab(evt, tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            evt.target.classList.add('active');
+        }
+
+        function generateQuote() {
+            if (!selectedOptions.eventType) {
+                alert('Please select an event type.');
+                return;
+            }
+            if (selectedOptions.functionRooms.length === 0) {
+                alert('Please select at least one function room.');
+                return;
+            }
+            const roomHirePrice = parseFloat(document.getElementById('roomHirePrice').value) || 0;
+            if (roomHirePrice <= 0) {
+                alert('Please enter a Function Room Hire price.');
+                return;
+            }
+            if (!document.getElementById('date').value) {
+                alert('Please select an event date.');
+                return;
+            }
+
+            displayQuoteModal();
+            document.getElementById('generateBtn').textContent = 'Regenerate Quote';
+            document.getElementById('quoteStatus').style.display = 'block';
+        }
+
+        function displayQuoteModal() {
+            const dateStr = document.getElementById('date').value;
+            const guests = document.getElementById('guests').value;
+            const juniorGuests = document.getElementById('juniorGuests').value;
+            const under8Guests = document.getElementById('under8Guests').value;
+            const bookingName = document.getElementById('bookingName').value || '—';
+            const preparedBy = document.getElementById('preparedBy').value || '—';
+            const eventType = selectedOptions.eventType || '—';
+            const venue = selectedOptions.venue || '—';
+            const functionRoomsLabel = selectedOptions.functionRooms.length
+                ? selectedOptions.functionRooms.join(', ')
+                : '—';
+
+            const date = new Date(dateStr);
+            const formattedDate = date.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            let modalHTML = `
+                <div class="modal-item">
+                    <div class="modal-item-label">Event Type</div>
+                    <div class="modal-item-value">${eventType}</div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-label">Booking Name</div>
+                    <div class="modal-item-value">${bookingName}</div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-label">Event Date</div>
+                    <div class="modal-item-value">${formattedDate}</div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-label">Venue</div>
+                    <div class="modal-item-value">${venue}</div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-label">Guest Breakdown</div>
+                    <div class="modal-item-value">
+                        Total Guests: ${guests}<br>
+                        Adults: ${Math.max(0, parseInt(guests) - parseInt(juniorGuests) - parseInt(under8Guests))}<br>
+                        ${parseInt(juniorGuests) > 0 ? `Juniors (8-12): ${juniorGuests}<br>` : ''}
+                        ${parseInt(under8Guests) > 0 ? `Under 8's: ${under8Guests}<br>` : ''}
+                    </div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-label">Function Room(s)</div>
+                    <div class="modal-item-value">${functionRoomsLabel}</div>
+                </div>
+            `;
+
+            if (selectedOptions.dinner) {
+                modalHTML += `<div class="modal-item">
+                    <div class="modal-item-label">Dinner Menu</div>
+                    <div class="modal-item-value">${selectedOptions.dinner.name}</div>
+                </div>`;
+            }
+
+            const lunchTeaParts = [];
+            if (selectedOptions.lunchBuffet.enabled && selectedOptions.lunchBuffet.qty > 0) {
+                lunchTeaParts.push(`Lunch Buffet x ${selectedOptions.lunchBuffet.qty}`);
+            }
+            if (selectedOptions.afternoonTea.enabled && selectedOptions.afternoonTea.qty > 0) {
+                lunchTeaParts.push(`Afternoon Tea (${venue}) x ${selectedOptions.afternoonTea.qty}`);
+            }
+            if (lunchTeaParts.length > 0) {
+                modalHTML += `<div class="modal-item">
+                    <div class="modal-item-label">Lunch / Afternoon Tea</div>
+                    <div class="modal-item-value">${lunchTeaParts.join('<br>')}</div>
+                </div>`;
+            }
+
+            const drinkSummaryParts = [];
+            [['preDinnerDrinks', 'Pre Dinner'], ['dinnerDrinks', 'Dinner']].forEach(([key, lbl]) => {
+                selectedOptions[key].forEach(({ drink, qty }) => {
+                    if (drink && qty > 0) drinkSummaryParts.push(`${lbl}: ${drink.name} x${qty}`);
+                });
+            });
+            if (drinkSummaryParts.length > 0) {
+                modalHTML += `<div class="modal-item">
+                    <div class="modal-item-label">Beverages</div>
+                    <div class="modal-item-value">${drinkSummaryParts.join('<br>')}</div>
+                </div>`;
+            }
+
+            const extrasSummary = [];
+            ['canapes', 'cheeses', 'grazing', 'teaCoffee', 'entertainment'].forEach(cat => {
+                selectedOptions[cat].forEach(item => extrasSummary.push(item.name));
+            });
+            if (extrasSummary.length > 0) {
+                modalHTML += `<div class="modal-item">
+                    <div class="modal-item-label">Additional Extras</div>
+                    <div class="modal-item-value">${extrasSummary.join(', ')}</div>
+                </div>`;
+            }
+
+            const hasValeBeds   = selectedOptions.valeSingleOccRooms > 0 || selectedOptions.valeDoubleOccRooms > 0;
+            const hasHensolBeds = selectedOptions.hensolSingleOccRooms > 0 || selectedOptions.hensolDoubleOccRooms > 0;
+            if (hasValeBeds || hasHensolBeds) {
+                let bedsHTML = `<b>Package:</b> ${selectedOptions.bedroomPackage}<br>`;
+                if (hasValeBeds)   bedsHTML += `<b>The Vale Resort:</b> ${selectedOptions.valeSingleOccRooms} single, ${selectedOptions.valeDoubleOccRooms} double<br>`;
+                if (hasHensolBeds) bedsHTML += `<b>Hensol Castle:</b> ${selectedOptions.hensolSingleOccRooms} single, ${selectedOptions.hensolDoubleOccRooms} double<br>`;
+                const sleepers = selectedOptions.valeSingleOccRooms + (selectedOptions.valeDoubleOccRooms * 2) + selectedOptions.hensolSingleOccRooms + (selectedOptions.hensolDoubleOccRooms * 2);
+                bedsHTML += `<b>Total Sleepers:</b> ${sleepers}`;
+                modalHTML += `<div class="modal-item">
+                    <div class="modal-item-label">Bedrooms</div>
+                    <div class="modal-item-value">${bedsHTML}</div>
+                </div>`;
+            }
+
+            modalHTML += `<div class="modal-item" style="background: #eef2ea; border-left: 4px solid var(--primary-green);">
+                <div class="modal-item-label">Cost Breakdown:</div>
+                ${selectedOptions.quote.summary.map(item =>
+                    `<div class="modal-item-value" style="margin: 5px 0;">• ${item.label}: £${item.price.toFixed(2)}</div>`
+                ).join('')}
+            </div>`;
+
+            const totalIncVat = selectedOptions.quote.total;
+            const exVat = totalIncVat / 1.2;
+            const vatAmount = totalIncVat - exVat;
+            modalHTML += `<div class="modal-item" style="background: #f8f9fa; border-left: 3px solid var(--primary-green); font-size: 0.9em;">
+                <div class="modal-item-value" style="display:flex; justify-content:space-between; margin:3px 0;"><span>Subtotal (ex. VAT)</span><span>£${exVat.toFixed(2)}</span></div>
+                <div class="modal-item-value" style="display:flex; justify-content:space-between; margin:3px 0;"><span>VAT (20%)</span><span>£${vatAmount.toFixed(2)}</span></div>
+            </div>`;
+            modalHTML += `<div class="modal-total">TOTAL (inc. VAT): £${totalIncVat.toFixed(2)}</div>`;
+
+            document.getElementById('modalBody').innerHTML = modalHTML;
+            document.getElementById('quoteModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('quoteModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function resetForm() {
+            document.getElementById('eventType').value = '';
+            document.getElementById('date').value = '';
+            document.getElementById('venue').value = 'Vale Resort';
+            document.getElementById('guests').value = '40';
+            document.getElementById('juniorGuests').value = '0';
+            document.getElementById('under8Guests').value = '0';
+            document.getElementById('bookingName').value = '';
+            document.getElementById('preparedBy').value = '';
+            document.getElementById('roomHirePrice').value = '0';
+            document.getElementById('bedroomPackage').value = 'Room Only';
+            document.getElementById('valeSingleOccPrice').value = '0';
+            document.getElementById('valeSingleOccRooms').value = '0';
+            document.getElementById('valeDoubleOccRooms').value = '0';
+            document.getElementById('hensolSingleOccPrice').value = '0';
+            document.getElementById('hensolSingleOccRooms').value = '0';
+            document.getElementById('hensolDoubleOccRooms').value = '0';
+            document.getElementById('lunchBuffetCheck').checked = false;
+            document.getElementById('afternoonTeaCheck').checked = false;
+            document.getElementById('lunchBuffetQty').value = '0';
+            document.getElementById('afternoonTeaQty').value = '0';
+            document.getElementById('lunchBuffetOption').classList.remove('active');
+            document.getElementById('afternoonTeaOption').classList.remove('active');
+
+            document.querySelectorAll('#functionRooms input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.radio-item input[type="radio"]').forEach(rb => rb.checked = false);
+            document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => cb.checked = false);
+            ['preDinner', 'dinner'].forEach(type => {
+                document.getElementById(type + 'DrinkRows').innerHTML = '';
+            });
+            document.querySelectorAll('.drink-qty-input').forEach(input => {
+                if (input.id && input.id.startsWith('qty-')) input.style.display = 'none';
+            });
+
+            selectedOptions = {
+                eventType: '',
+                date: '',
+                venue: 'Vale Resort',
+                guests: 40,
+                juniorGuests: 0,
+                under8Guests: 0,
+                bookingName: '',
+                preparedBy: '',
+                functionRooms: [],
+                roomHirePrice: 0,
+                lunchBuffet: { enabled: false, qty: 0 },
+                afternoonTea: { enabled: false, qty: 0 },
+                dinner: null,
+                preDinnerDrinks: [],
+                dinnerDrinks: [],
+                canapes: [],
+                cheeses: [],
+                grazing: [],
+                teaCoffee: [],
+                entertainment: [],
+                extraQtys: {},
+                bedroomPackage: 'Room Only',
+                valeSingleOccPrice: 0,
+                valeSingleOccRooms: 0,
+                valeDoubleOccRooms: 0,
+                hensolSingleOccPrice: 0,
+                hensolSingleOccRooms: 0,
+                hensolDoubleOccRooms: 0,
+                quote: {}
+            };
+
+            document.getElementById('afternoonTeaPriceLabel').textContent = '£' + AFTERNOON_TEA_PRICES['Vale Resort'].toFixed(2);
+            document.getElementById('sleeperCount').textContent = '0';
+            document.getElementById('generateBtn').textContent = 'Generate Quote';
+            document.getElementById('quoteSummary').innerHTML = '<div class="quote-item" style="color: #999;">Select options to see price summary</div>';
+            document.getElementById('quoteStatus').style.display = 'none';
+            closeModal();
+        }
+
+        function buildIncludedItems() {
+            const items = [
+                'Linen (Table & Napkins)',
+                'Tables & Chairs',
+                'Cutlery & Glassware'
+            ];
+            const rooms = selectedOptions.functionRooms || [];
+            const hasDancefloorRoom = rooms.some(r => ROOMS_WITH_DANCEFLOOR_BAR.has(r));
+            const hasPaRoom = rooms.some(r => ROOMS_WITH_PA.has(r));
+
+            if (hasDancefloorRoom) {
+                items.push('Dance Floor');
+                items.push('Private Bar');
+            }
+            if (hasPaRoom && selectedOptions.eventType === 'Dinner Dance') {
+                items.push('PA System & Hand Held Mic');
+            }
+            return items;
+        }
+
+        function downloadPDFQuote() {
+            recalculate();
+
+            if (!selectedOptions.quote || !selectedOptions.quote.summary || selectedOptions.quote.summary.length === 0) {
+                alert('Please generate a quote first before downloading the PDF.');
+                return;
+            }
+
+            const dateStr = document.getElementById('date').value;
+            if (!dateStr) {
+                alert('Please select an event date first.');
+                return;
+            }
+
+            const guests = document.getElementById('guests').value;
+            const juniorGuests = document.getElementById('juniorGuests').value;
+            const under8Guests = document.getElementById('under8Guests').value;
+            const bookingName = document.getElementById('bookingName').value || '—';
+            const preparedBy = document.getElementById('preparedBy').value || '—';
+            const eventType = selectedOptions.eventType || '—';
+            const venue = selectedOptions.venue || '—';
+            const functionRoomsLabel = selectedOptions.functionRooms.length
+                ? selectedOptions.functionRooms.join(', ')
+                : '—';
+
+            let formattedDate = 'Date not selected';
+            try {
+                const d = new Date(dateStr);
+                if (!isNaN(d.getTime())) {
+                    formattedDate = d.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                }
+            } catch (e) {}
+
+            const quoteDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            const total = selectedOptions.quote.total;
+            const exVat = total / 1.2;
+            const vatAmount = total - exVat;
+
+            const lineRows = selectedOptions.quote.summary.map(item => {
+                const isHeader = item.qty === null && item.unitPrice === null;
+                const qtyCell = item.qty != null ? item.qty : '—';
+                const unitCell = item.unitPrice != null ? `£${item.unitPrice.toFixed(2)}` : '—';
+                const rowStyle = isHeader ? 'background:#edf0ea; font-weight:bold;' : '';
+                return `<tr style="${rowStyle}">
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">${item.label}</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">${qtyCell}</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">${unitCell}</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">${isHeader ? '' : `£${item.price.toFixed(2)}`}</td>
+                </tr>`;
+            }).join('');
+
+            const includedItems = buildIncludedItems();
+            const includedRows = includedItems.map((it, i) => {
+                const bg = i % 2 === 1 ? 'background:#f7f4eb;' : '';
+                return `<tr style="${bg}">
+                    <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
+                        <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
+                        ${it}
+                    </td>
+                </tr>`;
+            }).join('');
+
+            const printWindow = window.open('', '_blank', 'width=850,height=1100');
+            if (!printWindow) {
+                alert('Please allow popups for this site to download the PDF.');
+                return;
+            }
+
+            const quoteHTML = `<!DOCTYPE html>
+<html>
+<head>
+    <title>Vale Resort Private Event Quotation</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Georgia', serif;
+            font-size: 12px;
+            color: #2a2e3a;
+            background: #fff;
+            padding: 32px 40px;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .logo-area {
+            text-align: center;
+            border-bottom: 2px solid #8b3a4a;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .logo-area img {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 8px;
+        }
+        .logo-area h1 {
+            font-size: 22px;
+            letter-spacing: 4px;
+            color: #2a2e3a;
+            text-transform: uppercase;
+            font-weight: normal;
+        }
+        .logo-area .tagline {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: #6d8062;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+        .doc-title {
+            text-align: center;
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: #8b3a4a;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            font-weight: normal;
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border: 1px solid #c9c1ad;
+            margin-bottom: 14px;
+        }
+        .meta-col {
+            padding: 10px 14px;
+        }
+        .meta-col:first-child {
+            border-right: 1px solid #c9c1ad;
+        }
+        .meta-row {
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+        .meta-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6d8062;
+            display: block;
+            margin-bottom: 1px;
+        }
+        .meta-value {
+            font-size: 12px;
+            color: #2a2e3a;
+        }
+        .names-band {
+            background: #f5f1e8;
+            border: 1px solid #c9c1ad;
+            border-top: none;
+            padding: 8px 14px;
+            display: flex;
+            gap: 40px;
+            margin-bottom: 18px;
+        }
+        .names-band .meta-label { margin-bottom: 2px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+        thead tr {
+            background: #2a2e3a;
+            color: #fff;
+        }
+        thead th {
+            padding: 8px 10px;
+            font-weight: normal;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        thead th:last-child, thead th:nth-child(3), thead th:nth-child(2) {
+            text-align: right;
+        }
+        thead th:nth-child(2) { text-align: center; }
+        tbody tr:nth-child(even) { background: #f7f4eb; }
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0;
+            border: 1px solid #c9c1ad;
+            border-top: none;
+            page-break-inside: avoid;
+        }
+        .totals-table td {
+            padding: 7px 10px;
+            font-size: 12px;
+        }
+        .totals-table .tot-label { color: #5a5a5a; }
+        .totals-table .tot-value { text-align: right; }
+        .totals-table tr.grand-total td {
+            background: #2a2e3a;
+            color: #fff;
+            font-size: 13px;
+            font-weight: bold;
+            border-top: 2px solid #2a2e3a;
+        }
+        .totals-table tr.sub-row td {
+            border-bottom: 1px solid #dcd6c7;
+        }
+        .footer {
+            margin-top: 24px;
+            padding-top: 12px;
+            border-top: 1px solid #c9c1ad;
+            text-align: center;
+            font-size: 10px;
+            color: #6d8062;
+            line-height: 1.8;
+            letter-spacing: 0.5px;
+        }
+        @media print {
+            body { padding: 20px 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-area">
+        <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1776162028/vale_logo_April_2026_p4grbk.jpg" alt="Vale Resort Logo">
+        <h1>The Vale Resort</h1>
+        <div class="tagline">Hensol &bull; Vale of Glamorgan</div>
+    </div>
+
+    <div class="doc-title">${eventType} Quotation</div>
+
+    <div class="meta-grid">
+        <div class="meta-col">
+            <div class="meta-row">
+                <span class="meta-label">Quote Date</span>
+                <span class="meta-value">${quoteDate}</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Event Date</span>
+                <span class="meta-value">${formattedDate}</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Event Type</span>
+                <span class="meta-value">${eventType}</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Venue</span>
+                <span class="meta-value">${venue}</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Total Guests</span>
+                <span class="meta-value">${guests}</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Adults</span>
+                <span class="meta-value">${Math.max(0, parseInt(guests) - parseInt(juniorGuests) - parseInt(under8Guests))}</span>
+            </div>
+            ${parseInt(juniorGuests) > 0 ? `<div class="meta-row">
+                <span class="meta-label">Juniors (8-12)</span>
+                <span class="meta-value">${juniorGuests}</span>
+            </div>` : ''}
+            ${parseInt(under8Guests) > 0 ? `<div class="meta-row">
+                <span class="meta-label">Under 8s</span>
+                <span class="meta-value">${under8Guests}</span>
+            </div>` : ''}
+            <div class="meta-row">
+                <span class="meta-label">Function Room(s)</span>
+                <span class="meta-value">${functionRoomsLabel}</span>
+            </div>
+        </div>
+        <div class="meta-col">
+            <div class="meta-row">
+                <span class="meta-label">Prepared By</span>
+                <span class="meta-value">${preparedBy}</span>
+            </div>
+            <div class="meta-row" style="margin-top:8px;">
+                <span class="meta-label">Contact</span>
+                <span class="meta-value">sales@valeresort.com</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Telephone</span>
+                <span class="meta-value">01443 665803</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">Website</span>
+                <span class="meta-value">valeresort.com/business/dinners-events-2</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="names-band">
+        <div>
+            <span class="meta-label">Booking Name</span>
+            <span class="meta-value">${bookingName}</span>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:left; width:55%;">Description</th>
+                <th style="text-align:center; width:10%;">Qty</th>
+                <th style="text-align:right; width:17%;">Unit Price</th>
+                <th style="text-align:right; width:18%;">Total (inc VAT)</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${lineRows}
+        </tbody>
+    </table>
+
+    <table class="totals-table">
+        <tr class="sub-row">
+            <td class="tot-label">Subtotal (ex. VAT)</td>
+            <td class="tot-value">£${exVat.toFixed(2)}</td>
+        </tr>
+        <tr class="sub-row">
+            <td class="tot-label">VAT (20%)</td>
+            <td class="tot-value">£${vatAmount.toFixed(2)}</td>
+        </tr>
+        <tr class="grand-total">
+            <td>Total (inc. VAT)</td>
+            <td style="text-align:right;">£${total.toFixed(2)}</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY<br>
+        sales@valeresort.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com/business/dinners-events-2
+    </div>
+
+    <!-- Page 2: What's Included -->
+    <div style="page-break-before: always; padding-top: 48px;">
+
+        <div class="logo-area" style="margin-bottom:24px;">
+            <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1776162028/vale_logo_April_2026_p4grbk.jpg" alt="Vale Resort Logo" style="max-width:140px;">
+            <h1>The Vale Resort</h1>
+            <div class="tagline">Hensol &bull; Vale of Glamorgan</div>
+        </div>
+
+        <div style="text-align:center; font-size:20px; letter-spacing:3px; color:#8b3a4a; text-transform:uppercase; margin-bottom:36px; font-weight:normal;">
+            What's Included
+        </div>
+
+        <table style="width:100%; border-collapse:collapse;">
+            <tbody>
+                ${includedRows}
+            </tbody>
+        </table>
+
+        <div class="footer" style="margin-top:60px;">
+            The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY<br>
+            sales@valeresort.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com/business/dinners-events-2
+        </div>
+    </div>
+
+</body>
+</html>`;
+
+            printWindow.document.write(quoteHTML);
+            printWindow.document.close();
+
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        }
+
+        document.getElementById('quoteModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.getElementById('date').min = new Date().toISOString().split('T')[0];
+        document.getElementById('bookingName').addEventListener('input', recalculate);
+        document.getElementById('preparedBy').addEventListener('change', recalculate);
+
+        // Prevent mouse-wheel from changing focused number inputs
+        document.addEventListener('wheel', function(e) {
+            if (document.activeElement && document.activeElement.type === 'number' && document.activeElement === e.target) {
+                e.preventDefault();
+                document.activeElement.blur();
+            }
+        }, { passive: false });
+
+        populateFunctionRooms();
+        populateOptions();
+        onVenueChange();
+        recalculate();
+    </script>
+</body>
+</html>
