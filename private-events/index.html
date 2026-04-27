@@ -1845,6 +1845,12 @@
             const venueTagline = isHensol ? 'Hensol Castle Park &bull; Vale of Glamorgan' : 'Hensol &bull; Vale of Glamorgan';
             const venueAddress = isHensol ? 'Hensol Castle Park, Hensol, Vale of Glamorgan, CF72 8JX' : 'The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY';
             const venueWebsite = isHensol ? 'hensolcastle.com' : 'valeresort.com/business/dinners-events-2';
+            const logoAreaHTML = isHensol
+                ? `<div class="logo-area"><img src="${logoUrl}" alt="Hensol Castle Logo" style="max-width:220px;"></div>`
+                : `<div class="logo-area"><img src="${logoUrl}" alt="Vale Resort Logo"><h1>The Vale Resort</h1><div class="tagline">Hensol &bull; Vale of Glamorgan</div></div>`;
+            const logoAreaHTMLSm = isHensol
+                ? `<div class="logo-area" style="margin-bottom:24px;"><img src="${logoUrl}" alt="Hensol Castle Logo" style="max-width:220px;"></div>`
+                : `<div class="logo-area" style="margin-bottom:24px;"><img src="${logoUrl}" alt="Vale Resort Logo" style="max-width:140px;"><h1>The Vale Resort</h1><div class="tagline">Hensol &bull; Vale of Glamorgan</div></div>`;
             const functionRoomsLabel = selectedOptions.functionRooms.length
                 ? selectedOptions.functionRooms.join(', ')
                 : '—';
@@ -2041,11 +2047,7 @@
     </style>
 </head>
 <body>
-    <div class="logo-area">
-        <img src="${logoUrl}" alt="${venueH1} Logo">
-        <h1>${venueH1}</h1>
-        <div class="tagline">${venueTagline}</div>
-    </div>
+    ${logoAreaHTML}
 
     <div class="doc-title">${eventType} Quotation</div>
 
@@ -2152,11 +2154,7 @@
     <!-- Page 2: What's Included -->
     <div style="page-break-before: always; padding-top: 48px;">
 
-        <div class="logo-area" style="margin-bottom:24px;">
-            <img src="${logoUrl}" alt="${venueH1} Logo" style="max-width:140px;">
-            <h1>${venueH1}</h1>
-            <div class="tagline">${venueTagline}</div>
-        </div>
+        ${logoAreaHTMLSm}
 
         <div style="text-align:center; font-size:20px; letter-spacing:3px; color:#8b3a4a; text-transform:uppercase; margin-bottom:36px; font-weight:normal;">
             What's Included
