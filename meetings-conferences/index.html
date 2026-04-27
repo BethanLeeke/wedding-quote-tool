@@ -710,6 +710,14 @@
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label for="venue">Venue <span style="color:var(--primary-burgundy);">*</span></label>
+                    <select id="venue" onchange="selectedOptions.venue = this.value;">
+                        <option value="Vale Resort">Vale Resort</option>
+                        <option value="Hensol Castle">Hensol Castle</option>
+                    </select>
+                </div>
+
                 <h2 class="section-heading">Package Details</h2>
 
                 <div class="form-group">
@@ -1151,6 +1159,7 @@
             departureDate: '',
             bookingName: '',
             preparedBy: '',
+            venue: 'Vale Resort',
             ddrFunctionRoom: null,   // { venue, name } — the main package room
             functionRooms: [],       // [{ venue, name, price }] — extra rooms with prices
             ddrEnabled: false,
@@ -2153,7 +2162,7 @@
 
             selectedOptions = {
                 arrivalDate: '', numberOfNights: 0, departureDate: '',
-                bookingName: '', preparedBy: '',
+                bookingName: '', preparedBy: '', venue: 'Vale Resort',
                 ddrFunctionRoom: null, functionRooms: [],
                 ddrEnabled: false, ddrRate: 0, dayDelegates: 0,
                 twentyFourHourEnabled: false, twentyFourHourRate: 0, overnightDelegates: 0,
@@ -2198,6 +2207,15 @@
             const nights = selectedOptions.numberOfNights;
             const bookingName = selectedOptions.bookingName || '—';
             const preparedBy = selectedOptions.preparedBy || '—';
+            const venue = selectedOptions.venue || 'Vale Resort';
+            const isHensol = venue === 'Hensol Castle';
+            const logoUrl = isHensol
+                ? 'https://res.cloudinary.com/dnpcsbkz4/image/upload/v1777282817/HClogo_blackwriting_z8ffpx.png'
+                : 'https://res.cloudinary.com/dnpcsbkz4/image/upload/v1777282806/ValeResortLogoBlackwriting_vdwqoc.png';
+            const venueH1 = isHensol ? 'Hensol Castle' : 'The Vale Resort';
+            const venueTagline = isHensol ? 'Hensol Castle Park &bull; Vale of Glamorgan' : 'Hensol &bull; Vale of Glamorgan';
+            const venueAddress = isHensol ? 'Hensol Castle Park, Hensol, Vale of Glamorgan, CF72 8JX' : 'The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY';
+            const venueWebsite = isHensol ? 'hensolcastle.com' : 'valeresort.com/business/conference-meetings';
             const pdfDdrRoom = selectedOptions.ddrFunctionRoom
                 ? `${selectedOptions.ddrFunctionRoom.name} (${selectedOptions.ddrFunctionRoom.venue})`
                 : '';
@@ -2358,9 +2376,9 @@
 </head>
 <body>
     <div class="logo-area">
-        <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1776162028/vale_logo_April_2026_p4grbk.jpg" alt="Vale Resort Logo">
-        <h1>The Vale Resort</h1>
-        <div class="tagline">Hensol &bull; Vale of Glamorgan</div>
+        <img src="${logoUrl}" alt="${venueH1} Logo">
+        <h1>${venueH1}</h1>
+        <div class="tagline">${venueTagline}</div>
     </div>
 
     <div class="doc-title">Meetings &amp; Conferences Quotation</div>
@@ -2423,7 +2441,7 @@
             </div>
             <div class="meta-row">
                 <span class="meta-label">Website</span>
-                <span class="meta-value">valeresort.com/business/conference-meetings</span>
+                <span class="meta-value">${venueWebsite}</span>
             </div>
         </div>
     </div>
@@ -2465,17 +2483,17 @@
     </table>
 
     <div class="footer">
-        The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY<br>
-        sales@valeresort.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com/business/conference-meetings
+        ${venueAddress}<br>
+        sales@valeresort.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; ${venueWebsite}
     </div>
 
     <!-- Page 2: What's Included -->
     <div style="page-break-before: always; padding-top: 48px;">
 
         <div class="logo-area" style="margin-bottom:24px;">
-            <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1776162028/vale_logo_April_2026_p4grbk.jpg" alt="Vale Resort Logo" style="max-width:140px;">
-            <h1>The Vale Resort</h1>
-            <div class="tagline">Hensol &bull; Vale of Glamorgan</div>
+            <img src="${logoUrl}" alt="${venueH1} Logo" style="max-width:140px;">
+            <h1>${venueH1}</h1>
+            <div class="tagline">${venueTagline}</div>
         </div>
 
         <div style="text-align:center; font-size:20px; letter-spacing:3px; color:#8b3a4a; text-transform:uppercase; margin-bottom:36px; font-weight:normal;">
