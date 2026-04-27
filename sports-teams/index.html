@@ -617,7 +617,7 @@
                         <option value="Natalie Williams">Natalie Williams</option>
                         <option value="Linda Taylor">Linda Taylor</option>
                         <option value="Ed Williams">Ed Williams</option>
-                        <option value="Callie Birt">Callie Birt</option>
+                        <option value="Callie Bird">Callie Bird</option>
                         <option value="Naomi Jones">Naomi Jones</option>
                         <option value="Hollie Crowe">Hollie Crowe</option>
                         <option value="Laura Williams">Laura Williams</option>
@@ -681,10 +681,10 @@
                             </div>
                             <div class="form-group">
                                 <label for="towelsQty">Quantity</label>
-                                <input type="number" id="towelsQty" min="0" value="20" oninput="recalculate();">
+                                <input type="number" id="towelsQty" min="0" value="0" oninput="recalculate();">
                             </div>
                         </div>
-                        <div class="helper-text">Default quantity matches total number of guests.</div>
+                        <div class="helper-text">Enter the number of towels required.</div>
                     </div>
                 </div>
 
@@ -755,6 +755,25 @@
                     </div>
                 </div>
 
+                <div class="form-section" style="margin-top:20px;">
+                    <h2 class="section-heading">Custom Item</h2>
+                    <p class="helper-text" style="margin-bottom:12px;">Add a custom line item (e.g., bespoke service or special request).</p>
+                    <div style="display:grid; grid-template-columns:1fr 80px 120px; gap:12px;">
+                        <div class="form-group">
+                            <label for="customItemDesc">Description</label>
+                            <input type="text" id="customItemDesc" placeholder="Item description" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="customItemQty">Qty</label>
+                            <input type="number" id="customItemQty" min="1" value="1" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="customItemPrice">Unit Price (£)</label>
+                            <input type="number" id="customItemPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">Generate Quote</button>
                     <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
@@ -786,7 +805,7 @@
 
     <script>
         // ============ DATA ============
-        const TEAM_ROOM_OPTIONS = ['Morgannwg Suite', 'Castle Suite', 'Trecastell Suite'];
+        const TEAM_ROOM_OPTIONS = ['Morgannwg Suite', 'Castle Suite', 'Trecastell Suite', 'Conservatory', 'Pendoylan Suite'];
 
         const PHYSIO_ROOM_OPTIONS = [
             'Bedroom',
@@ -838,7 +857,7 @@
             menus: [],       // { key, name, included, price, start, end, days, guests, chefStation, chefPrice }
             drinks: [],      // { id, drink, bottlesPerDay, days }
             towelsPrice: 0.50,
-            towelsQty: 20,
+            towelsQty: 0,
             bedroomLocation: 'Vale Resort',
             singleRate: 0,
             twinRate: 0,
@@ -905,10 +924,6 @@
         function onGuestChange() {
             const g = Math.max(0, parseInt(document.getElementById('guests').value) || 0);
             selectedOptions.guests = g;
-            // Update towels default if it's still matching
-            const towelsQty = document.getElementById('towelsQty');
-            towelsQty.value = g;
-            selectedOptions.towelsQty = g;
             // Propagate into menu guest counts
             selectedOptions.menus.forEach(m => {
                 const inp = document.getElementById(`menu-guests-${m.key}`);
@@ -1456,6 +1471,22 @@
                 });
             }
 
+            // Custom item
+            const customItemDescEl = document.getElementById('customItemDesc');
+            if (customItemDescEl) {
+                const customDesc = customItemDescEl.value.trim();
+                const customQty = Math.max(0, parseInt(document.getElementById('customItemQty').value) || 0);
+                const customPrice = Math.max(0, parseFloat(document.getElementById('customItemPrice').value) || 0);
+                if (customDesc && customQty > 0 && customPrice > 0) {
+                    const customTotal = customQty * customPrice;
+                    summary.push({
+                        label: customQty > 1 ? `${customDesc} (${customQty} x £${customPrice.toFixed(2)})` : customDesc,
+                        price: customTotal, qty: customQty, unitPrice: customPrice
+                    });
+                    total += customTotal;
+                }
+            }
+
             // Render
             const summaryDiv = document.getElementById('quoteSummary');
             if (summary.length === 0) {
@@ -1556,7 +1587,10 @@
             document.getElementById('pitchRows').innerHTML = '';
             document.getElementById('drinkRows').innerHTML = '';
             document.getElementById('towelsPrice').value = '0.50';
-            document.getElementById('towelsQty').value = '20';
+            document.getElementById('towelsQty').value = '0';
+            document.getElementById('customItemDesc').value = '';
+            document.getElementById('customItemQty').value = '1';
+            document.getElementById('customItemPrice').value = '0';
             document.getElementById('singleRate').value = '0';
             document.getElementById('twinRate').value = '0';
             document.getElementById('twinCount').value = '0';
@@ -1574,7 +1608,7 @@
                 bookingName: '', preparedBy: '',
                 teamRooms: [], physioRooms: [], pitches: [],
                 menus: [], drinks: [],
-                towelsPrice: 0.50, towelsQty: 20,
+                towelsPrice: 0.50, towelsQty: 0,
                 bedroomLocation: 'Vale Resort',
                 singleRate: 0, twinRate: 0,
                 twinCount: 0, twinArrival: '', twinNights: 1,
@@ -1604,6 +1638,19 @@
 
             const bookingName = selectedOptions.bookingName || '—';
             const preparedBy = selectedOptions.preparedBy || '—';
+            const CONTACT_EMAILS = {
+                'Natalie Williams': 'nwilliams@valeresort.com',
+                'Liam Williams': 'liam.williams@valeresort.com',
+                'Callie Bird': 'cally.birt@valeresort.com',
+                'Ed Williams': 'edward.williams@valeresort.com',
+                'Linda Taylor': 'ltaylor@valeresort.com',
+                'Naomi Jones': 'naomi.jones@valeresort.com',
+                'Laura Williams': 'laura.williams@valeresort.com',
+                'Hollie Crowe': 'hollie.crowe@valeresort.com',
+                'Katie Thomas': 'katie.thomas@valeresort.com',
+                'Richard Williams': 'Richard.Williams@valeresort.com'
+            };
+            const contactEmail = CONTACT_EMAILS[selectedOptions.preparedBy] || 'sales@valeresort.com';
             const arrival = formatDateUK(selectedOptions.arrivalDate);
             const departure = formatDateUK(selectedOptions.departureDate);
             const quoteDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -1678,7 +1725,7 @@
         </div>
         <div class="meta-col">
             <div class="meta-row"><span class="meta-label">Prepared By</span><span class="meta-value">${preparedBy}</span></div>
-            <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Contact</span><span class="meta-value">sales@valeresort.com</span></div>
+            <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Contact</span><span class="meta-value">${contactEmail}</span></div>
             <div class="meta-row"><span class="meta-label">Telephone</span><span class="meta-value">01443 665803</span></div>
             <div class="meta-row"><span class="meta-label">Website</span><span class="meta-value">valeresort.com</span></div>
         </div>
@@ -1711,7 +1758,7 @@
 
     <div class="footer">
         The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY<br>
-        sales@valeresort.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com
+        ${contactEmail} &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com
     </div>
 
     <!-- Page 2: What's Included -->
@@ -1737,13 +1784,13 @@
                 <tr style="background:#f7f4eb;">
                     <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
                         <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
-                        Leisure Pool use (maximum 6 guests)
+                        Leisure Pool use (maximum 6 guests at any one time)
                     </td>
                 </tr>
                 <tr>
                     <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
                         <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
-                        Leisure Gym use (maximum 6 guests)
+                        Leisure Gym use (maximum 6 guests at any one time)
                     </td>
                 </tr>
             </tbody>
@@ -1751,7 +1798,7 @@
 
         <div class="footer" style="margin-top:60px;">
             The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY<br>
-            sales@valeresort.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com
+            ${contactEmail} &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com
         </div>
     </div>
 </body>

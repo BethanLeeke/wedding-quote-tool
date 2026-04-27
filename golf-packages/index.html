@@ -464,7 +464,7 @@
                                 <option value="Natalie Williams">Natalie Williams</option>
                                 <option value="Linda Taylor">Linda Taylor</option>
                                 <option value="Ed Williams">Ed Williams</option>
-                                <option value="Callie Birt">Callie Birt</option>
+                                <option value="Callie Bird">Callie Bird</option>
                                 <option value="Naomi Jones">Naomi Jones</option>
                                 <option value="Hollie Crowe">Hollie Crowe</option>
                                 <option value="Laura Williams">Laura Williams</option>
@@ -577,7 +577,7 @@
                             <option value="Natalie Williams">Natalie Williams</option>
                             <option value="Linda Taylor">Linda Taylor</option>
                             <option value="Ed Williams">Ed Williams</option>
-                            <option value="Callie Birt">Callie Birt</option>
+                            <option value="Callie Bird">Callie Bird</option>
                             <option value="Naomi Jones">Naomi Jones</option>
                             <option value="Hollie Crowe">Hollie Crowe</option>
                             <option value="Laura Williams">Laura Williams</option>
@@ -680,6 +680,25 @@
                     <div id="breakTeeTimesContainer"></div>
                 </div>
 
+                <div class="form-section" style="margin-top:20px;">
+                    <h2 class="section-heading">Custom Item</h2>
+                    <p class="helper-text" style="margin-bottom:12px;">Add a custom line item (e.g., bespoke service or special request).</p>
+                    <div style="display:grid; grid-template-columns:1fr 80px 120px; gap:12px;">
+                        <div class="form-group">
+                            <label for="customItemDesc">Description</label>
+                            <input type="text" id="customItemDesc" placeholder="Item description" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="customItemQty">Qty</label>
+                            <input type="number" id="customItemQty" min="1" value="1" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="customItemPrice">Unit Price (£)</label>
+                            <input type="number" id="customItemPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">Generate Quote</button>
                     <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
@@ -708,6 +727,33 @@
     </div>
 
     <script>
+        function readCustomItem() {
+            const descEl = document.getElementById('customItemDesc');
+            if (!descEl) return null;
+            const desc = descEl.value.trim();
+            const qty = Math.max(0, parseInt(document.getElementById('customItemQty').value) || 0);
+            const price = Math.max(0, parseFloat(document.getElementById('customItemPrice').value) || 0);
+            if (!desc || qty <= 0 || price <= 0) return null;
+            const total = qty * price;
+            return {
+                label: qty > 1 ? `${desc} (${qty} x £${price.toFixed(2)})` : desc,
+                total
+            };
+        }
+
+        const CONTACT_EMAILS = {
+            'Natalie Williams': 'nwilliams@valeresort.com',
+            'Liam Williams': 'liam.williams@valeresort.com',
+            'Callie Bird': 'cally.birt@valeresort.com',
+            'Ed Williams': 'edward.williams@valeresort.com',
+            'Linda Taylor': 'ltaylor@valeresort.com',
+            'Naomi Jones': 'naomi.jones@valeresort.com',
+            'Laura Williams': 'laura.williams@valeresort.com',
+            'Hollie Crowe': 'hollie.crowe@valeresort.com',
+            'Katie Thomas': 'katie.thomas@valeresort.com',
+            'Richard Williams': 'Richard.Williams@valeresort.com'
+        };
+
         let activeMode = 'day';
 
         /* ===================== MODE SWITCHING ===================== */
@@ -881,6 +927,13 @@
                 summary.push({ label: 'Course Maintenance', price: null, type: 'info', text: msg });
             }
 
+            // Custom item
+            const customItem = readCustomItem();
+            if (customItem) {
+                summary.push({ label: customItem.label, price: customItem.total });
+                total += customItem.total;
+            }
+
             const deposit = 10 * golfers;
 
             const packageIncludes = [
@@ -968,6 +1021,13 @@
             ];
             if (drinksVoucher) {
                 packageIncludes.push('\u00A310 per person drinks voucher');
+            }
+
+            // Custom item
+            const customItem = readCustomItem();
+            if (customItem) {
+                summary.push({ label: customItem.label, price: customItem.total });
+                total += customItem.total;
             }
 
             renderSummary(summary, total, deposit, packageIncludes, {
@@ -1222,6 +1282,9 @@
                 document.getElementById('breakHensolSingleRooms').value = '0';
                 buildBreakTeeTimes();
             }
+            document.getElementById('customItemDesc').value = '';
+            document.getElementById('customItemQty').value = '1';
+            document.getElementById('customItemPrice').value = '0';
             document.getElementById('generateBtn').textContent = 'Generate Quote';
             document.getElementById('quoteStatus').style.display = 'none';
             closeModal();
@@ -1289,14 +1352,15 @@
             </div>`;
         }
 
-        function pdfFooter() {
+        function pdfFooter(contactEmail) {
+            const email = contactEmail || 'sales@valeresort.com';
             return `<div class="footer">
                 The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY<br>
-                sales@valeresort.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com/vale-golf
+                ${email} &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com/vale-golf
             </div>`;
         }
 
-        function pdfTermsAndConditions() {
+        function pdfTermsAndConditions(contactEmail) {
             return `
             <div style="page-break-before: always; padding-top: 32px;">
                 <div class="doc-title" style="margin-bottom:8px;">The Vale Resort Group</div>
@@ -1344,7 +1408,7 @@
                     <p>Upon confirmation of your booking, you will need to provide a credit card to secure and confirm your final payment. In the unlikely event that payment is not received upon departure the credit card may be used for full payment. The only exception to this is if you have booked a wedding with us, then the minimum non-refundable deposit is &pound;500.00. Full payment of the balance is due 14 days before the event. Credit is not available for wedding parties.</p>
                 </div>
 
-                ${pdfFooter()}
+                ${pdfFooter(contactEmail)}
             </div>
 
             <div style="page-break-before: always; padding-top: 32px;">
@@ -1374,7 +1438,7 @@
                     </ul>
                 </div>
 
-                ${pdfFooter()}
+                ${pdfFooter(contactEmail)}
             </div>
             `;
         }
@@ -1383,6 +1447,7 @@
         function downloadDayPDF(q) {
             const eventDate = formatDate(document.getElementById('dayEventDate').value);
             const preparedBy = document.getElementById('dayPreparedBy').value || '\u2014';
+            const contactEmail = CONTACT_EMAILS[document.getElementById('dayPreparedBy').value] || 'sales@valeresort.com';
             const quoteDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
             const exVat = q.total / 1.2;
             const vatAmount = q.total - exVat;
@@ -1441,7 +1506,7 @@
                 </div>
                 <div class="meta-col">
                     <div class="meta-row"><span class="meta-label">Prepared By</span><span class="meta-value">${preparedBy}</span></div>
-                    <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Contact</span><span class="meta-value">sales@valeresort.com</span></div>
+                    <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Contact</span><span class="meta-value">${contactEmail}</span></div>
                     <div class="meta-row"><span class="meta-label">Telephone</span><span class="meta-value">01443 665803</span></div>
                     <div class="meta-row"><span class="meta-label">Website</span><span class="meta-value">valeresort.com/vale-golf</span></div>
                     ${q.courseMaintenance ? `<div class="meta-row" style="margin-top:8px;"><span class="meta-label">Course Maintenance</span><span class="meta-value">${q.courseMaintenanceText || 'May be taking place'}</span></div>` : `<div class="meta-row" style="margin-top:8px;"><span class="meta-label">Course Maintenance</span><span class="meta-value">No course maintenance is planned</span></div>`}
@@ -1462,7 +1527,7 @@
                 <tr class="sub-row"><td class="tot-label" style="font-style:italic; color:#6d8062;">Deposit Required (\u00A310 per golfer, due within 2 weeks)</td><td class="tot-value" style="font-weight:bold; color:#6d8062;">\u00A3${q.deposit.toFixed(2)}</td></tr>
             </table>
 
-            ${pdfFooter()}
+            ${pdfFooter(contactEmail)}
 
             <!-- Page 2: Package Includes + Helpful Info -->
             <div style="page-break-before: always; padding-top: 48px;">
@@ -1509,7 +1574,7 @@
                     <p style="margin-top:6px;">There is a half way house on the course with vending machines and toilet facilities.</p>
                 </div>
 
-                ${pdfFooter()}
+                ${pdfFooter(contactEmail)}
             </div>
 
             <!-- Page 3: Society Dinner Menu + Payments + Next Steps -->
@@ -1554,10 +1619,10 @@
                     </ul>
                 </div>
 
-                ${pdfFooter()}
+                ${pdfFooter(contactEmail)}
             </div>
 
-            ${pdfTermsAndConditions()}
+            ${pdfTermsAndConditions(contactEmail)}
             </body></html>`;
 
             openPDFWindow(html);
@@ -1568,6 +1633,7 @@
             const arrivalDate = formatDate(document.getElementById('breakArrivalDate').value);
             const departureDate = formatDate(document.getElementById('breakDepartureDate').value);
             const preparedBy = document.getElementById('breakPreparedBy').value || '\u2014';
+            const contactEmail = CONTACT_EMAILS[document.getElementById('breakPreparedBy').value] || 'sales@valeresort.com';
             const quoteDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
             const exVat = q.total / 1.2;
             const vatAmount = q.total - exVat;
@@ -1651,7 +1717,7 @@
                 </div>
                 <div class="meta-col">
                     <div class="meta-row"><span class="meta-label">Prepared By</span><span class="meta-value">${preparedBy}</span></div>
-                    <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Contact</span><span class="meta-value">sales@valeresort.com</span></div>
+                    <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Contact</span><span class="meta-value">${contactEmail}</span></div>
                     <div class="meta-row"><span class="meta-label">Telephone</span><span class="meta-value">01443 665803</span></div>
                     <div class="meta-row"><span class="meta-label">Website</span><span class="meta-value">valeresort.com/vale-golf</span></div>
                     ${q.courseMaintenance ? `<div class="meta-row" style="margin-top:8px;"><span class="meta-label">Course Maintenance</span><span class="meta-value">${q.courseMaintenanceText || 'May be taking place'}</span></div>` : `<div class="meta-row" style="margin-top:8px;"><span class="meta-label">Course Maintenance</span><span class="meta-value">No course maintenance is planned</span></div>`}
@@ -1674,7 +1740,7 @@
                 <tr class="sub-row"><td class="tot-label" style="font-style:italic; color:#6d8062;">Deposit Required (\u00A350 per person, due within 2 weeks)</td><td class="tot-value" style="font-weight:bold; color:#6d8062;">\u00A3${q.deposit.toFixed(2)}</td></tr>
             </table>
 
-            ${pdfFooter()}
+            ${pdfFooter(contactEmail)}
 
             <!-- Page 2: Package Includes + Helpful Info + Payments + Next Steps -->
             <div style="page-break-before: always; padding-top: 48px;">
@@ -1744,10 +1810,10 @@
                     </ul>
                 </div>
 
-                ${pdfFooter()}
+                ${pdfFooter(contactEmail)}
             </div>
 
-            ${pdfTermsAndConditions()}
+            ${pdfTermsAndConditions(contactEmail)}
             </body></html>`;
 
             openPDFWindow(html);

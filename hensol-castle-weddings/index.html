@@ -716,6 +716,26 @@
                     <div class="checkbox-group" id="extrasOptions"></div>
                 </div>
 
+                <!-- Custom Item -->
+                <div class="form-group" style="margin-top:24px;">
+                    <h3 class="section-subtitle">Custom Item</h3>
+                    <p class="helper-text" style="margin-bottom:12px;">Add a custom line item (e.g., bespoke service or special request).</p>
+                    <div style="display:grid; grid-template-columns:1fr 80px 120px; gap:12px;">
+                        <div>
+                            <label for="customItemDesc">Description</label>
+                            <input type="text" id="customItemDesc" placeholder="Item description" oninput="recalculate();">
+                        </div>
+                        <div>
+                            <label for="customItemQty">Qty</label>
+                            <input type="number" id="customItemQty" min="1" value="1" oninput="recalculate();">
+                        </div>
+                        <div>
+                            <label for="customItemPrice">Unit Price (£)</label>
+                            <input type="number" id="customItemPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Action Buttons -->
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">Generate Quote</button>
@@ -903,7 +923,7 @@
             venue: null,
             breakfast: null,
             evening: null,
-            includeDessert: true,
+            includeDessert: false,
             arrivalDrinks: [],
             breakfastDrinks: [],
             receptionDrinks: [],
@@ -1007,7 +1027,7 @@
             selectedOptions.toastDrinks = [];
             selectedOptions.extras = [];
             selectedOptions.extraQtys = {};
-            selectedOptions.includeDessert = true;
+            selectedOptions.includeDessert = false;
 
             // Breakfast
             const breakfastOptions = pricingData.breakfast.filter(b => b.year == year);
@@ -1031,7 +1051,7 @@
             const dessertCheckbox = document.createElement('input');
             dessertCheckbox.type = 'checkbox';
             dessertCheckbox.id = 'dessert-addon';
-            dessertCheckbox.checked = true;
+            dessertCheckbox.checked = false;
             dessertCheckbox.onchange = () => {
                 selectedOptions.includeDessert = dessertCheckbox.checked;
                 recalculate();
@@ -1462,6 +1482,22 @@
             });
 
             // Update summary display
+            // Custom item
+            const customItemDescEl = document.getElementById('customItemDesc');
+            if (customItemDescEl) {
+                const customDesc = customItemDescEl.value.trim();
+                const customQty = Math.max(0, parseInt(document.getElementById('customItemQty').value) || 0);
+                const customPrice = Math.max(0, parseFloat(document.getElementById('customItemPrice').value) || 0);
+                if (customDesc && customQty > 0 && customPrice > 0) {
+                    const customTotal = customQty * customPrice;
+                    summary.push({
+                        label: customQty > 1 ? `${customDesc} (${customQty} x £${customPrice.toFixed(2)})` : customDesc,
+                        price: customTotal, qty: customQty, unitPrice: customPrice
+                    });
+                    total += customTotal;
+                }
+            }
+
             const summaryDiv = document.getElementById('quoteSummary');
             if (summary.length === 0) {
                 summaryDiv.innerHTML = '<div class="quote-item" style="color: #999;">Select options to see price summary</div>';
@@ -1628,6 +1664,9 @@
             document.getElementById('brideName').value = '';
             document.getElementById('groomName').value = '';
             document.getElementById('preparedBy').value = '';
+            document.getElementById('customItemDesc').value = '';
+            document.getElementById('customItemQty').value = '1';
+            document.getElementById('customItemPrice').value = '0';
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.querySelectorAll('input[type="radio"]').forEach(rb => rb.checked = false);
             ['arrival', 'breakfast', 'reception', 'toast'].forEach(type => {
@@ -1647,7 +1686,7 @@
                 venue: null,
                 breakfast: null,
                 evening: null,
-                includeDessert: true,
+                includeDessert: false,
                 arrivalDrinks: [],
                 breakfastDrinks: [],
                 receptionDrinks: [],
@@ -1693,6 +1732,19 @@
             const brideName = document.getElementById('brideName').value || '—';
             const groomName = document.getElementById('groomName').value || '—';
             const preparedBy = document.getElementById('preparedBy').value || '—';
+            const CONTACT_EMAILS = {
+                'Natalie Williams': 'nwilliams@valeresort.com',
+                'Liam Williams': 'liam.williams@valeresort.com',
+                'Callie Bird': 'cally.birt@valeresort.com',
+                'Ed Williams': 'edward.williams@valeresort.com',
+                'Linda Taylor': 'ltaylor@valeresort.com',
+                'Naomi Jones': 'naomi.jones@valeresort.com',
+                'Laura Williams': 'laura.williams@valeresort.com',
+                'Hollie Crowe': 'hollie.crowe@valeresort.com',
+                'Katie Thomas': 'katie.thomas@valeresort.com',
+                'Richard Williams': 'Richard.Williams@valeresort.com'
+            };
+            const contactEmail = CONTACT_EMAILS[document.getElementById('preparedBy').value] || 'weddings@hensolcastle.com';
 
             // Parse date safely
             let formattedDate = 'Date not selected';
@@ -1926,7 +1978,7 @@
             </div>
             <div class="meta-row" style="margin-top:8px;">
                 <span class="meta-label">Contact</span>
-                <span class="meta-value">weddings@hensolcastle.com</span>
+                <span class="meta-value">${contactEmail}</span>
             </div>
             <div class="meta-row">
                 <span class="meta-label">Telephone</span>
@@ -1977,7 +2029,7 @@
 
     <div class="footer">
         Hensol Castle Park, Hensol, Vale of Glamorgan, CF72 8JX<br>
-        weddings@hensolcastle.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; hensolcastle.com/weddings
+        ${contactEmail} &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; hensolcastle.com/weddings
     </div>
 </body>
 </html>`;

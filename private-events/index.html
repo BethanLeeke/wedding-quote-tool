@@ -786,7 +786,7 @@
                         <option value="Natalie Williams">Natalie Williams</option>
                         <option value="Linda Taylor">Linda Taylor</option>
                         <option value="Ed Williams">Ed Williams</option>
-                        <option value="Callie Birt">Callie Birt</option>
+                        <option value="Callie Bird">Callie Bird</option>
                         <option value="Naomi Jones">Naomi Jones</option>
                         <option value="Hollie Crowe">Hollie Crowe</option>
                         <option value="Laura Williams">Laura Williams</option>
@@ -933,6 +933,23 @@
                     <div class="sleeper-counter">
                         <span>Total Sleepers</span>
                         <span class="count" id="sleeperCount">0</span>
+                    </div>
+                </div>
+
+                <h2 class="section-heading">Custom Item</h2>
+                <p class="helper-text" style="margin-bottom:12px;">Add a custom line item (e.g., bespoke service or special request).</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customItemDesc">Description</label>
+                        <input type="text" id="customItemDesc" placeholder="Item description" oninput="recalculate();">
+                    </div>
+                    <div class="form-group">
+                        <label for="customItemQty">Qty</label>
+                        <input type="number" id="customItemQty" min="1" value="1" oninput="recalculate();">
+                    </div>
+                    <div class="form-group">
+                        <label for="customItemPrice">Unit Price (£)</label>
+                        <input type="number" id="customItemPrice" min="0" step="0.01" value="0" oninput="recalculate();">
                     </div>
                 </div>
 
@@ -1545,6 +1562,22 @@
             const sleepers = valeSingleOccRooms + (valeDoubleOccRooms * 2) + hensolSingleOccRooms + (hensolDoubleOccRooms * 2);
             document.getElementById('sleeperCount').textContent = sleepers;
 
+            // Custom item
+            const customItemDescEl = document.getElementById('customItemDesc');
+            if (customItemDescEl) {
+                const customDesc = customItemDescEl.value.trim();
+                const customQty = Math.max(0, parseInt(document.getElementById('customItemQty').value) || 0);
+                const customPrice = Math.max(0, parseFloat(document.getElementById('customItemPrice').value) || 0);
+                if (customDesc && customQty > 0 && customPrice > 0) {
+                    const customTotal = customQty * customPrice;
+                    summary.push({
+                        label: customQty > 1 ? `${customDesc} (${customQty} x £${customPrice.toFixed(2)})` : customDesc,
+                        price: customTotal, qty: customQty, unitPrice: customPrice
+                    });
+                    total += customTotal;
+                }
+            }
+
             const summaryDiv = document.getElementById('quoteSummary');
             if (summary.length === 0) {
                 summaryDiv.innerHTML = '<div class="quote-item" style="color: #999;">Select options to see price summary</div>';
@@ -1731,6 +1764,9 @@
             document.getElementById('under8Guests').value = '0';
             document.getElementById('bookingName').value = '';
             document.getElementById('preparedBy').value = '';
+            document.getElementById('customItemDesc').value = '';
+            document.getElementById('customItemQty').value = '1';
+            document.getElementById('customItemPrice').value = '0';
             document.getElementById('roomHirePrice').value = '0';
             document.getElementById('bedroomPackage').value = 'Room Only';
             document.getElementById('valeSingleOccPrice').value = '0';
@@ -1835,6 +1871,19 @@
             const under8Guests = document.getElementById('under8Guests').value;
             const bookingName = document.getElementById('bookingName').value || '—';
             const preparedBy = document.getElementById('preparedBy').value || '—';
+            const CONTACT_EMAILS = {
+                'Natalie Williams': 'nwilliams@valeresort.com',
+                'Liam Williams': 'liam.williams@valeresort.com',
+                'Callie Bird': 'cally.birt@valeresort.com',
+                'Ed Williams': 'edward.williams@valeresort.com',
+                'Linda Taylor': 'ltaylor@valeresort.com',
+                'Naomi Jones': 'naomi.jones@valeresort.com',
+                'Laura Williams': 'laura.williams@valeresort.com',
+                'Hollie Crowe': 'hollie.crowe@valeresort.com',
+                'Katie Thomas': 'katie.thomas@valeresort.com',
+                'Richard Williams': 'Richard.Williams@valeresort.com'
+            };
+            const contactEmail = CONTACT_EMAILS[document.getElementById('preparedBy').value] || 'sales@valeresort.com';
             const eventType = selectedOptions.eventType || '—';
             const venue = selectedOptions.venue || 'Vale Resort';
             const isHensol = venue === 'Hensol Castle';
@@ -2098,7 +2147,7 @@
             </div>
             <div class="meta-row" style="margin-top:8px;">
                 <span class="meta-label">Contact</span>
-                <span class="meta-value">sales@valeresort.com</span>
+                <span class="meta-value">${contactEmail}</span>
             </div>
             <div class="meta-row">
                 <span class="meta-label">Telephone</span>
@@ -2149,7 +2198,7 @@
 
     <div class="footer">
         ${venueAddress}<br>
-        sales@valeresort.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; ${venueWebsite}
+        ${contactEmail} &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; ${venueWebsite}
     </div>
 
     <!-- Page 2: What's Included -->
@@ -2169,7 +2218,7 @@
 
         <div class="footer" style="margin-top:60px;">
             ${venueAddress}<br>
-            sales@valeresort.com &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; ${venueWebsite}
+            ${contactEmail} &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; ${venueWebsite}
         </div>
     </div>
 
