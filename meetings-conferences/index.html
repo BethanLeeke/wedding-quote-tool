@@ -2217,11 +2217,12 @@
             const venueTagline = isHensol ? 'Hensol Castle Park &bull; Vale of Glamorgan' : 'Hensol &bull; Vale of Glamorgan';
             const venueAddress = isHensol ? 'Hensol Castle Park, Hensol, Vale of Glamorgan, CF72 8JX' : 'The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY';
             const venueWebsite = isHensol ? 'hensolcastle.com' : 'valeresort.com/business/conference-meetings';
+            const hcTagline = `<div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#1a1a1a;margin-top:6px;font-family:Arial,sans-serif;font-weight:500;">Hensol Castle Park &bull; Vale of Glamorgan</div>`;
             const logoAreaHTML = isHensol
-                ? `<div class="logo-area"><img src="${logoUrl}" alt="Hensol Castle Logo" style="max-width:220px;"></div>`
+                ? `<div class="logo-area"><img src="${logoUrl}" alt="Hensol Castle Logo" style="max-width:260px;height:auto;display:block;margin:0 auto 8px;">${hcTagline}</div>`
                 : `<div class="logo-area"><img src="${logoUrl}" alt="Vale Resort Logo"><h1>The Vale Resort</h1><div class="tagline">Hensol &bull; Vale of Glamorgan</div></div>`;
             const logoAreaHTMLSm = isHensol
-                ? `<div class="logo-area" style="margin-bottom:24px;"><img src="${logoUrl}" alt="Hensol Castle Logo" style="max-width:220px;"></div>`
+                ? `<div class="logo-area" style="margin-bottom:24px;"><img src="${logoUrl}" alt="Hensol Castle Logo" style="max-width:260px;height:auto;display:block;margin:0 auto 8px;">${hcTagline}</div>`
                 : `<div class="logo-area" style="margin-bottom:24px;"><img src="${logoUrl}" alt="Vale Resort Logo" style="max-width:140px;"><h1>The Vale Resort</h1><div class="tagline">Hensol &bull; Vale of Glamorgan</div></div>`;
             const pdfDdrRoom = selectedOptions.ddrFunctionRoom
                 ? `${selectedOptions.ddrFunctionRoom.name} (${selectedOptions.ddrFunctionRoom.venue})`
