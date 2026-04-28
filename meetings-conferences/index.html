@@ -756,6 +756,20 @@
                             <option value="Hensol Castle|Garden Room">Garden Room</option>
                         </optgroup>
                     </select>
+                    <div id="ddrRoomDates" style="display:none; margin-top:10px; padding:10px 12px; background:#f5f1e8; border-radius:6px;">
+                        <div style="font-size:0.82em; font-weight:600; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Room Booked</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="ddrRoomStart" style="font-size:0.85em;">Start</label>
+                                <input type="date" id="ddrRoomStart" onchange="updateDdrRoomDates();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="ddrRoomEnd" style="font-size:0.85em;">End</label>
+                                <input type="date" id="ddrRoomEnd" onchange="updateDdrRoomDates();">
+                            </div>
+                        </div>
+                        <div class="helper-text" style="margin-top:6px; font-size:0.78em;">Defaults to the booking arrival → departure dates.</div>
+                    </div>
                 </div>
 
                 <div class="package-box">
@@ -764,7 +778,7 @@
                         <label for="ddrEnabled" style="font-weight:600;">Apply Day Delegate Package Rate (DDR)</label>
                     </div>
                     <div id="ddrFields" style="display:none; margin-top:14px;">
-                        <div class="date-grid">
+                        <div style="display:grid; grid-template-columns:1fr 1fr 90px; gap:14px;">
                             <div class="form-group" style="margin-bottom:0;">
                                 <label for="ddrRate">DDR Price per Delegate (&pound;)</label>
                                 <input type="number" id="ddrRate" min="0" step="0.01" value="0" oninput="recalculate();">
@@ -772,6 +786,11 @@
                             <div class="form-group" style="margin-bottom:0;">
                                 <label for="dayDelegates">Number of Day Delegates</label>
                                 <input type="number" id="dayDelegates" min="0" value="0" oninput="recalculate();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="ddrDays">Days</label>
+                                <input type="number" id="ddrDays" min="1" value="1" oninput="recalculate();">
+                                <div class="helper-text" style="font-size:0.75em; margin-top:2px;">Repeats per day</div>
                             </div>
                         </div>
                     </div>
@@ -783,7 +802,7 @@
                         <label for="twentyFourHourEnabled" style="font-weight:600;">Apply 24 Hour Rate</label>
                     </div>
                     <div id="twentyFourHourFields" style="display:none; margin-top:14px;">
-                        <div class="date-grid">
+                        <div style="display:grid; grid-template-columns:1fr 1fr 90px; gap:14px;">
                             <div class="form-group" style="margin-bottom:0;">
                                 <label for="twentyFourHourRate">24 Hour Rate per Delegate (&pound;)</label>
                                 <input type="number" id="twentyFourHourRate" min="0" step="0.01" value="0" oninput="recalculate();">
@@ -792,6 +811,11 @@
                             <div class="form-group" style="margin-bottom:0;">
                                 <label for="overnightDelegates">Number of Overnight Delegates</label>
                                 <input type="number" id="overnightDelegates" min="0" value="0" oninput="syncOvernightToSingleOcc(); recalculate();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="twentyFourHourDays">Days</label>
+                                <input type="number" id="twentyFourHourDays" min="1" value="1" oninput="recalculate();">
+                                <div class="helper-text" style="font-size:0.75em; margin-top:2px;">24hr periods</div>
                             </div>
                         </div>
                     </div>
@@ -1105,14 +1129,16 @@
             bookingName: '',
             preparedBy: '',
             venue: 'Vale Resort',
-            ddrFunctionRoom: null,   // { venue, name } — the main package room
-            functionRooms: [],       // [{ venue, name, price }] — extra rooms with prices
+            ddrFunctionRoom: null,   // { venue, name, startDate, endDate } — the main package room
+            functionRooms: [],       // [{ venue, name, price, startDate, endDate }] — extra rooms with prices
             ddrEnabled: false,
             ddrRate: 0,
             dayDelegates: 0,
+            ddrDays: 1,
             twentyFourHourEnabled: false,
             twentyFourHourRate: 0,
             overnightDelegates: 0,
+            twentyFourHourDays: 1,
             lunchMenuChoice: '',
             dinnerMenuChoice: '',     // "Menu A|0" format
             pkgValeSingleOcc: 0,
@@ -1345,17 +1371,54 @@
 
         function selectDdrFunctionRoom() {
             const picker = document.getElementById('ddrFunctionRoomPicker');
+            const dateBox = document.getElementById('ddrRoomDates');
             if (!picker.value) {
                 selectedOptions.ddrFunctionRoom = null;
+                dateBox.style.display = 'none';
             } else {
                 const [venue, name] = picker.value.split('|');
-                selectedOptions.ddrFunctionRoom = { venue, name };
+                const arrival = document.getElementById('arrivalDate').value || '';
+                const departure = document.getElementById('departureDate').value || arrival;
+                selectedOptions.ddrFunctionRoom = { venue, name, startDate: arrival, endDate: departure };
+                document.getElementById('ddrRoomStart').value = arrival;
+                document.getElementById('ddrRoomEnd').value = departure;
+                dateBox.style.display = 'block';
                 selectedOptions.functionRooms = selectedOptions.functionRooms.filter(
                     r => !(r.venue === venue && r.name === name)
                 );
                 renderSelectedRooms();
             }
             recalculate();
+        }
+
+        function updateDdrRoomDates() {
+            if (!selectedOptions.ddrFunctionRoom) return;
+            selectedOptions.ddrFunctionRoom.startDate = document.getElementById('ddrRoomStart').value || '';
+            selectedOptions.ddrFunctionRoom.endDate = document.getElementById('ddrRoomEnd').value || '';
+            recalculate();
+        }
+
+        function updateExtraRoomDate(idx, field, value) {
+            if (!selectedOptions.functionRooms[idx]) return;
+            selectedOptions.functionRooms[idx][field] = value;
+            recalculate();
+        }
+
+        // Format an ISO date string as "Mon 27 Apr"
+        function formatRoomDateShort(iso) {
+            if (!iso) return '';
+            const d = new Date(iso);
+            if (isNaN(d.getTime())) return '';
+            return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+        }
+        function formatRoomDateRange(start, end) {
+            if (!start && !end) return '';
+            if (start && !end) return formatRoomDateShort(start);
+            if (!start && end) return formatRoomDateShort(end);
+            const s = formatRoomDateShort(start);
+            const e = formatRoomDateShort(end);
+            if (start === end) return s;
+            return `${s} → ${e}`;
         }
 
         function addFunctionRoom() {
@@ -1373,7 +1436,9 @@
                 picker.value = '';
                 return;
             }
-            selectedOptions.functionRooms.push({ venue, name, price: 0 });
+            const arrival = document.getElementById('arrivalDate').value || '';
+            const departure = document.getElementById('departureDate').value || arrival;
+            selectedOptions.functionRooms.push({ venue, name, price: 0, startDate: arrival, endDate: departure });
             picker.value = '';
             renderSelectedRooms();
             recalculate();
@@ -1392,46 +1457,32 @@
 
         function renderSelectedRooms() {
             const container = document.getElementById('selectedRoomsList');
-            const noMsg = document.getElementById('noRoomsMessage');
             if (selectedOptions.functionRooms.length === 0) {
                 container.innerHTML = '<div class="helper-text" id="noRoomsMessage">No extra function rooms added. Use the "Function Room (extra)" dropdown above.</div>';
                 return;
             }
-            container.innerHTML = '';
-            selectedOptions.functionRooms.forEach((room, idx) => {
-                const row = document.createElement('div');
-                row.className = 'room-row';
-
-                const nameDiv = document.createElement('div');
-                nameDiv.className = 'room-name';
-                nameDiv.innerHTML = `${room.name}<br><span style="font-size:0.75em; color:var(--text-light); font-weight:400;">${room.venue}</span>`;
-
-                const priceWrap = document.createElement('div');
-                priceWrap.style.display = 'flex';
-                priceWrap.style.alignItems = 'center';
-                priceWrap.style.gap = '6px';
-                const priceLbl = document.createElement('span');
-                priceLbl.className = 'drink-qty-label';
-                priceLbl.textContent = 'Price £:';
-                const priceInput = document.createElement('input');
-                priceInput.type = 'number';
-                priceInput.min = '0';
-                priceInput.step = '0.01';
-                priceInput.value = room.price;
-                priceInput.oninput = () => updateRoomPrice(idx, priceInput.value);
-                priceWrap.appendChild(priceLbl);
-                priceWrap.appendChild(priceInput);
-
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'remove-drink-btn';
-                removeBtn.textContent = '\u00D7';
-                removeBtn.onclick = () => removeFunctionRoom(idx);
-
-                row.appendChild(nameDiv);
-                row.appendChild(priceWrap);
-                row.appendChild(removeBtn);
-                container.appendChild(row);
-            });
+            container.innerHTML = selectedOptions.functionRooms.map((room, idx) => `
+                <div style="border:1px solid #c9c1ad; border-radius:6px; padding:10px 12px; margin-bottom:10px; background:#faf8f3;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
+                        <div style="font-weight:600;">${room.name}<span style="font-size:0.78em; color:var(--text-light); font-weight:400; margin-left:8px;">${room.venue}</span></div>
+                        <button type="button" class="remove-drink-btn" onclick="removeFunctionRoom(${idx})">&times;</button>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label style="font-size:0.78em;">Price (&pound;)</label>
+                            <input type="number" min="0" step="0.01" value="${room.price}" oninput="updateRoomPrice(${idx}, this.value)">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label style="font-size:0.78em;">Start</label>
+                            <input type="date" value="${room.startDate || ''}" onchange="updateExtraRoomDate(${idx}, 'startDate', this.value)">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label style="font-size:0.78em;">End</label>
+                            <input type="date" value="${room.endDate || ''}" onchange="updateExtraRoomDate(${idx}, 'endDate', this.value)">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function buildDrinkSelect() {
@@ -1703,9 +1754,11 @@
             const ddrEnabled = document.getElementById('ddrEnabled').checked;
             const ddrRate = Math.max(0, parseFloat(document.getElementById('ddrRate').value) || 0);
             const dayDelegates = Math.max(0, parseInt(document.getElementById('dayDelegates').value) || 0);
+            const ddrDays = Math.max(1, parseInt(document.getElementById('ddrDays').value) || 1);
             const tfhEnabled = document.getElementById('twentyFourHourEnabled').checked;
             const tfhRate = Math.max(0, parseFloat(document.getElementById('twentyFourHourRate').value) || 0);
             const overnightDelegates = Math.max(0, parseInt(document.getElementById('overnightDelegates').value) || 0);
+            const tfhDays = Math.max(1, parseInt(document.getElementById('twentyFourHourDays').value) || 1);
             const lunchMenuChoice = document.getElementById('lunchMenuChoice').value;
             const dinnerMenuChoice = document.getElementById('dinnerMenuChoice').value;
             const pkgValeSingleOcc = Math.max(0, parseInt(document.getElementById('pkgValeSingleOcc').value) || 0);
@@ -1724,9 +1777,11 @@
             selectedOptions.ddrEnabled = ddrEnabled;
             selectedOptions.ddrRate = ddrRate;
             selectedOptions.dayDelegates = dayDelegates;
+            selectedOptions.ddrDays = ddrDays;
             selectedOptions.twentyFourHourEnabled = tfhEnabled;
             selectedOptions.twentyFourHourRate = tfhRate;
             selectedOptions.overnightDelegates = overnightDelegates;
+            selectedOptions.twentyFourHourDays = tfhDays;
             selectedOptions.lunchMenuChoice = lunchMenuChoice;
             selectedOptions.dinnerMenuChoice = dinnerMenuChoice;
             selectedOptions.pkgValeSingleOcc = pkgValeSingleOcc;
@@ -1750,31 +1805,61 @@
 
             // Main package room (always included if selected)
             if (selectedOptions.ddrFunctionRoom) {
+                const ddrRoomDateRange = formatRoomDateRange(selectedOptions.ddrFunctionRoom.startDate, selectedOptions.ddrFunctionRoom.endDate);
+                const ddrRoomLabel = ddrRoomDateRange
+                    ? `Function Room Hire \u2014 ${selectedOptions.ddrFunctionRoom.name} (${ddrRoomDateRange}) (included in package)`
+                    : `Function Room Hire \u2014 ${selectedOptions.ddrFunctionRoom.name} (included in package)`;
                 summary.push({
-                    label: `Function Room Hire \u2014 ${selectedOptions.ddrFunctionRoom.name} (included in package)`,
+                    label: ddrRoomLabel,
                     price: 0, qty: 1, unitPrice: 0, ddrZero: true
                 });
             }
 
-            // DDR: add delegate-rate revenue line + inclusions
+            // DDR: itemise per day with dates if days > 1
             if (ddrEnabled && ddrRate > 0 && dayDelegates > 0) {
-                const ddrTotal = ddrRate * dayDelegates;
-                total += ddrTotal;
-                summary.push({
-                    label: `Day Delegate Package (${dayDelegates} \u00D7 \u00A3${ddrRate.toFixed(2)})`,
-                    price: ddrTotal, qty: dayDelegates, unitPrice: ddrRate
-                });
+                const ddrPerDay = ddrRate * dayDelegates;
+                if (ddrDays === 1) {
+                    total += ddrPerDay;
+                    summary.push({
+                        label: `Day Delegate Package (${dayDelegates} \u00D7 \u00A3${ddrRate.toFixed(2)})`,
+                        price: ddrPerDay, qty: dayDelegates, unitPrice: ddrRate
+                    });
+                } else {
+                    const ddrStart = (selectedOptions.ddrFunctionRoom && selectedOptions.ddrFunctionRoom.startDate) || selectedOptions.arrivalDate;
+                    for (let i = 0; i < ddrDays; i++) {
+                        const d = bedroomDateForOffset(ddrStart, i);
+                        const dateLabel = d ? bedroomFormatDate(d) : `Day ${i + 1}`;
+                        total += ddrPerDay;
+                        summary.push({
+                            label: `Day Delegate Package \u2014 ${dateLabel} (${dayDelegates} \u00D7 \u00A3${ddrRate.toFixed(2)})`,
+                            price: ddrPerDay, qty: dayDelegates, unitPrice: ddrRate
+                        });
+                    }
+                }
             }
 
-            // 24 Hour Rate: add delegate-rate revenue line + double occ discount
+            // 24 Hour Rate: itemise per day with dates if days > 1
             const totalDoubleOccRooms = pkgValeDoubleOcc + pkgHensolDoubleOcc;
             if (tfhEnabled && tfhRate > 0 && overnightDelegates > 0) {
-                const tfhTotal = tfhRate * overnightDelegates;
-                total += tfhTotal;
-                summary.push({
-                    label: `24 Hour Package (${overnightDelegates} \u00D7 \u00A3${tfhRate.toFixed(2)})`,
-                    price: tfhTotal, qty: overnightDelegates, unitPrice: tfhRate
-                });
+                const tfhPerDay = tfhRate * overnightDelegates;
+                if (tfhDays === 1) {
+                    total += tfhPerDay;
+                    summary.push({
+                        label: `24 Hour Package (${overnightDelegates} \u00D7 \u00A3${tfhRate.toFixed(2)})`,
+                        price: tfhPerDay, qty: overnightDelegates, unitPrice: tfhRate
+                    });
+                } else {
+                    const tfhStart = (selectedOptions.ddrFunctionRoom && selectedOptions.ddrFunctionRoom.startDate) || selectedOptions.arrivalDate;
+                    for (let i = 0; i < tfhDays; i++) {
+                        const d = bedroomDateForOffset(tfhStart, i);
+                        const dateLabel = d ? bedroomFormatDate(d) : `Day ${i + 1}`;
+                        total += tfhPerDay;
+                        summary.push({
+                            label: `24 Hour Package \u2014 ${dateLabel} (${overnightDelegates} \u00D7 \u00A3${tfhRate.toFixed(2)})`,
+                            price: tfhPerDay, qty: overnightDelegates, unitPrice: tfhRate
+                        });
+                    }
+                }
             }
             if (tfhEnabled && totalDoubleOccRooms > 0) {
                 const doubleDiscount = totalDoubleOccRooms * 80;
@@ -1868,9 +1953,11 @@
             // Function Room Hire
             selectedOptions.functionRooms.forEach(room => {
                 if (room.price > 0) {
+                    const range = formatRoomDateRange(room.startDate, room.endDate);
+                    const baseLabel = `Function Room Hire - ${room.name} (${room.venue})`;
                     total += room.price;
                     summary.push({
-                        label: `Function Room Hire - ${room.name} (${room.venue})`,
+                        label: range ? `${baseLabel} - ${range}` : baseLabel,
                         price: room.price, qty: 1, unitPrice: room.price
                     });
                 }
@@ -2098,10 +2185,14 @@
             const departureStr = formatDate(selectedOptions.departureDate);
             const nights = selectedOptions.numberOfNights;
 
+            const ddrRoomDateStr = selectedOptions.ddrFunctionRoom ? formatRoomDateRange(selectedOptions.ddrFunctionRoom.startDate, selectedOptions.ddrFunctionRoom.endDate) : '';
             const ddrRoomLine = selectedOptions.ddrFunctionRoom
-                ? `${selectedOptions.ddrFunctionRoom.name} (${selectedOptions.ddrFunctionRoom.venue}) — main package room`
+                ? `${selectedOptions.ddrFunctionRoom.name} (${selectedOptions.ddrFunctionRoom.venue})${ddrRoomDateStr ? ' — ' + ddrRoomDateStr : ''} — main package room`
                 : '';
-            const extraRoomLines = selectedOptions.functionRooms.map(r => `${r.name} (${r.venue}) - £${r.price.toFixed(2)}`);
+            const extraRoomLines = selectedOptions.functionRooms.map(r => {
+                const range = formatRoomDateRange(r.startDate, r.endDate);
+                return `${r.name} (${r.venue})${range ? ' — ' + range : ''} - £${r.price.toFixed(2)}`;
+            });
             const allRoomLines = [ddrRoomLine, ...extraRoomLines].filter(Boolean);
             const roomsList = allRoomLines.join('<br>') || '—';
 
@@ -2181,11 +2272,16 @@
             document.getElementById('ddrEnabled').checked = false;
             document.getElementById('ddrRate').value = '0';
             document.getElementById('dayDelegates').value = '0';
+            document.getElementById('ddrDays').value = '1';
             document.getElementById('ddrFields').style.display = 'none';
             document.getElementById('twentyFourHourEnabled').checked = false;
             document.getElementById('twentyFourHourRate').value = '0';
             document.getElementById('overnightDelegates').value = '0';
+            document.getElementById('twentyFourHourDays').value = '1';
             document.getElementById('twentyFourHourFields').style.display = 'none';
+            document.getElementById('ddrRoomStart').value = '';
+            document.getElementById('ddrRoomEnd').value = '';
+            document.getElementById('ddrRoomDates').style.display = 'none';
             document.getElementById('lunchMenuChoice').value = '';
             document.getElementById('dinnerMenuChoice').value = '';
             document.getElementById('lunchMenuChoiceGroup').style.display = 'none';
@@ -2214,8 +2310,8 @@
                 arrivalDate: '', numberOfNights: 0, departureDate: '',
                 bookingName: '', preparedBy: '', venue: 'Vale Resort',
                 ddrFunctionRoom: null, functionRooms: [],
-                ddrEnabled: false, ddrRate: 0, dayDelegates: 0,
-                twentyFourHourEnabled: false, twentyFourHourRate: 0, overnightDelegates: 0,
+                ddrEnabled: false, ddrRate: 0, dayDelegates: 0, ddrDays: 1,
+                twentyFourHourEnabled: false, twentyFourHourRate: 0, overnightDelegates: 0, twentyFourHourDays: 1,
                 lunchMenuChoice: '', dinnerMenuChoice: '',
                 pkgValeSingleOcc: 0, pkgValeDoubleOcc: 0,
                 pkgHensolSingleOcc: 0, pkgHensolDoubleOcc: 0,
@@ -2282,11 +2378,15 @@
             const logoAreaHTMLSm = isHensol
                 ? `<div class="logo-area" style="margin-bottom:24px;"><img src="${logoUrl}" alt="Hensol Castle Logo" style="max-width:260px;height:auto;display:block;margin:0 auto 8px;">${hcTagline}</div>`
                 : `<div class="logo-area" style="margin-bottom:24px;"><img src="${logoUrl}" alt="Vale Resort Logo" style="max-width:140px;"><h1>The Vale Resort</h1><div class="tagline">Hensol &bull; Vale of Glamorgan</div></div>`;
+            const pdfDdrRoomDateStr = selectedOptions.ddrFunctionRoom ? formatRoomDateRange(selectedOptions.ddrFunctionRoom.startDate, selectedOptions.ddrFunctionRoom.endDate) : '';
             const pdfDdrRoom = selectedOptions.ddrFunctionRoom
-                ? `${selectedOptions.ddrFunctionRoom.name} (${selectedOptions.ddrFunctionRoom.venue})`
+                ? `${selectedOptions.ddrFunctionRoom.name} (${selectedOptions.ddrFunctionRoom.venue})${pdfDdrRoomDateStr ? ' — ' + pdfDdrRoomDateStr : ''}`
                 : '';
-            const pdfExtraRooms = selectedOptions.functionRooms.map(r => `${r.name} (${r.venue})`);
-            const roomsList = [pdfDdrRoom, ...pdfExtraRooms].filter(Boolean).join(', ') || '—';
+            const pdfExtraRooms = selectedOptions.functionRooms.map(r => {
+                const range = formatRoomDateRange(r.startDate, r.endDate);
+                return `${r.name} (${r.venue})${range ? ' — ' + range : ''}`;
+            });
+            const roomsList = [pdfDdrRoom, ...pdfExtraRooms].filter(Boolean).join('<br>') || '—';
 
             const quoteDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
             const total = selectedOptions.quote.total;
