@@ -667,6 +667,7 @@
                     <button class="tab-btn" onclick="switchTab('evening')">Evening</button>
                     <button class="tab-btn" onclick="switchTab('drinks')">Drinks</button>
                     <button class="tab-btn" onclick="switchTab('extras')">Extras</button>
+                    <button class="tab-btn" onclick="switchTab('preWedding')">Pre-Wedding</button>
                 </div>
 
                 <!-- Wedding Breakfast Tab -->
@@ -714,6 +715,17 @@
                 <div id="extras" class="tab-content">
                     <div class="section-subtitle">Add Optional Extras</div>
                     <div class="checkbox-group" id="extrasOptions"></div>
+                </div>
+
+                <!-- Pre-Wedding Party Tab -->
+                <div id="preWedding" class="tab-content">
+                    <div class="section-subtitle">Pre-Wedding Party at the Distillery</div>
+                    <p class="helper-text" style="margin-bottom:14px;">Private hire of the Hensol Castle Distillery Bar the night before the wedding. Min 15 / Max 50 guests, minimum spend £14.95pp.</p>
+                    <div class="form-group">
+                        <label for="preWeddingGuests">Number of Pre-Wedding Party Guests</label>
+                        <input type="number" id="preWeddingGuests" min="0" max="50" value="0" oninput="onPreWeddingGuestsChange();">
+                    </div>
+                    <div class="checkbox-group" id="preWeddingOptions"></div>
                 </div>
 
                 <!-- Custom Item -->
@@ -908,6 +920,20 @@
                 { year: 2028, name: "CHEESE & PATE TABLE (100 ppl)", unit: "Per100People", price: 1650.00 },
                 { year: 2028, name: "CHEESE & PATE TABLE (150 ppl)", unit: "Per150People", price: 1650.00 },
                 { year: 2028, name: "TRADITIONAL CHEESE PLATTER", unit: "PerTable", price: 104.50 }
+            ],
+            preWeddingParty: [
+                { year: 2026, name: "Nibbles", price: 14.95 },
+                { year: 2026, name: "Hot Finger Buffet", price: 21.95 },
+                { year: 2026, name: "Pizza Platter", price: 19.95 },
+                { year: 2026, name: "Grazing Table", price: 21.95 },
+                { year: 2027, name: "Nibbles", price: 14.95 },
+                { year: 2027, name: "Hot Finger Buffet", price: 21.95 },
+                { year: 2027, name: "Pizza Platter", price: 19.95 },
+                { year: 2027, name: "Grazing Table", price: 21.95 },
+                { year: 2028, name: "Nibbles", price: 16.45 },
+                { year: 2028, name: "Hot Finger Buffet", price: 24.15 },
+                { year: 2028, name: "Pizza Platter", price: 21.95 },
+                { year: 2028, name: "Grazing Table", price: 24.15 }
             ]
         };
 
@@ -930,6 +956,8 @@
             toastDrinks: [],
             extras: [],
             extraQtys: {},
+            preWedding: [],
+            preWeddingGuests: 0,
             quote: {}
         };
 
@@ -1028,6 +1056,10 @@
             selectedOptions.extras = [];
             selectedOptions.extraQtys = {};
             selectedOptions.includeDessert = false;
+            selectedOptions.preWedding = [];
+            selectedOptions.preWeddingGuests = 0;
+            const pwGuestsInput = document.getElementById('preWeddingGuests');
+            if (pwGuestsInput) pwGuestsInput.value = '0';
 
             // Breakfast
             const breakfastOptions = pricingData.breakfast.filter(b => b.year == year);
@@ -1084,9 +1116,13 @@
                 else if (item.unit.includes('Canape')) unitLabel = item.unit;
                 else if (item.unit === 'PerTable') unitLabel = 'table';
                 else if (item.unit.includes('People')) unitLabel = item.unit.replace('Per', '');
-                
+
                 return `${item.name} - £${item.price.toFixed(2)}/${unitLabel}`;
             }, 'extras');
+
+            // Pre-Wedding Party
+            const preWeddingOptions = pricingData.preWeddingParty.filter(p => p.year == year);
+            populatePreWeddingGroup(preWeddingOptions);
         }
 
         function populateRadioGroup(containerId, items, labelFn, category) {
@@ -1175,6 +1211,46 @@
 
                 container.appendChild(wrapper);
             });
+        }
+
+        function populatePreWeddingGroup(items) {
+            const container = document.getElementById('preWeddingOptions');
+            container.innerHTML = '';
+
+            items.forEach((item, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'checkbox-item';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `preWedding-${index}`;
+                checkbox.value = JSON.stringify(item);
+                checkbox.onchange = () => {
+                    if (checkbox.checked) {
+                        selectedOptions.preWedding.push(item);
+                    } else {
+                        selectedOptions.preWedding = selectedOptions.preWedding.filter(p => !(p.name === item.name && p.year === item.year));
+                    }
+                    recalculate();
+                    document.getElementById('generateBtn').textContent = 'Update Quote';
+                };
+
+                const label = document.createElement('label');
+                label.htmlFor = checkbox.id;
+                label.textContent = `${item.name} - £${item.price.toFixed(2)}/person`;
+
+                wrapper.appendChild(checkbox);
+                wrapper.appendChild(label);
+                container.appendChild(wrapper);
+            });
+        }
+
+        function onPreWeddingGuestsChange() {
+            const raw = parseInt(document.getElementById('preWeddingGuests').value);
+            const v = Math.max(0, Math.min(50, isNaN(raw) ? 0 : raw));
+            selectedOptions.preWeddingGuests = v;
+            recalculate();
+            document.getElementById('generateBtn').textContent = 'Update Quote';
         }
 
         function updateSelection(category, indexOrItem, checked, item) {
@@ -1481,6 +1557,32 @@
                 });
             });
 
+            // Pre-Wedding Party
+            if (selectedOptions.preWeddingGuests > 0 && selectedOptions.preWedding.length > 0) {
+                const pwGuests = selectedOptions.preWeddingGuests;
+                let pwTotal = 0;
+                const pwLines = [];
+                selectedOptions.preWedding.forEach((item, i, arr) => {
+                    const itemTotal = item.price * pwGuests;
+                    pwTotal += itemTotal;
+                    const isLast = i === arr.length - 1;
+                    pwLines.push({
+                        label: `  ${isLast ? '└─' : '├─'} ${item.name} (${pwGuests} × £${item.price.toFixed(2)})`,
+                        price: itemTotal,
+                        qty: pwGuests,
+                        unitPrice: item.price
+                    });
+                });
+                total += pwTotal;
+                summary.push({
+                    label: `Pre-Wedding Party (${pwGuests} guests)`,
+                    price: pwTotal,
+                    qty: null,
+                    unitPrice: null
+                });
+                pwLines.forEach(l => summary.push(l));
+            }
+
             // Update summary display
             // Custom item
             const customItemDescEl = document.getElementById('customItemDesc');
@@ -1624,6 +1726,13 @@
                 </div>`;
             }
 
+            if (selectedOptions.preWeddingGuests > 0 && selectedOptions.preWedding.length > 0) {
+                modalHTML += `<div class="modal-item">
+                    <div class="modal-item-label">Pre-Wedding Party</div>
+                    <div class="modal-item-value">${selectedOptions.preWeddingGuests} guests &middot; ${selectedOptions.preWedding.map(p => p.name).join(', ')}</div>
+                </div>`;
+            }
+
             modalHTML += `<div class="modal-item" style="background: #f0f1fa; border-left: 4px solid #667eea;">
                 <div class="modal-item-label">Cost Breakdown:</div>
                 ${selectedOptions.quote.summary.map(item => {
@@ -1674,6 +1783,10 @@
             });
             const dessertAddon = document.getElementById('dessert-addon');
             if (dessertAddon) dessertAddon.checked = true;
+            const pwGuestsResetEl = document.getElementById('preWeddingGuests');
+            if (pwGuestsResetEl) pwGuestsResetEl.value = '0';
+            const preWeddingContainer = document.getElementById('preWeddingOptions');
+            if (preWeddingContainer) preWeddingContainer.innerHTML = '';
             selectedOptions = {
                 date: '',
                 dayGuests: 80,
@@ -1693,6 +1806,8 @@
                 toastDrinks: [],
                 extras: [],
                 extraQtys: {},
+                preWedding: [],
+                preWeddingGuests: 0,
                 quote: {}
             };
             // Reset button text
@@ -1931,6 +2046,50 @@
             line-height: 1.8;
             letter-spacing: 0.5px;
         }
+        /* Page 2 - With Our Compliments */
+        .compliments-page {
+            page-break-before: always;
+            padding-top: 4px;
+        }
+        .compliments-intro {
+            text-align: center;
+            font-size: 12px;
+            color: #5a5a5a;
+            line-height: 1.6;
+            margin: 0 auto 22px;
+            max-width: 560px;
+            font-style: italic;
+        }
+        .compliments-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 22px 0;
+            border: 1px solid #d4c5b0;
+        }
+        .compliments-list li {
+            padding: 11px 14px 11px 36px;
+            position: relative;
+            font-size: 12.5px;
+            line-height: 1.5;
+            border-bottom: 1px dotted #d4c5b0;
+        }
+        .compliments-list li:last-child { border-bottom: none; }
+        .compliments-list li:nth-child(even) { background: #faf7f2; }
+        .compliments-list li::before {
+            content: '\\2756';
+            position: absolute;
+            left: 12px;
+            top: 11px;
+            color: #8b5a5a;
+            font-size: 12px;
+        }
+        .compliments-notes {
+            font-size: 10px;
+            color: #7a7a7a;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+        .compliments-notes p { margin-bottom: 3px; }
         @media print {
             body { padding: 24px 32px; }
         }
@@ -2030,6 +2189,51 @@
     <div class="footer">
         Hensol Castle Park, Hensol, Vale of Glamorgan, CF72 8JX<br>
         ${contactEmail} &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; hensolcastle.com/weddings
+    </div>
+
+    <div class="compliments-page">
+        <div class="logo-area">
+            <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1777282817/HClogo_blackwriting_z8ffpx.png" alt="Hensol Castle Logo">
+            <div class="tagline">Hensol Castle Park &bull; Vale of Glamorgan</div>
+        </div>
+
+        <div class="doc-title">With Our Compliments</div>
+
+        <p class="compliments-intro">
+            Every Hensol Castle wedding includes the following with our compliments &mdash;
+            our gift to you on your special day.
+        </p>
+
+        <ul class="compliments-list">
+            <li>Exclusive use of Hensol Castle for your special day*</li>
+            <li>23 complimentary bedrooms</li>
+            <li>Complimentary Hensol Castle Distillery miniature favours</li>
+            <li>Complimentary chiavari chairs</li>
+            <li>Complimentary white dance floor and light-up love letters</li>
+            <li>Complimentary first anniversary stay at the Vale Resort or Hensol Castle&dagger;</li>
+            <li>Complimentary round of golf for 4+ or 20% off spa treatments for the happy couple&Dagger;</li>
+            <li>Complimentary one month membership to the Vale Resort Health &amp; Racquets Club&sect;</li>
+            <li>Fairylight-lit wedding bandstand for outdoor ceremonies in our stunning grounds overlooking our breath-taking lake</li>
+            <li>Dedicated wedding co-ordinator</li>
+            <li>Tables, white linen tablecloths, napkins, silver cutlery and glassware</li>
+            <li>Wedding cake stand and knife</li>
+            <li>Hand-held microphone for speeches and music system for wedding reception background music</li>
+            <li>Fully licensed bar</li>
+            <li>Complimentary wifi and parking</li>
+        </ul>
+
+        <div class="compliments-notes">
+            <p>*Only one wedding per day at the venue, excludes Hensol Castle Atrium and Distillery.</p>
+            <p>&dagger;Terms and conditions apply.</p>
+            <p>&Dagger;Handicap certificates required.</p>
+            <p>&sect;One month prior to wedding.</p>
+            <p style="margin-top:8px;">All prices in this quotation are correct as of September 2025. Hensol Castle reserves the right to increase food and drink prices based on any external market increases.</p>
+        </div>
+
+        <div class="footer">
+            Hensol Castle Park, Hensol, Vale of Glamorgan, CF72 8JX<br>
+            ${contactEmail} &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; hensolcastle.com/weddings
+        </div>
     </div>
 </body>
 </html>`;
