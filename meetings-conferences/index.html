@@ -1597,6 +1597,21 @@
             row.rates[idx] = Math.max(0, parseFloat(value) || 0);
             recalculate();
         }
+        // Live updates for qty/nights — update state + recalc without re-rendering (preserves input focus while typing)
+        function updateBedroomQtyLive(id, value) {
+            const row = selectedOptions.bedrooms.find(r => r.id === id);
+            if (!row) return;
+            const n = parseInt(value);
+            row.qty = isNaN(n) ? 1 : Math.max(1, n);
+            recalculate();
+        }
+        function updateBedroomNightsLive(id, value) {
+            const row = selectedOptions.bedrooms.find(r => r.id === id);
+            if (!row) return;
+            const n = parseInt(value);
+            row.nights = isNaN(n) ? 1 : Math.max(1, n);
+            recalculate();
+        }
         function renderBedrooms() {
             const container = document.getElementById('bedroomRows');
             if (!container) return;
@@ -1604,7 +1619,7 @@
                 container.innerHTML = '<div class="helper-text" style="text-align:center; padding:14px; border:1px dashed #c9c1ad; border-radius:6px;">No bedrooms added yet — click "+ Add Bedroom" to start.</div>';
                 return;
             }
-            container.innerHTML = selectedOptions.bedrooms.map(row => {
+            container.innerHTML = selectedOptions.bedrooms.map((row, idx) => {
                 const surcharge = row.occupancy === 'Double' && row.package !== 'Room Only';
                 const ratesBlock = row.sameRate
                     ? `<div class="form-group" style="margin-bottom:0;">
@@ -1625,10 +1640,14 @@
                          }).join('')}
                          </div>
                        </div>`;
-                return `<div class="dyn-row" style="margin-bottom:14px;">
-                    <div class="dyn-row-header">
-                        <div class="dyn-row-title">Bedroom</div>
-                        <button class="remove-row-btn" type="button" onclick="removeBedroomRow('${row.id}')">&times;</button>
+                return `<div style="border:1px solid #c9c1ad; border-radius:8px; padding:16px; margin-bottom:14px; background:#faf8f3;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid #e0d8c4;">
+                        <div style="font-weight:600; font-size:1em; color:var(--primary-dark); letter-spacing:0.5px; text-transform:uppercase;">Bedroom #${idx + 1}</div>
+                        <button type="button" onclick="removeBedroomRow('${row.id}')"
+                            title="Remove bedroom"
+                            style="background:#fff; border:1px solid #c9c1ad; border-radius:50%; width:28px; height:28px; cursor:pointer; color:var(--primary-burgundy); font-size:1.1em; line-height:1; display:flex; align-items:center; justify-content:center; padding:0; transition:all 0.15s;"
+                            onmouseover="this.style.background='var(--primary-burgundy)'; this.style.color='#fff';"
+                            onmouseout="this.style.background='#fff'; this.style.color='var(--primary-burgundy)';">&times;</button>
                     </div>
                     <div style="display:grid; grid-template-columns:1fr 1fr 1fr 90px; gap:10px; margin-bottom:10px;">
                         <div class="form-group" style="margin-bottom:0;">
@@ -1655,7 +1674,7 @@
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label>Rooms</label>
-                            <input type="number" min="1" value="${row.qty}" oninput="updateBedroomField('${row.id}', 'qty', this.value)">
+                            <input type="number" min="1" value="${row.qty}" oninput="updateBedroomQtyLive('${row.id}', this.value)" onchange="updateBedroomField('${row.id}', 'qty', this.value)">
                         </div>
                     </div>
                     <div style="display:grid; grid-template-columns:1fr 90px 1fr; gap:10px; margin-bottom:10px;">
@@ -1665,7 +1684,7 @@
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label>Nights</label>
-                            <input type="number" min="1" value="${row.nights}" oninput="updateBedroomField('${row.id}', 'nights', this.value)">
+                            <input type="number" min="1" value="${row.nights}" oninput="updateBedroomNightsLive('${row.id}', this.value)" onchange="updateBedroomField('${row.id}', 'nights', this.value)">
                         </div>
                         <div class="form-group" style="margin-bottom:0; align-self:end;">
                             <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:500;">
