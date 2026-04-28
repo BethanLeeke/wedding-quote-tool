@@ -1891,7 +1891,7 @@
 
             // Standard refreshments included in package (Arrival, Mid-Morning, Afternoon T&C)
             if ((ddrEnabled || tfhEnabled) && totalDel > 0) {
-                ['Arrival Tea & Coffee', 'Mid-Morning Tea & Coffee', 'Afternoon Tea & Coffee'].forEach(label => {
+                ['Arrival Tea, Coffee & Danishes/Welsh Cakes', 'Mid-Morning Tea, Coffee & Biscuits', 'Afternoon Tea, Coffee & Biscuits'].forEach(label => {
                     summary.push({
                         label: `${label} (\u00D7 ${totalDel} delegates) (included in package)`,
                         price: 0, qty: totalDel, unitPrice: 0, ddrZero: true
