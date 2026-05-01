@@ -534,7 +534,45 @@
                         </div>
                     </div>
 
-                    <div class="section-subtitle">Options</div>
+                    <div class="form-group">
+                        <label for="dayMealTime">Time for Dinner / Lunch</label>
+                        <input type="text" id="dayMealTime" placeholder="e.g. 19:00" oninput="recalculate();">
+                        <div class="helper-text">Shown on the PDF quote</div>
+                    </div>
+
+                    <div class="section-subtitle">Discounts</div>
+                    <div style="padding:12px 16px; background:var(--primary-cream); border-radius:4px; margin-bottom:12px; border-left:3px solid var(--primary-green);">
+                        <div style="font-size:0.85em; font-weight:700; color:var(--primary-burgundy); margin-bottom:10px; letter-spacing:0.5px;">DISCOUNTED BUGGIES</div>
+                        <div class="date-grid" style="margin-bottom:0;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="dayDiscountedBuggies">Number of Discounted Buggies</label>
+                                <input type="number" id="dayDiscountedBuggies" min="0" value="0" oninput="recalculate();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="dayDiscountedBuggyPrice">Price per Discounted Buggy (&pound;)</label>
+                                <input type="number" id="dayDiscountedBuggyPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:12px 16px; background:var(--primary-cream); border-radius:4px; margin-bottom:14px; border-left:3px solid var(--primary-burgundy);">
+                        <div style="font-size:0.85em; font-weight:700; color:var(--primary-burgundy); margin-bottom:10px; letter-spacing:0.5px;">GREEN FEE DISCOUNT</div>
+                        <div class="date-grid" style="margin-bottom:0;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="dayGreenFeeDiscount">Discount Amount (&pound;)</label>
+                                <input type="number" id="dayGreenFeeDiscount" min="0" step="0.01" value="0" oninput="recalculate();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="dayFreeGreenFees">Number of Free Green Fees</label>
+                                <input type="number" id="dayFreeGreenFees" min="0" value="0" oninput="recalculate();">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-subtitle">Accommodation Add-ons <span style="color:var(--text-light); font-weight:500; text-transform:none;">(B&amp;B per bedroom)</span></div>
+                    <div id="dayAccommodationContainer"></div>
+                    <button type="button" class="btn btn-secondary" onclick="addDayAccommodationRow()" style="margin-top:6px; padding:10px 16px; font-size:0.9em;">+ Add Accommodation Row</button>
+
+                    <div class="section-subtitle" style="margin-top:24px;">Options</div>
                     <div class="form-group">
                         <label style="margin-bottom:10px;">Course Maintenance</label>
                         <div class="toggle-wrap">
@@ -593,7 +631,8 @@
                         </div>
                         <div class="form-group">
                             <label for="breakNonGolfers">Number of Non-Golfers</label>
-                            <input type="number" id="breakNonGolfers" min="0" value="0" oninput="updateBreakDefaults(); recalculate();">
+                            <input type="number" id="breakNonGolfers" value="0" readonly>
+                            <div class="helper-text">Auto-calculated from packages below</div>
                         </div>
                     </div>
 
@@ -617,16 +656,16 @@
                         </div>
                     </div>
 
-                    <div class="section-subtitle">Pricing</div>
+                    <div class="section-subtitle">Golfer Pricing</div>
                     <div class="form-group">
                         <label for="breakGolferPrice">Price Per Person &mdash; Golfers (&pound;)</label>
                         <input type="number" id="breakGolferPrice" min="0" step="0.01" value="0" oninput="recalculate();">
                         <div class="helper-text">1 in 16 go free</div>
                     </div>
-                    <div class="form-group">
-                        <label for="breakNonGolferPrice">Price Per Person &mdash; Non-Golfers (&pound;)</label>
-                        <input type="number" id="breakNonGolferPrice" min="0" step="0.01" value="0" oninput="recalculate();">
-                    </div>
+
+                    <div class="section-subtitle">Non-Golfer Packages</div>
+                    <p class="helper-text" style="margin-bottom:10px;">Allocate non-golfers to packages and set the price for each.</p>
+                    <div id="breakNonGolferPackagesContainer"></div>
 
                     <div class="section-subtitle">Options</div>
                     <div class="form-group">
@@ -681,22 +720,15 @@
                 </div>
 
                 <div class="form-section" style="margin-top:20px;">
-                    <h2 class="section-heading">Custom Item</h2>
-                    <p class="helper-text" style="margin-bottom:12px;">Add a custom line item (e.g., bespoke service or special request).</p>
-                    <div style="display:grid; grid-template-columns:1fr 80px 120px; gap:12px;">
-                        <div class="form-group">
-                            <label for="customItemDesc">Description</label>
-                            <input type="text" id="customItemDesc" placeholder="Item description" oninput="recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="customItemQty">Qty</label>
-                            <input type="number" id="customItemQty" min="1" value="1" oninput="recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="customItemPrice">Unit Price (£)</label>
-                            <input type="number" id="customItemPrice" min="0" step="0.01" value="0" oninput="recalculate();">
-                        </div>
-                    </div>
+                    <h2 class="section-heading">Custom Items</h2>
+                    <p class="helper-text" style="margin-bottom:12px;">Add custom line items (e.g., bespoke services or special requests).</p>
+                    <div id="customItemsContainer"></div>
+                    <button type="button" class="btn btn-secondary" onclick="addCustomItem()" style="margin-top:8px; padding:10px 16px; font-size:0.9em;">+ Add Custom Item</button>
+
+                    <h2 class="section-heading" style="margin-top:24px;">Custom Discounts</h2>
+                    <p class="helper-text" style="margin-bottom:12px;">Add custom discount lines (subtracted from total).</p>
+                    <div id="customDiscountsContainer"></div>
+                    <button type="button" class="btn btn-secondary" onclick="addCustomDiscount()" style="margin-top:8px; padding:10px 16px; font-size:0.9em;">+ Add Custom Discount</button>
                 </div>
 
                 <div class="btn-group">
@@ -727,18 +759,186 @@
     </div>
 
     <script>
-        function readCustomItem() {
-            const descEl = document.getElementById('customItemDesc');
-            if (!descEl) return null;
-            const desc = descEl.value.trim();
-            const qty = Math.max(0, parseInt(document.getElementById('customItemQty').value) || 0);
-            const price = Math.max(0, parseFloat(document.getElementById('customItemPrice').value) || 0);
-            if (!desc || qty <= 0 || price <= 0) return null;
-            const total = qty * price;
-            return {
-                label: qty > 1 ? `${desc} (${qty} x £${price.toFixed(2)})` : desc,
-                total
-            };
+        const NON_GOLFER_PACKAGES = ['DBB', 'DBB + Gin Tour', 'DBB + Spa Day', 'DBB + Spa & Gin Tour', 'B&B'];
+
+        /* ===================== CUSTOM ITEMS (multi-row) ===================== */
+        let customItemCounter = 0;
+        function addCustomItem(desc = '', qty = 1, price = 0) {
+            const id = customItemCounter++;
+            const container = document.getElementById('customItemsContainer');
+            const div = document.createElement('div');
+            div.id = `customItemRow_${id}`;
+            div.style.cssText = 'display:grid; grid-template-columns:1fr 80px 120px 38px; gap:10px; align-items:end; margin-bottom:10px;';
+            div.innerHTML = `
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.82em;">Description</label>
+                    <input type="text" class="custom-item-desc" placeholder="Item description" value="${desc.replace(/"/g, '&quot;')}" oninput="recalculate();">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.82em;">Qty</label>
+                    <input type="number" class="custom-item-qty" min="1" value="${qty}" oninput="recalculate();">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.82em;">Unit Price (£)</label>
+                    <input type="number" class="custom-item-price" min="0" step="0.01" value="${price}" oninput="recalculate();">
+                </div>
+                <button type="button" onclick="removeCustomItem('customItemRow_${id}')" style="background:#c75366; color:white; border:none; border-radius:4px; padding:13px 8px; cursor:pointer; font-weight:bold; font-size:1.2em; line-height:1;" title="Remove">×</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeCustomItem(rowId) {
+            const el = document.getElementById(rowId);
+            if (el) el.remove();
+            recalculate();
+        }
+
+        function readCustomItems() {
+            const items = [];
+            document.querySelectorAll('#customItemsContainer > div').forEach(row => {
+                const desc = row.querySelector('.custom-item-desc').value.trim();
+                const qty = Math.max(0, parseInt(row.querySelector('.custom-item-qty').value) || 0);
+                const price = Math.max(0, parseFloat(row.querySelector('.custom-item-price').value) || 0);
+                if (desc && qty > 0 && price > 0) {
+                    const total = qty * price;
+                    items.push({
+                        label: qty > 1 ? `${desc} (${qty} x £${price.toFixed(2)})` : desc,
+                        total, desc, qty, price
+                    });
+                }
+            });
+            return items;
+        }
+
+        /* ===================== CUSTOM DISCOUNTS (multi-row) ===================== */
+        let customDiscountCounter = 0;
+        function addCustomDiscount(desc = '', amount = 0) {
+            const id = customDiscountCounter++;
+            const container = document.getElementById('customDiscountsContainer');
+            const div = document.createElement('div');
+            div.id = `customDiscountRow_${id}`;
+            div.style.cssText = 'display:grid; grid-template-columns:1fr 140px 38px; gap:10px; align-items:end; margin-bottom:10px;';
+            div.innerHTML = `
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.82em;">Description</label>
+                    <input type="text" class="custom-discount-desc" placeholder="Discount description" value="${desc.replace(/"/g, '&quot;')}" oninput="recalculate();">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.82em;">Discount (£)</label>
+                    <input type="number" class="custom-discount-amount" min="0" step="0.01" value="${amount}" oninput="recalculate();">
+                </div>
+                <button type="button" onclick="removeCustomDiscount('customDiscountRow_${id}')" style="background:#c75366; color:white; border:none; border-radius:4px; padding:13px 8px; cursor:pointer; font-weight:bold; font-size:1.2em; line-height:1;" title="Remove">×</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeCustomDiscount(rowId) {
+            const el = document.getElementById(rowId);
+            if (el) el.remove();
+            recalculate();
+        }
+
+        function readCustomDiscounts() {
+            const discounts = [];
+            document.querySelectorAll('#customDiscountsContainer > div').forEach(row => {
+                const desc = row.querySelector('.custom-discount-desc').value.trim();
+                const amount = Math.max(0, parseFloat(row.querySelector('.custom-discount-amount').value) || 0);
+                if (desc && amount > 0) {
+                    discounts.push({ desc, amount, label: desc });
+                }
+            });
+            return discounts;
+        }
+
+        /* ===================== GOLF DAY ACCOMMODATION ADD-ONS ===================== */
+        let dayAccomCounter = 0;
+        function addDayAccommodationRow(date = '', rate = 0, occupancy = 'Double') {
+            const id = dayAccomCounter++;
+            const container = document.getElementById('dayAccommodationContainer');
+            const div = document.createElement('div');
+            div.id = `dayAccomRow_${id}`;
+            div.style.cssText = 'display:grid; grid-template-columns:1fr 1fr 1fr 38px; gap:10px; align-items:end; margin-bottom:10px;';
+            div.innerHTML = `
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.82em;">Date</label>
+                    <input type="date" class="day-accom-date" value="${date}" oninput="recalculate();">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.82em;">Rate per Bedroom (£)</label>
+                    <input type="number" class="day-accom-rate" min="0" step="0.01" value="${rate}" oninput="recalculate();">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.82em;">Occupancy</label>
+                    <select class="day-accom-occupancy" onchange="recalculate();">
+                        <option value="Double" ${occupancy === 'Double' ? 'selected' : ''}>Double</option>
+                        <option value="Single" ${occupancy === 'Single' ? 'selected' : ''}>Single</option>
+                    </select>
+                </div>
+                <button type="button" onclick="removeDayAccommodationRow('dayAccomRow_${id}')" style="background:#c75366; color:white; border:none; border-radius:4px; padding:13px 8px; cursor:pointer; font-weight:bold; font-size:1.2em; line-height:1;" title="Remove">×</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeDayAccommodationRow(rowId) {
+            const el = document.getElementById(rowId);
+            if (el) el.remove();
+            recalculate();
+        }
+
+        function readDayAccommodation() {
+            const rows = [];
+            document.querySelectorAll('#dayAccommodationContainer > div').forEach(row => {
+                const date = row.querySelector('.day-accom-date').value;
+                const rate = Math.max(0, parseFloat(row.querySelector('.day-accom-rate').value) || 0);
+                const occupancy = row.querySelector('.day-accom-occupancy').value;
+                if (date && rate > 0) {
+                    rows.push({ date, rate, occupancy, packageType: 'B&B' });
+                }
+            });
+            return rows;
+        }
+
+        /* ===================== NON-GOLFER PACKAGES ===================== */
+        function buildNonGolferPackages() {
+            const container = document.getElementById('breakNonGolferPackagesContainer');
+            if (!container) return;
+            const existing = {};
+            container.querySelectorAll('input').forEach(inp => { existing[inp.id] = inp.value; });
+            let html = '';
+            NON_GOLFER_PACKAGES.forEach((pkg, idx) => {
+                const countId = `ngPkgCount_${idx}`;
+                const priceId = `ngPkgPrice_${idx}`;
+                html += `
+                <div style="padding:10px 14px; background:var(--primary-cream); border-radius:4px; margin-bottom:8px; border-left:3px solid var(--primary-green);">
+                    <div style="font-size:0.85em; font-weight:700; color:var(--primary-burgundy); margin-bottom:8px; letter-spacing:0.5px;">${pkg.toUpperCase()}</div>
+                    <div class="date-grid" style="margin-bottom:0;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="${countId}" style="font-size:0.8em;">Number of Guests</label>
+                            <input type="number" id="${countId}" min="0" value="${existing[countId] || '0'}" oninput="updateBreakDefaults(); recalculate();">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="${priceId}" style="font-size:0.8em;">Price Per Person (£)</label>
+                            <input type="number" id="${priceId}" min="0" step="0.01" value="${existing[priceId] || '0'}" oninput="recalculate();">
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function readNonGolferPackages() {
+            const rows = [];
+            NON_GOLFER_PACKAGES.forEach((pkg, idx) => {
+                const countEl = document.getElementById(`ngPkgCount_${idx}`);
+                const priceEl = document.getElementById(`ngPkgPrice_${idx}`);
+                if (!countEl || !priceEl) return;
+                const count = Math.max(0, parseInt(countEl.value) || 0);
+                const price = Math.max(0, parseFloat(priceEl.value) || 0);
+                if (count > 0) {
+                    rows.push({ package: pkg, count, price, total: count * price });
+                }
+            });
+            return rows;
         }
 
         const CONTACT_EMAILS = {
@@ -769,7 +969,9 @@
         /* ===================== AUTO-UPDATE HELPERS ===================== */
         function updateBreakDefaults() {
             const golfers = Math.max(0, parseInt(document.getElementById('breakGolfers').value) || 0);
-            const nonGolfers = Math.max(0, parseInt(document.getElementById('breakNonGolfers').value) || 0);
+            const packages = readNonGolferPackages();
+            const nonGolfers = packages.reduce((sum, p) => sum + p.count, 0);
+            document.getElementById('breakNonGolfers').value = nonGolfers;
             const total = golfers + nonGolfers;
             document.getElementById('breakTotalGuests').value = total;
         }
@@ -809,9 +1011,10 @@
 
                 const lakeId = `breakTeeLake_${i}`;
                 const wnId = `breakTeeWN_${i}`;
+                const dinnerId = `breakDinner_${i}`;
                 html += `<div style="margin-bottom:14px;">
                     <div style="font-size:0.85em; font-weight:600; color:var(--primary-dark); margin-bottom:8px;">${dayLabel}${dateLabel}</div>
-                    <div class="date-grid" style="margin-bottom:0;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:0;">
                         <div class="form-group" style="margin-bottom:0;">
                             <label for="${lakeId}" style="font-size:0.8em; font-weight:500;">Lake Course</label>
                             <input type="text" id="${lakeId}" placeholder="e.g. 08:30" value="${existing[lakeId] || ''}" oninput="recalculate();">
@@ -819,6 +1022,10 @@
                         <div class="form-group" style="margin-bottom:0;">
                             <label for="${wnId}" style="font-size:0.8em; font-weight:500;">Wales National</label>
                             <input type="text" id="${wnId}" placeholder="e.g. 10:00" value="${existing[wnId] || ''}" oninput="recalculate();">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="${dinnerId}" style="font-size:0.8em; font-weight:500;">Dinner Time</label>
+                            <input type="text" id="${dinnerId}" placeholder="e.g. 19:00" value="${existing[dinnerId] || ''}" oninput="recalculate();">
                         </div>
                     </div>
                 </div>`;
@@ -844,6 +1051,7 @@
             for (let i = 0; i < days; i++) {
                 const lake = (document.getElementById(`breakTeeLake_${i}`)?.value || '').trim();
                 const wn = (document.getElementById(`breakTeeWN_${i}`)?.value || '').trim();
+                const dinner = (document.getElementById(`breakDinner_${i}`)?.value || '').trim();
                 let dateLabel = '';
                 if (arrival) {
                     const d = new Date(arrival);
@@ -853,7 +1061,7 @@
                 let dayLabel = `Day ${i + 1}`;
                 if (i === 0) dayLabel += ' (Arrival)';
                 else if (i === days - 1) dayLabel += ' (Departure)';
-                if (lake || wn) out.push({ dayLabel, dateLabel, lake, wn });
+                if (lake || wn || dinner) out.push({ dayLabel, dateLabel, lake, wn, dinner });
             }
             return out;
         }
@@ -877,8 +1085,14 @@
             const course = document.getElementById('dayCourse').value;
             const mealOption = document.getElementById('dayMealOption').value;
             const mealCourses = parseInt(document.getElementById('dayMealCourses').value) || 2;
+            const mealTime = (document.getElementById('dayMealTime').value || '').trim();
             const additionalBaconRolls = Math.max(0, parseInt(document.getElementById('dayAdditionalBaconRolls').value) || 0);
             const additionalMeals = Math.max(0, parseInt(document.getElementById('dayAdditionalMeals').value) || 0);
+            const discountedBuggies = Math.max(0, parseInt(document.getElementById('dayDiscountedBuggies').value) || 0);
+            const discountedBuggyPrice = Math.max(0, parseFloat(document.getElementById('dayDiscountedBuggyPrice').value) || 0);
+            const greenFeeDiscount = Math.max(0, parseFloat(document.getElementById('dayGreenFeeDiscount').value) || 0);
+            const freeGreenFees = Math.max(0, parseInt(document.getElementById('dayFreeGreenFees').value) || 0);
+            const accommodationRows = readDayAccommodation();
 
             const summary = [];
             let total = 0;
@@ -909,6 +1123,22 @@
                 });
             }
 
+            if (discountedBuggies > 0 && discountedBuggyPrice > 0) {
+                const dbt = discountedBuggies * discountedBuggyPrice;
+                total += dbt;
+                summary.push({ label: `Discounted Buggies (${discountedBuggies} x \u00A3${discountedBuggyPrice.toFixed(2)})`, price: dbt });
+            }
+
+            if (greenFeeDiscount > 0) {
+                total -= greenFeeDiscount;
+                const lbl = freeGreenFees > 0
+                    ? `Green Fee Discount (${freeGreenFees} free green fee${freeGreenFees > 1 ? 's' : ''})`
+                    : 'Green Fee Discount';
+                summary.push({ label: lbl, price: -greenFeeDiscount, type: 'discount' });
+            } else if (freeGreenFees > 0) {
+                summary.push({ label: 'Free Green Fees', price: null, type: 'info', text: `${freeGreenFees} free` });
+            }
+
             if (additionalBaconRolls > 0) {
                 const br = additionalBaconRolls * 7;
                 total += br;
@@ -922,17 +1152,30 @@
                 summary.push({ label: `Additional ${mealOption} (${additionalMeals} x \u00A3${unit.toFixed(2)}, ${mealCourses} course)`, price: mt });
             }
 
+            // Accommodation add-ons
+            accommodationRows.forEach(r => {
+                total += r.rate;
+                summary.push({ label: `B&B ${r.occupancy} Room`, price: r.rate });
+            });
+
             if (courseMaintenance) {
                 const msg = courseMaintenanceText ? courseMaintenanceText : 'May be taking place';
                 summary.push({ label: 'Course Maintenance', price: null, type: 'info', text: msg });
             }
 
-            // Custom item
-            const customItem = readCustomItem();
-            if (customItem) {
-                summary.push({ label: customItem.label, price: customItem.total });
-                total += customItem.total;
-            }
+            // Custom items
+            const customItems = readCustomItems();
+            customItems.forEach(ci => {
+                summary.push({ label: ci.label, price: ci.total });
+                total += ci.total;
+            });
+
+            // Custom discounts
+            const customDiscounts = readCustomDiscounts();
+            customDiscounts.forEach(cd => {
+                summary.push({ label: cd.label, price: -cd.amount, type: 'discount' });
+                total -= cd.amount;
+            });
 
             const deposit = 10 * golfers;
 
@@ -943,25 +1186,32 @@
             ];
 
             renderSummary(summary, total, deposit, packageIncludes, {
-                course, mealOption, mealCourses, additionalBaconRolls, additionalMeals
+                course, mealOption, mealCourses, additionalBaconRolls, additionalMeals, mealTime,
+                accommodationRows
             });
 
             window._currentQuote = {
                 mode: 'day', summary, total, deposit, golfers, rounds, buggies, pricePerPerson,
-                courseMaintenance, courseMaintenanceText, course, mealOption, mealCourses,
-                additionalBaconRolls, additionalMeals, freePlaces
+                courseMaintenance, courseMaintenanceText, course, mealOption, mealCourses, mealTime,
+                additionalBaconRolls, additionalMeals, freePlaces,
+                discountedBuggies, discountedBuggyPrice, greenFeeDiscount, freeGreenFees,
+                accommodationRows, customItems, customDiscounts
             };
         }
 
         function recalculateBreak() {
             const golfers = Math.max(0, parseInt(document.getElementById('breakGolfers').value) || 0);
-            const nonGolfers = Math.max(0, parseInt(document.getElementById('breakNonGolfers').value) || 0);
+            const nonGolferPackages = readNonGolferPackages();
+            const nonGolfers = nonGolferPackages.reduce((s, p) => s + p.count, 0);
+            // Keep displayed Non-Golfers in sync
+            document.getElementById('breakNonGolfers').value = nonGolfers;
             const totalGuests = golfers + nonGolfers;
+            document.getElementById('breakTotalGuests').value = totalGuests;
+
             const nights = Math.max(1, parseInt(document.getElementById('breakNights').value) || 1);
             const rounds = Math.max(1, parseInt(document.getElementById('breakRounds').value) || 1);
             const buggies = Math.max(0, parseInt(document.getElementById('breakBuggies').value) || 0);
             const golferPrice = Math.max(0, parseFloat(document.getElementById('breakGolferPrice').value) || 0);
-            const nonGolferPrice = Math.max(0, parseFloat(document.getElementById('breakNonGolferPrice').value) || 0);
             const drinksVoucher = document.getElementById('breakDrinksVoucher').checked;
             const courseMaintenance = document.getElementById('breakCourseMaintenance').checked;
             const courseMaintenanceText = (document.getElementById('breakCourseMaintenanceText').value || '').trim();
@@ -981,11 +1231,15 @@
                 summary.push({ label: `Golfers Package (${golfers} x \u00A3${golferPrice.toFixed(2)})`, price: gt });
             }
 
-            if (nonGolferPrice > 0 && nonGolfers > 0) {
-                const nt = nonGolfers * nonGolferPrice;
-                total += nt;
-                summary.push({ label: `Non-Golfers Package (${nonGolfers} x \u00A3${nonGolferPrice.toFixed(2)})`, price: nt });
-            }
+            // Non-golfer packages
+            nonGolferPackages.forEach(p => {
+                if (p.price > 0) {
+                    total += p.total;
+                    summary.push({ label: `${p.package} (${p.count} x \u00A3${p.price.toFixed(2)})`, price: p.total });
+                } else {
+                    summary.push({ label: `${p.package}`, price: null, type: 'info', text: `${p.count} guest${p.count > 1 ? 's' : ''} (price TBC)` });
+                }
+            });
 
             // 1 in 16 go free
             const freePlaces = Math.floor(totalGuests / 16);
@@ -1023,12 +1277,19 @@
                 packageIncludes.push('\u00A310 per person drinks voucher');
             }
 
-            // Custom item
-            const customItem = readCustomItem();
-            if (customItem) {
-                summary.push({ label: customItem.label, price: customItem.total });
-                total += customItem.total;
-            }
+            // Custom items
+            const customItems = readCustomItems();
+            customItems.forEach(ci => {
+                summary.push({ label: ci.label, price: ci.total });
+                total += ci.total;
+            });
+
+            // Custom discounts
+            const customDiscounts = readCustomDiscounts();
+            customDiscounts.forEach(cd => {
+                summary.push({ label: cd.label, price: -cd.amount, type: 'discount' });
+                total -= cd.amount;
+            });
 
             renderSummary(summary, total, deposit, packageIncludes, {
                 valeTwinRooms, valeSingleRooms, hensolTwinRooms, hensolSingleRooms, teeTimes
@@ -1036,9 +1297,9 @@
 
             window._currentQuote = {
                 mode: 'break', summary, total, deposit, golfers, nonGolfers, totalGuests, nights, rounds,
-                buggies, golferPrice, nonGolferPrice, drinksVoucher, courseMaintenance, courseMaintenanceText,
+                buggies, golferPrice, drinksVoucher, courseMaintenance, courseMaintenanceText,
                 valeTwinRooms, valeSingleRooms, hensolTwinRooms, hensolSingleRooms, totalSingleRooms,
-                teeTimes, freePlaces
+                teeTimes, freePlaces, nonGolferPackages, customItems, customDiscounts
             };
         }
 
@@ -1082,6 +1343,7 @@
                             let parts = [];
                             if (t.lake) parts.push(`Lake ${t.lake}`);
                             if (t.wn) parts.push(`WN ${t.wn}`);
+                            if (t.dinner) parts.push(`Dinner ${t.dinner}`);
                             html += `<div class="quote-item info-line"><span>${t.dayLabel}</span><span>${parts.join(' / ')}</span></div>`;
                         });
                     }
@@ -1090,7 +1352,20 @@
                     html += `<div class="quote-item info-line"><span>Course</span><span>${extra.course}</span></div>`;
                 }
                 if (extra.mealOption) {
-                    html += `<div class="quote-item info-line"><span>${extra.mealOption} Courses</span><span>${extra.mealCourses} course${extra.mealCourses > 1 ? 's' : ''}</span></div>`;
+                    let mealText = `${extra.mealCourses} course${extra.mealCourses > 1 ? 's' : ''}`;
+                    if (extra.mealTime) mealText += ` @ ${extra.mealTime}`;
+                    html += `<div class="quote-item info-line"><span>${extra.mealOption}</span><span>${mealText}</span></div>`;
+                }
+                if (extra.accommodationRows && extra.accommodationRows.length > 0) {
+                    extra.accommodationRows.forEach(r => {
+                        const dateStr = (() => {
+                            try {
+                                const d = new Date(r.date);
+                                return isNaN(d.getTime()) ? r.date : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+                            } catch (e) { return r.date; }
+                        })();
+                        html += `<div class="quote-item info-line"><span>B&amp;B ${r.occupancy} (${dateStr})</span><span>£${r.rate.toFixed(2)}</span></div>`;
+                    });
                 }
             }
 
@@ -1115,10 +1390,15 @@
             } else {
                 if (!document.getElementById('breakArrivalDate').value) { alert('Please select an arrival date.'); return; }
                 const gp = parseFloat(document.getElementById('breakGolferPrice').value) || 0;
-                const ngp = parseFloat(document.getElementById('breakNonGolferPrice').value) || 0;
                 const g = parseInt(document.getElementById('breakGolfers').value) || 0;
+                const packages = readNonGolferPackages();
+                const totalNonGolfers = packages.reduce((s, p) => s + p.count, 0);
+                const anyNonGolferPriced = packages.some(p => p.price > 0);
                 if (g > 0 && gp <= 0) { alert('Please enter a price per person for golfers.'); return; }
-                if (g === 0 && ngp <= 0) { alert('Please enter at least one golfer or a non-golfer price.'); return; }
+                if (g === 0 && (totalNonGolfers === 0 || !anyNonGolferPriced)) {
+                    alert('Please enter at least one golfer with a price, or non-golfers with a package price.');
+                    return;
+                }
             }
 
             displayQuoteModal();
@@ -1154,13 +1434,37 @@
                 html += modalItem('Course', q.course);
                 html += modalItem('Rounds', q.rounds);
                 html += modalItem('Buggies', q.buggies);
-                html += modalItem('Meal', `${q.mealOption} (${q.mealCourses} course${q.mealCourses > 1 ? 's' : ''})`);
+                let mealLabel = `${q.mealOption} (${q.mealCourses} course${q.mealCourses > 1 ? 's' : ''})`;
+                if (q.mealTime) mealLabel += ` &mdash; ${q.mealTime}`;
+                html += modalItem('Meal', mealLabel);
                 if (q.additionalBaconRolls > 0) html += modalItem('Additional Bacon Rolls', `${q.additionalBaconRolls} x \u00A37.00`);
                 if (q.additionalMeals > 0) {
                     const unit = q.mealCourses === 1 ? 19.50 : 25;
                     html += modalItem(`Additional ${q.mealOption}`, `${q.additionalMeals} x \u00A3${unit.toFixed(2)}`);
                 }
+                if (q.discountedBuggies > 0 && q.discountedBuggyPrice > 0) {
+                    html += modalItem('Discounted Buggies', `${q.discountedBuggies} x \u00A3${q.discountedBuggyPrice.toFixed(2)}`);
+                }
+                if (q.greenFeeDiscount > 0 || q.freeGreenFees > 0) {
+                    let gfText = '';
+                    if (q.greenFeeDiscount > 0) gfText += `Discount: -\u00A3${q.greenFeeDiscount.toFixed(2)}`;
+                    if (q.freeGreenFees > 0) gfText += (gfText ? ' &mdash; ' : '') + `${q.freeGreenFees} free green fee${q.freeGreenFees > 1 ? 's' : ''}`;
+                    html += modalItem('Green Fee Discount', gfText);
+                }
                 if (q.freePlaces > 0) html += modalItem('1 in 12 Free', `${q.freePlaces} free place${q.freePlaces > 1 ? 's' : ''}`);
+                if (q.accommodationRows && q.accommodationRows.length > 0) {
+                    let accomTxt = '';
+                    q.accommodationRows.forEach(r => {
+                        const dateStr = (() => {
+                            try {
+                                const d = new Date(r.date);
+                                return isNaN(d.getTime()) ? r.date : d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+                            } catch (e) { return r.date; }
+                        })();
+                        accomTxt += `<strong>${dateStr}</strong> &mdash; B&amp;B ${r.occupancy}: \u00A3${r.rate.toFixed(2)}<br>`;
+                    });
+                    html += modalItem('Accommodation Add-ons', accomTxt);
+                }
                 if (q.courseMaintenance) {
                     html += modalItem('Course Maintenance', q.courseMaintenanceText || 'May be taking place');
                 } else {
@@ -1184,15 +1488,24 @@
                 } else {
                     html += modalItem('Course Maintenance', 'No course maintenance is planned');
                 }
+                if (q.nonGolferPackages && q.nonGolferPackages.length > 0) {
+                    let pkgTxt = '';
+                    q.nonGolferPackages.forEach(p => {
+                        const priceTxt = p.price > 0 ? `£${p.price.toFixed(2)} pp` : 'price TBC';
+                        pkgTxt += `<strong>${p.package}:</strong> ${p.count} guest${p.count > 1 ? 's' : ''} @ ${priceTxt}<br>`;
+                    });
+                    html += modalItem('Non-Golfer Packages', pkgTxt);
+                }
                 if (q.teeTimes && q.teeTimes.length > 0) {
                     let teeTxt = '';
                     q.teeTimes.forEach(t => {
                         let parts = [];
                         if (t.lake) parts.push(`Lake: ${t.lake}`);
                         if (t.wn) parts.push(`Wales National: ${t.wn}`);
+                        if (t.dinner) parts.push(`Dinner: ${t.dinner}`);
                         teeTxt += `<strong>${t.dayLabel}</strong>${t.dateLabel ? ' &mdash; ' + t.dateLabel : ''}: ${parts.join(' / ')}<br>`;
                     });
-                    html += modalItem('Tee Times', teeTxt);
+                    html += modalItem('Tee &amp; Dinner Times', teeTxt);
                 }
                 let accomParts = [];
                 if (q.valeTwinRooms > 0 || q.valeSingleRooms > 0) {
@@ -1255,11 +1568,17 @@
                 document.getElementById('dayCourse').value = 'Wales National Course';
                 document.getElementById('dayMealOption').value = 'Dinner';
                 document.getElementById('dayMealCourses').value = '2';
+                document.getElementById('dayMealTime').value = '';
                 document.getElementById('dayAdditionalBaconRolls').value = '0';
                 document.getElementById('dayAdditionalMeals').value = '0';
+                document.getElementById('dayDiscountedBuggies').value = '0';
+                document.getElementById('dayDiscountedBuggyPrice').value = '0';
+                document.getElementById('dayGreenFeeDiscount').value = '0';
+                document.getElementById('dayFreeGreenFees').value = '0';
                 document.getElementById('dayCourseMaintenance').checked = false;
                 document.getElementById('dayCourseMaintenanceText').value = '';
                 document.getElementById('dayCourseMaintenanceTextWrap').style.display = 'none';
+                document.getElementById('dayAccommodationContainer').innerHTML = '';
             } else {
                 document.getElementById('breakArrivalDate').value = '';
                 document.getElementById('breakDepartureDate').value = '';
@@ -1271,7 +1590,6 @@
                 document.getElementById('breakRounds').value = '1';
                 document.getElementById('breakBuggies').value = '0';
                 document.getElementById('breakGolferPrice').value = '0';
-                document.getElementById('breakNonGolferPrice').value = '0';
                 document.getElementById('breakDrinksVoucher').checked = false;
                 document.getElementById('breakCourseMaintenance').checked = false;
                 document.getElementById('breakCourseMaintenanceText').value = '';
@@ -1280,11 +1598,15 @@
                 document.getElementById('breakValeSingleRooms').value = '0';
                 document.getElementById('breakHensolTwinRooms').value = '0';
                 document.getElementById('breakHensolSingleRooms').value = '0';
+                // Reset non-golfer packages by re-rendering with cleared values
+                NON_GOLFER_PACKAGES.forEach((_, idx) => {
+                    const c = document.getElementById(`ngPkgCount_${idx}`); if (c) c.value = '0';
+                    const p = document.getElementById(`ngPkgPrice_${idx}`); if (p) p.value = '0';
+                });
                 buildBreakTeeTimes();
             }
-            document.getElementById('customItemDesc').value = '';
-            document.getElementById('customItemQty').value = '1';
-            document.getElementById('customItemPrice').value = '0';
+            document.getElementById('customItemsContainer').innerHTML = '';
+            document.getElementById('customDiscountsContainer').innerHTML = '';
             document.getElementById('generateBtn').textContent = 'Generate Quote';
             document.getElementById('quoteStatus').style.display = 'none';
             closeModal();
@@ -1478,15 +1800,87 @@
             if (q.buggies > 0) {
                 lineRows += pdfRow('Buggies', q.buggies, 50, q.buggies * 50);
             }
+            if (q.discountedBuggies > 0 && q.discountedBuggyPrice > 0) {
+                lineRows += pdfRow('Discounted Buggies', q.discountedBuggies, q.discountedBuggyPrice, q.discountedBuggies * q.discountedBuggyPrice);
+            }
+            if (q.greenFeeDiscount > 0) {
+                const lbl = q.freeGreenFees > 0
+                    ? `Green Fee Discount (${q.freeGreenFees} free green fee${q.freeGreenFees > 1 ? 's' : ''})`
+                    : 'Green Fee Discount';
+                lineRows += `<tr style="color:#6d8062; font-weight:600;">
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">${lbl}</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">\u2014</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${q.greenFeeDiscount.toFixed(2)}</td>
+                </tr>`;
+            } else if (q.freeGreenFees > 0) {
+                lineRows += `<tr style="font-style:italic; color:#6d8062;"><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">Free Green Fees</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">${q.freeGreenFees}</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td></tr>`;
+            }
             if (q.additionalBaconRolls > 0) {
                 lineRows += pdfRow('Additional Bacon Rolls', q.additionalBaconRolls, 7, q.additionalBaconRolls * 7);
             }
             if (q.additionalMeals > 0) {
                 lineRows += pdfRow(`Additional ${q.mealOption} (${q.mealCourses} course)`, q.additionalMeals, unitMeal, q.additionalMeals * unitMeal);
             }
+            if (q.accommodationRows && q.accommodationRows.length > 0) {
+                q.accommodationRows.forEach(r => {
+                    const dateStr = (() => {
+                        try {
+                            const d = new Date(r.date);
+                            return isNaN(d.getTime()) ? r.date : d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+                        } catch (e) { return r.date; }
+                    })();
+                    lineRows += pdfRow(`B&amp;B ${r.occupancy} Room &mdash; ${dateStr}`, 1, r.rate, r.rate);
+                });
+            }
+            if (q.customItems && q.customItems.length > 0) {
+                q.customItems.forEach(ci => {
+                    lineRows += pdfRow(ci.desc, ci.qty, ci.price, ci.total);
+                });
+            }
+            if (q.customDiscounts && q.customDiscounts.length > 0) {
+                q.customDiscounts.forEach(cd => {
+                    lineRows += `<tr style="color:#6d8062; font-weight:600;">
+                        <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">${cd.desc}</td>
+                        <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">\u2014</td>
+                        <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td>
+                        <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${cd.amount.toFixed(2)}</td>
+                    </tr>`;
+                });
+            }
             if (q.courseMaintenance) {
                 const msg = q.courseMaintenanceText ? q.courseMaintenanceText : 'May be taking place';
                 lineRows += `<tr style="font-style:italic; color:#6d8062;"><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">Course Maintenance</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">${msg}</td></tr>`;
+            }
+
+            // Accommodation block for top of page 1
+            let accomBlock = '';
+            if (q.accommodationRows && q.accommodationRows.length > 0) {
+                accomBlock = `<div style="margin:14px 0 18px 0;">
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:#6d8062; margin-bottom:6px; font-weight:600;">Accommodation Add-ons</div>
+                    <table style="width:100%; border-collapse:collapse; border:1px solid #c9c1ad;">
+                        <thead><tr style="background:#2a2e3a; color:#fff;">
+                            <th style="padding:6px 10px; font-size:10px; text-transform:uppercase; letter-spacing:1px; text-align:left;">Date</th>
+                            <th style="padding:6px 10px; font-size:10px; text-transform:uppercase; letter-spacing:1px; text-align:center;">Occupancy</th>
+                            <th style="padding:6px 10px; font-size:10px; text-transform:uppercase; letter-spacing:1px; text-align:center;">Package</th>
+                            <th style="padding:6px 10px; font-size:10px; text-transform:uppercase; letter-spacing:1px; text-align:right;">Rate (per bedroom)</th>
+                        </tr></thead><tbody>
+                        ${q.accommodationRows.map((r, idx) => {
+                            const dateStr = (() => {
+                                try {
+                                    const d = new Date(r.date);
+                                    return isNaN(d.getTime()) ? r.date : d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+                                } catch (e) { return r.date; }
+                            })();
+                            return `<tr style="${idx % 2 === 1 ? 'background:#f7f4eb;' : ''}">
+                                <td style="padding:7px 10px; font-size:12px;">${dateStr}</td>
+                                <td style="padding:7px 10px; font-size:12px; text-align:center;">${r.occupancy}</td>
+                                <td style="padding:7px 10px; font-size:12px; text-align:center;">${r.packageType}</td>
+                                <td style="padding:7px 10px; font-size:12px; text-align:right;">£${r.rate.toFixed(2)}</td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody></table>
+                </div>`;
             }
 
             const html = `<!DOCTYPE html><html><head><title>Vale Resort Golf Day Quotation</title><style>${pdfStyles()}</style></head><body>
@@ -1501,7 +1895,7 @@
                     <div class="meta-row"><span class="meta-label">Course</span><span class="meta-value">${q.course}</span></div>
                     <div class="meta-row"><span class="meta-label">Rounds</span><span class="meta-value">${q.rounds}</span></div>
                     <div class="meta-row"><span class="meta-label">Buggies</span><span class="meta-value">${q.buggies}</span></div>
-                    <div class="meta-row"><span class="meta-label">Meal</span><span class="meta-value">${q.mealOption} (${q.mealCourses} course${q.mealCourses > 1 ? 's' : ''})</span></div>
+                    <div class="meta-row"><span class="meta-label">Meal</span><span class="meta-value">${q.mealOption} (${q.mealCourses} course${q.mealCourses > 1 ? 's' : ''})${q.mealTime ? ' &mdash; ' + q.mealTime : ''}</span></div>
                     ${additionalNumbersRows}
                 </div>
                 <div class="meta-col">
@@ -1512,6 +1906,8 @@
                     ${q.courseMaintenance ? `<div class="meta-row" style="margin-top:8px;"><span class="meta-label">Course Maintenance</span><span class="meta-value">${q.courseMaintenanceText || 'May be taking place'}</span></div>` : `<div class="meta-row" style="margin-top:8px;"><span class="meta-label">Course Maintenance</span><span class="meta-value">No course maintenance is planned</span></div>`}
                 </div>
             </div>
+
+            ${accomBlock}
 
             <table><thead><tr>
                 <th style="text-align:left; width:50%;">Description</th>
@@ -1613,7 +2009,7 @@
                     <ul style="margin-top:8px;">
                         <li>If you would like to arrange any of the course competitions or if you are arranging any competitions yourselves</li>
                         <li style="margin-top:4px;">If your company are paying for buggies or if individuals will be booking their own at the pro shop and paying on the day (01443 665899)</li>
-                        <li style="margin-top:4px;">Your arrival and ${mealLower} timings</li>
+                        <li style="margin-top:4px;">Your arrival${q.mealTime ? ` &mdash; <strong>${mealLower} confirmed at ${q.mealTime}</strong>` : ` and ${mealLower} timings`}</li>
                         <li style="margin-top:4px;">Menu Choice for your group</li>
                         <li style="margin-top:4px;">Any special dietary requirements</li>
                     </ul>
@@ -1642,8 +2038,14 @@
             if (q.golferPrice > 0 && q.golfers > 0) {
                 lineRows += pdfRow('Golfers Package', q.golfers, q.golferPrice, q.golfers * q.golferPrice);
             }
-            if (q.nonGolferPrice > 0 && q.nonGolfers > 0) {
-                lineRows += pdfRow('Non-Golfers Package', q.nonGolfers, q.nonGolferPrice, q.nonGolfers * q.nonGolferPrice);
+            if (q.nonGolferPackages && q.nonGolferPackages.length > 0) {
+                q.nonGolferPackages.forEach(p => {
+                    if (p.price > 0) {
+                        lineRows += pdfRow(`${p.package} (Non-Golfers)`, p.count, p.price, p.total);
+                    } else {
+                        lineRows += `<tr style="font-style:italic; color:#6d8062;"><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">${p.package} (Non-Golfers)</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">${p.count}</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">Price TBC</td></tr>`;
+                    }
+                });
             }
             if (q.freePlaces > 0 && q.golferPrice > 0) {
                 const disc = q.freePlaces * q.golferPrice;
@@ -1660,28 +2062,45 @@
             if (q.totalSingleRooms > 0) {
                 lineRows += pdfRow('Single Supplement', q.totalSingleRooms, 50, q.totalSingleRooms * 50);
             }
+            if (q.customItems && q.customItems.length > 0) {
+                q.customItems.forEach(ci => {
+                    lineRows += pdfRow(ci.desc, ci.qty, ci.price, ci.total);
+                });
+            }
+            if (q.customDiscounts && q.customDiscounts.length > 0) {
+                q.customDiscounts.forEach(cd => {
+                    lineRows += `<tr style="color:#6d8062; font-weight:600;">
+                        <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">${cd.desc}</td>
+                        <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">\u2014</td>
+                        <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td>
+                        <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${cd.amount.toFixed(2)}</td>
+                    </tr>`;
+                });
+            }
             if (q.courseMaintenance) {
                 const msg = q.courseMaintenanceText ? q.courseMaintenanceText : 'May be taking place';
                 lineRows += `<tr style="font-style:italic; color:#6d8062;"><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">Course Maintenance</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">\u2014</td><td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">${msg}</td></tr>`;
             }
 
-            // Tee Times table
+            // Tee Times + Dinner table
             let teeTimesBlock = '';
             if (q.teeTimes && q.teeTimes.length > 0) {
                 teeTimesBlock = `<div style="margin:16px 0 18px 0;">
-                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:#6d8062; margin-bottom:6px; font-weight:600;">Tee Times</div>
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:#6d8062; margin-bottom:6px; font-weight:600;">Tee &amp; Dinner Times</div>
                     <table style="width:100%; border-collapse:collapse; border:1px solid #c9c1ad;">
                         <thead><tr style="background:#2a2e3a; color:#fff;">
                             <th style="padding:6px 10px; font-size:10px; text-transform:uppercase; letter-spacing:1px; text-align:left;">Day</th>
                             <th style="padding:6px 10px; font-size:10px; text-transform:uppercase; letter-spacing:1px; text-align:left;">Date</th>
                             <th style="padding:6px 10px; font-size:10px; text-transform:uppercase; letter-spacing:1px; text-align:center;">Lake Course</th>
                             <th style="padding:6px 10px; font-size:10px; text-transform:uppercase; letter-spacing:1px; text-align:center;">Wales National</th>
+                            <th style="padding:6px 10px; font-size:10px; text-transform:uppercase; letter-spacing:1px; text-align:center;">Dinner</th>
                         </tr></thead><tbody>
                         ${q.teeTimes.map((t, idx) => `<tr style="${idx % 2 === 1 ? 'background:#f7f4eb;' : ''}">
                             <td style="padding:7px 10px; font-size:12px;">${t.dayLabel}</td>
                             <td style="padding:7px 10px; font-size:12px;">${t.dateLabel || '\u2014'}</td>
                             <td style="padding:7px 10px; font-size:12px; text-align:center;">${t.lake || '\u2014'}</td>
                             <td style="padding:7px 10px; font-size:12px; text-align:center;">${t.wn || '\u2014'}</td>
+                            <td style="padding:7px 10px; font-size:12px; text-align:center;">${t.dinner || '\u2014'}</td>
                         </tr>`).join('')}
                     </tbody></table>
                 </div>`;
@@ -1709,7 +2128,7 @@
                     <div class="meta-row"><span class="meta-label">Departure Date</span><span class="meta-value">${departureDate}</span></div>
                     <div class="meta-row"><span class="meta-label">Nights</span><span class="meta-value">${q.nights}</span></div>
                     <div class="meta-row"><span class="meta-label">Golfers</span><span class="meta-value">${q.golfers}</span></div>
-                    <div class="meta-row"><span class="meta-label">Non-Golfers</span><span class="meta-value">${q.nonGolfers}</span></div>
+                    <div class="meta-row"><span class="meta-label">Non-Golfers</span><span class="meta-value">${q.nonGolfers}${q.nonGolferPackages && q.nonGolferPackages.length > 0 ? ' &mdash; ' + q.nonGolferPackages.map(p => `${p.count} &times; ${p.package}`).join(', ') : ''}</span></div>
                     <div class="meta-row"><span class="meta-label">Total Guests</span><span class="meta-value">${q.totalGuests}</span></div>
                     <div class="meta-row"><span class="meta-label">Rounds</span><span class="meta-value">${q.rounds}</span></div>
                     <div class="meta-row"><span class="meta-label">Buggies</span><span class="meta-value">${q.buggies}</span></div>
@@ -1853,6 +2272,7 @@
         }, { passive: false });
 
         buildBreakTeeTimes();
+        buildNonGolferPackages();
         recalculate();
     </script>
 </body>
