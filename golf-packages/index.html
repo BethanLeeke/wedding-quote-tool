@@ -534,10 +534,20 @@
                         </div>
                     </div>
 
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="dayArrivalTime">Time for Tea/Coffee &amp; Bacon Rolls</label>
+                            <input type="text" id="dayArrivalTime" placeholder="e.g. 09:00" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="dayTeeTimes">Tee Times</label>
+                            <input type="text" id="dayTeeTimes" placeholder="e.g. 10:00 from the 1st &amp; 10th" oninput="recalculate();">
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="dayMealTime">Time for Dinner / Lunch</label>
                         <input type="text" id="dayMealTime" placeholder="e.g. 19:00" oninput="recalculate();">
-                        <div class="helper-text">Shown on the PDF quote</div>
+                        <div class="helper-text">Arrival time, tee times and meal time appear on the PDF quote</div>
                     </div>
 
                     <div class="section-subtitle">Discounts</div>
@@ -1086,6 +1096,8 @@
             const mealOption = document.getElementById('dayMealOption').value;
             const mealCourses = parseInt(document.getElementById('dayMealCourses').value) || 2;
             const mealTime = (document.getElementById('dayMealTime').value || '').trim();
+            const arrivalTime = (document.getElementById('dayArrivalTime').value || '').trim();
+            const teeTimesText = (document.getElementById('dayTeeTimes').value || '').trim();
             const additionalBaconRolls = Math.max(0, parseInt(document.getElementById('dayAdditionalBaconRolls').value) || 0);
             const additionalMeals = Math.max(0, parseInt(document.getElementById('dayAdditionalMeals').value) || 0);
             const discountedBuggies = Math.max(0, parseInt(document.getElementById('dayDiscountedBuggies').value) || 0);
@@ -1187,12 +1199,13 @@
 
             renderSummary(summary, total, deposit, packageIncludes, {
                 course, mealOption, mealCourses, additionalBaconRolls, additionalMeals, mealTime,
-                accommodationRows
+                arrivalTime, teeTimesText, accommodationRows
             });
 
             window._currentQuote = {
                 mode: 'day', summary, total, deposit, golfers, rounds, buggies, pricePerPerson,
                 courseMaintenance, courseMaintenanceText, course, mealOption, mealCourses, mealTime,
+                arrivalTime, teeTimesText,
                 additionalBaconRolls, additionalMeals, freePlaces,
                 discountedBuggies, discountedBuggyPrice, greenFeeDiscount, freeGreenFees,
                 accommodationRows, customItems, customDiscounts
@@ -1241,8 +1254,8 @@
                 }
             });
 
-            // 1 in 16 go free
-            const freePlaces = Math.floor(totalGuests / 16);
+            // 1 in 16 go free (golfers only)
+            const freePlaces = Math.floor(golfers / 16);
             if (freePlaces > 0 && golferPrice > 0) {
                 const discount = freePlaces * golferPrice;
                 total -= discount;
@@ -1351,6 +1364,12 @@
                 if (extra.course) {
                     html += `<div class="quote-item info-line"><span>Course</span><span>${extra.course}</span></div>`;
                 }
+                if (extra.arrivalTime) {
+                    html += `<div class="quote-item info-line"><span>Tea/Coffee &amp; Bacon Rolls</span><span>${extra.arrivalTime}</span></div>`;
+                }
+                if (extra.teeTimesText) {
+                    html += `<div class="quote-item info-line"><span>Tee Times</span><span>${extra.teeTimesText}</span></div>`;
+                }
                 if (extra.mealOption) {
                     let mealText = `${extra.mealCourses} course${extra.mealCourses > 1 ? 's' : ''}`;
                     if (extra.mealTime) mealText += ` @ ${extra.mealTime}`;
@@ -1434,6 +1453,8 @@
                 html += modalItem('Course', q.course);
                 html += modalItem('Rounds', q.rounds);
                 html += modalItem('Buggies', q.buggies);
+                if (q.arrivalTime) html += modalItem('Tea/Coffee &amp; Bacon Rolls', q.arrivalTime);
+                if (q.teeTimesText) html += modalItem('Tee Times', q.teeTimesText);
                 let mealLabel = `${q.mealOption} (${q.mealCourses} course${q.mealCourses > 1 ? 's' : ''})`;
                 if (q.mealTime) mealLabel += ` &mdash; ${q.mealTime}`;
                 html += modalItem('Meal', mealLabel);
@@ -1569,6 +1590,8 @@
                 document.getElementById('dayMealOption').value = 'Dinner';
                 document.getElementById('dayMealCourses').value = '2';
                 document.getElementById('dayMealTime').value = '';
+                document.getElementById('dayArrivalTime').value = '';
+                document.getElementById('dayTeeTimes').value = '';
                 document.getElementById('dayAdditionalBaconRolls').value = '0';
                 document.getElementById('dayAdditionalMeals').value = '0';
                 document.getElementById('dayDiscountedBuggies').value = '0';
@@ -1895,6 +1918,8 @@
                     <div class="meta-row"><span class="meta-label">Course</span><span class="meta-value">${q.course}</span></div>
                     <div class="meta-row"><span class="meta-label">Rounds</span><span class="meta-value">${q.rounds}</span></div>
                     <div class="meta-row"><span class="meta-label">Buggies</span><span class="meta-value">${q.buggies}</span></div>
+                    ${q.arrivalTime ? `<div class="meta-row"><span class="meta-label">Tea/Coffee &amp; Bacon Rolls</span><span class="meta-value">${q.arrivalTime}</span></div>` : ''}
+                    ${q.teeTimesText ? `<div class="meta-row"><span class="meta-label">Tee Times</span><span class="meta-value">${q.teeTimesText}</span></div>` : ''}
                     <div class="meta-row"><span class="meta-label">Meal</span><span class="meta-value">${q.mealOption} (${q.mealCourses} course${q.mealCourses > 1 ? 's' : ''})${q.mealTime ? ' &mdash; ' + q.mealTime : ''}</span></div>
                     ${additionalNumbersRows}
                 </div>
@@ -2009,7 +2034,17 @@
                     <ul style="margin-top:8px;">
                         <li>If you would like to arrange any of the course competitions or if you are arranging any competitions yourselves</li>
                         <li style="margin-top:4px;">If your company are paying for buggies or if individuals will be booking their own at the pro shop and paying on the day (01443 665899)</li>
-                        <li style="margin-top:4px;">Your arrival${q.mealTime ? ` &mdash; <strong>${mealLower} confirmed at ${q.mealTime}</strong>` : ` and ${mealLower} timings`}</li>
+                        <li style="margin-top:4px;">${(() => {
+                            const confirmed = [];
+                            if (q.arrivalTime) confirmed.push(`tea/coffee &amp; bacon rolls at <strong>${q.arrivalTime}</strong>`);
+                            if (q.teeTimesText) confirmed.push(`tee times <strong>${q.teeTimesText}</strong>`);
+                            if (q.mealTime) confirmed.push(`${mealLower} at <strong>${q.mealTime}</strong>`);
+                            return confirmed.length === 3
+                                ? `Confirmed timings: ${confirmed.join('; ')}`
+                                : (confirmed.length > 0
+                                    ? `Confirmed: ${confirmed.join('; ')}; please confirm any remaining timings`
+                                    : `Your arrival and ${mealLower} timings`);
+                        })()}</li>
                         <li style="margin-top:4px;">Menu Choice for your group</li>
                         <li style="margin-top:4px;">Any special dietary requirements</li>
                     </ul>
