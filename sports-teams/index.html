@@ -689,70 +689,12 @@
                 </div>
 
                 <div id="bedrooms" class="tab-content">
-                    <div class="location-toggle">
-                        <button id="locVale" class="active" onclick="setBedroomLocation('Vale Resort')">The Vale Resort</button>
-                        <button id="locHensol" onclick="setBedroomLocation('Hensol Castle')">Hensol Castle</button>
-                    </div>
-
-                    <div class="section-subtitle">Room Only Rates</div>
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label for="singleRate">Single Occupancy Rate (£)</label>
-                            <input type="number" id="singleRate" min="0" step="0.01" value="0" oninput="recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="twinRate">Twin / Double Rate (£)</label>
-                            <input type="number" id="twinRate" min="0" step="0.01" value="0" oninput="recalculate();">
-                        </div>
-                    </div>
-
-                    <div class="section-subtitle" style="margin-top:20px;">Twin Rooms</div>
-                    <div class="grid-3">
-                        <div class="form-group">
-                            <label for="twinCount">Number of Rooms</label>
-                            <input type="number" id="twinCount" min="0" value="0" oninput="recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="twinArrival">Arrival</label>
-                            <input type="date" id="twinArrival" oninput="recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="twinNights">Nights</label>
-                            <input type="number" id="twinNights" min="0" value="1" oninput="recalculate();">
-                        </div>
-                    </div>
-
-                    <div class="section-subtitle" style="margin-top:20px;">Single Rooms</div>
-                    <div class="grid-3">
-                        <div class="form-group">
-                            <label for="singleCount">Number of Rooms</label>
-                            <input type="number" id="singleCount" min="0" value="0" oninput="recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="singleArrival">Arrival</label>
-                            <input type="date" id="singleArrival" oninput="recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="singleNights">Nights</label>
-                            <input type="number" id="singleNights" min="0" value="1" oninput="recalculate();">
-                        </div>
-                    </div>
-
-                    <div class="section-subtitle" style="margin-top:20px;">Day Let</div>
-                    <div class="grid-3">
-                        <div class="form-group">
-                            <label for="dayLetPrice">Day Let Price (£)</label>
-                            <input type="number" id="dayLetPrice" min="0" step="0.01" value="0" oninput="recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="dayLetCount">Number of Rooms</label>
-                            <input type="number" id="dayLetCount" min="0" value="0" oninput="recalculate();">
-                        </div>
-                        <div class="form-group">
-                            <label for="dayLetDate">Day Let Date</label>
-                            <input type="date" id="dayLetDate" oninput="recalculate();">
-                        </div>
-                    </div>
+                    <p class="helper-text" style="margin-bottom:14px;">
+                        Add bedrooms with venue, package, occupancy and per-night rates. Rate per night can be the same across the stay or different on each night. Double occupancy automatically adds +&pound;11 per night to B&amp;B and DBB packages (Room Only is excluded).
+                    </p>
+                    <div id="bedroomRows"></div>
+                    <button type="button" class="add-row-btn" onclick="addBedroomRow()">+ Add Bedroom</button>
+                    <p class="helper-text" style="margin-top:12px;">Note: bedrooms tied to a package rate are entered in the Package Details tab and are billed via the package rate, not here.</p>
                 </div>
 
                 <div class="form-section" style="margin-top:20px;">
@@ -858,16 +800,12 @@
             drinks: [],      // { id, drink, bottlesPerDay, days }
             towelsPrice: 0.50,
             towelsQty: 0,
-            bedroomLocation: 'Vale Resort',
-            singleRate: 0,
-            twinRate: 0,
-            twinCount: 0, twinArrival: '', twinNights: 1,
-            singleCount: 0, singleArrival: '', singleNights: 1,
-            dayLetPrice: 0, dayLetCount: 0, dayLetDate: '',
+            bedrooms: [],
             quote: {}
         };
 
         let rowCounter = 0;
+        let bedroomRowCounter = 1;
         let prevBookingArrival = '';
         let prevBookingDeparture = '';
         let prevBookingNights = 1;
@@ -950,20 +888,6 @@
                 const daysInp = document.getElementById(daysInpId);
                 if (daysInp) daysInp.value = row.days;
             };
-
-            // Bedrooms default dates
-            const twinArrival = document.getElementById('twinArrival');
-            if (twinArrival && (!twinArrival.value || twinArrival.value === oldArrival)) twinArrival.value = arrival;
-            const singleArrival = document.getElementById('singleArrival');
-            if (singleArrival && (!singleArrival.value || singleArrival.value === oldArrival)) singleArrival.value = arrival;
-            const dayLetDate = document.getElementById('dayLetDate');
-            if (dayLetDate && (!dayLetDate.value || dayLetDate.value === oldDeparture || dayLetDate.value === oldArrival)) {
-                dayLetDate.value = departure || arrival;
-            }
-            const twinNights = document.getElementById('twinNights');
-            if (twinNights && (!twinNights.value || parseInt(twinNights.value) === parseInt(prevBookingNights))) twinNights.value = selectedOptions.nights;
-            const singleNights = document.getElementById('singleNights');
-            if (singleNights && (!singleNights.value || parseInt(singleNights.value) === parseInt(prevBookingNights))) singleNights.value = selectedOptions.nights;
 
             // Menus
             selectedOptions.menus.forEach(m => {
@@ -1331,11 +1255,175 @@
         }
 
         // ============ BEDROOMS ============
-        function setBedroomLocation(loc) {
-            selectedOptions.bedroomLocation = loc;
-            document.getElementById('locVale').classList.toggle('active', loc === 'Vale Resort');
-            document.getElementById('locHensol').classList.toggle('active', loc === 'Hensol Castle');
+        function bedroomDateForOffset(arrival, offset) {
+            if (!arrival) return null;
+            const d = new Date(arrival);
+            if (isNaN(d.getTime())) return null;
+            d.setDate(d.getDate() + offset);
+            return d;
+        }
+        function bedroomFormatDate(d) {
+            if (!d) return '';
+            return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+        }
+        function bedroomDateRange(arrival, nights) {
+            if (!arrival || nights < 1) return `${nights} night${nights !== 1 ? 's' : ''}`;
+            const start = bedroomDateForOffset(arrival, 0);
+            const end = bedroomDateForOffset(arrival, nights - 1);
+            if (!start || !end) return `${nights} night${nights !== 1 ? 's' : ''}`;
+            if (nights === 1) return bedroomFormatDate(start);
+            return `${bedroomFormatDate(start)} → ${bedroomFormatDate(end)}`;
+        }
+        function packageLabel(pkg) {
+            return pkg === 'BB' ? 'B&B' : (pkg === 'DBB' ? 'DBB' : 'Room Only');
+        }
+        function addBedroomRow() {
+            const id = 'br_' + (bedroomRowCounter++);
+            const arrival = document.getElementById('arrivalDate').value || '';
+            const nights = Math.max(1, parseInt(document.getElementById('nights').value) || 1);
+            selectedOptions.bedrooms.push({
+                id, venue: 'Vale Resort', package: 'BB', occupancy: 'Single',
+                qty: 1, arrivalDate: arrival, nights,
+                sameRate: true, rates: [0]
+            });
+            renderBedrooms();
             recalculate();
+        }
+        function removeBedroomRow(id) {
+            selectedOptions.bedrooms = selectedOptions.bedrooms.filter(r => r.id !== id);
+            renderBedrooms();
+            recalculate();
+        }
+        function updateBedroomField(id, field, value) {
+            const row = selectedOptions.bedrooms.find(r => r.id === id);
+            if (!row) return;
+            if (field === 'qty') {
+                row.qty = Math.max(1, parseInt(value) || 1);
+            } else if (field === 'nights') {
+                row.nights = Math.max(1, parseInt(value) || 1);
+                if (!row.sameRate) {
+                    while (row.rates.length < row.nights) row.rates.push(0);
+                    row.rates = row.rates.slice(0, row.nights);
+                }
+            } else if (field === 'sameRate') {
+                row.sameRate = !!value;
+                if (row.sameRate) {
+                    row.rates = [row.rates[0] || 0];
+                } else {
+                    const base = row.rates[0] || 0;
+                    row.rates = Array(row.nights).fill(base);
+                }
+            } else {
+                row[field] = value;
+            }
+            renderBedrooms();
+            recalculate();
+        }
+        function updateBedroomRate(id, idx, value) {
+            const row = selectedOptions.bedrooms.find(r => r.id === id);
+            if (!row) return;
+            row.rates[idx] = Math.max(0, parseFloat(value) || 0);
+            recalculate();
+        }
+        function updateBedroomQtyLive(id, value) {
+            const row = selectedOptions.bedrooms.find(r => r.id === id);
+            if (!row) return;
+            const n = parseInt(value);
+            row.qty = isNaN(n) ? 1 : Math.max(1, n);
+            recalculate();
+        }
+        function updateBedroomNightsLive(id, value) {
+            const row = selectedOptions.bedrooms.find(r => r.id === id);
+            if (!row) return;
+            const n = parseInt(value);
+            row.nights = isNaN(n) ? 1 : Math.max(1, n);
+            recalculate();
+        }
+        function renderBedrooms() {
+            const container = document.getElementById('bedroomRows');
+            if (!container) return;
+            if (selectedOptions.bedrooms.length === 0) {
+                container.innerHTML = '<div class="helper-text" style="text-align:center; padding:14px; border:1px dashed #c9c1ad; border-radius:6px;">No bedrooms added yet — click "+ Add Bedroom" to start.</div>';
+                return;
+            }
+            container.innerHTML = selectedOptions.bedrooms.map((row, idx) => {
+                const surcharge = row.occupancy === 'Double' && row.package !== 'Room Only';
+                const ratesBlock = row.sameRate
+                    ? `<div class="form-group" style="margin-bottom:0;">
+                         <label>Rate per night (&pound;)</label>
+                         <input type="number" min="0" step="0.01" value="${row.rates[0] || 0}" oninput="updateBedroomRate('${row.id}', 0, this.value)">
+                         <div class="helper-text" style="margin-top:4px;">${bedroomDateRange(row.arrivalDate, row.nights)}</div>
+                       </div>`
+                    : `<div class="form-group" style="margin-bottom:0;">
+                         <label>Rate per night (&pound;) &mdash; per night</label>
+                         <div style="display:flex; flex-direction:column; gap:6px; margin-top:6px;">
+                         ${row.rates.map((r, i) => {
+                             const d = bedroomDateForOffset(row.arrivalDate, i);
+                             const label = d ? bedroomFormatDate(d) : `Night ${i + 1}`;
+                             return `<div style="display:flex; gap:8px; align-items:center;">
+                                 <span style="flex:1; font-size:0.85em; color:var(--text-light);">${label}</span>
+                                 <input type="number" min="0" step="0.01" value="${r}" style="flex:1;" oninput="updateBedroomRate('${row.id}', ${i}, this.value)">
+                             </div>`;
+                         }).join('')}
+                         </div>
+                       </div>`;
+                return `<div style="border:1px solid #c9c1ad; border-radius:8px; padding:16px; margin-bottom:14px; background:#faf8f3;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid #e0d8c4;">
+                        <div style="font-weight:600; font-size:1em; color:var(--primary-dark); letter-spacing:0.5px; text-transform:uppercase;">Bedroom #${idx + 1}</div>
+                        <button type="button" onclick="removeBedroomRow('${row.id}')"
+                            title="Remove bedroom"
+                            style="background:#fff; border:1px solid #c9c1ad; border-radius:50%; width:28px; height:28px; cursor:pointer; color:var(--primary-burgundy); font-size:1.1em; line-height:1; display:flex; align-items:center; justify-content:center; padding:0; transition:all 0.15s;"
+                            onmouseover="this.style.background='var(--primary-burgundy)'; this.style.color='#fff';"
+                            onmouseout="this.style.background='#fff'; this.style.color='var(--primary-burgundy)';">&times;</button>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 90px; gap:10px; margin-bottom:10px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Venue</label>
+                            <select onchange="updateBedroomField('${row.id}', 'venue', this.value)">
+                                <option value="Vale Resort" ${row.venue === 'Vale Resort' ? 'selected' : ''}>Vale Resort</option>
+                                <option value="Hensol Castle" ${row.venue === 'Hensol Castle' ? 'selected' : ''}>Hensol Castle</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Package</label>
+                            <select onchange="updateBedroomField('${row.id}', 'package', this.value)">
+                                <option value="Room Only" ${row.package === 'Room Only' ? 'selected' : ''}>Room Only</option>
+                                <option value="BB" ${row.package === 'BB' ? 'selected' : ''}>B&amp;B</option>
+                                <option value="DBB" ${row.package === 'DBB' ? 'selected' : ''}>DBB</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Occupancy</label>
+                            <select onchange="updateBedroomField('${row.id}', 'occupancy', this.value)">
+                                <option value="Single" ${row.occupancy === 'Single' ? 'selected' : ''}>Single</option>
+                                <option value="Double" ${row.occupancy === 'Double' ? 'selected' : ''}>Double</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Rooms</label>
+                            <input type="number" min="1" value="${row.qty}" oninput="updateBedroomQtyLive('${row.id}', this.value)" onchange="updateBedroomField('${row.id}', 'qty', this.value)">
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 90px 1fr; gap:10px; margin-bottom:10px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Arrival</label>
+                            <input type="date" value="${row.arrivalDate || ''}" onchange="updateBedroomField('${row.id}', 'arrivalDate', this.value)">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Nights</label>
+                            <input type="number" min="1" value="${row.nights}" oninput="updateBedroomNightsLive('${row.id}', this.value)" onchange="updateBedroomField('${row.id}', 'nights', this.value)">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0; align-self:end;">
+                            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:500;">
+                                <input type="checkbox" ${row.sameRate ? '' : 'checked'} onchange="updateBedroomField('${row.id}', 'sameRate', !this.checked)">
+                                Different rate per night
+                            </label>
+                        </div>
+                    </div>
+                    ${ratesBlock}
+                    ${surcharge ? '<div class="helper-text" style="margin-top:6px;">Double occupancy adds +&pound;11 per night automatically.</div>' : ''}
+                </div>`;
+            }).join('');
         }
 
         // ============ RECALCULATE ============
@@ -1346,18 +1434,6 @@
 
             selectedOptions.towelsPrice = parseFloat(document.getElementById('towelsPrice').value) || 0;
             selectedOptions.towelsQty = parseInt(document.getElementById('towelsQty').value) || 0;
-
-            selectedOptions.singleRate = parseFloat(document.getElementById('singleRate').value) || 0;
-            selectedOptions.twinRate = parseFloat(document.getElementById('twinRate').value) || 0;
-            selectedOptions.twinCount = parseInt(document.getElementById('twinCount').value) || 0;
-            selectedOptions.twinArrival = document.getElementById('twinArrival').value;
-            selectedOptions.twinNights = parseInt(document.getElementById('twinNights').value) || 0;
-            selectedOptions.singleCount = parseInt(document.getElementById('singleCount').value) || 0;
-            selectedOptions.singleArrival = document.getElementById('singleArrival').value;
-            selectedOptions.singleNights = parseInt(document.getElementById('singleNights').value) || 0;
-            selectedOptions.dayLetPrice = parseFloat(document.getElementById('dayLetPrice').value) || 0;
-            selectedOptions.dayLetCount = parseInt(document.getElementById('dayLetCount').value) || 0;
-            selectedOptions.dayLetDate = document.getElementById('dayLetDate').value;
 
             let total = 0;
             const summary = [];
@@ -1444,32 +1520,38 @@
                 });
             }
 
-            // Bedrooms
-            const loc = selectedOptions.bedroomLocation;
-            if (selectedOptions.twinCount > 0 && selectedOptions.twinRate > 0 && selectedOptions.twinNights > 0) {
-                const p = selectedOptions.twinRate * selectedOptions.twinCount * selectedOptions.twinNights;
-                total += p;
-                summary.push({
-                    label: `Twin Rooms @ ${loc} (${selectedOptions.twinCount} x ${selectedOptions.twinNights} nights x £${selectedOptions.twinRate.toFixed(2)})`,
-                    price: p, qty: selectedOptions.twinCount * selectedOptions.twinNights, unitPrice: selectedOptions.twinRate
-                });
-            }
-            if (selectedOptions.singleCount > 0 && selectedOptions.singleRate > 0 && selectedOptions.singleNights > 0) {
-                const p = selectedOptions.singleRate * selectedOptions.singleCount * selectedOptions.singleNights;
-                total += p;
-                summary.push({
-                    label: `Single Rooms @ ${loc} (${selectedOptions.singleCount} x ${selectedOptions.singleNights} nights x £${selectedOptions.singleRate.toFixed(2)})`,
-                    price: p, qty: selectedOptions.singleCount * selectedOptions.singleNights, unitPrice: selectedOptions.singleRate
-                });
-            }
-            if (selectedOptions.dayLetCount > 0 && selectedOptions.dayLetPrice > 0) {
-                const p = selectedOptions.dayLetPrice * selectedOptions.dayLetCount;
-                total += p;
-                summary.push({
-                    label: `Day Let @ ${loc} (${selectedOptions.dayLetCount} x £${selectedOptions.dayLetPrice.toFixed(2)})`,
-                    price: p, qty: selectedOptions.dayLetCount, unitPrice: selectedOptions.dayLetPrice
-                });
-            }
+            // Bedrooms (dynamic rows: venue + package + occupancy + per-night rates)
+            selectedOptions.bedrooms.forEach(row => {
+                const venueName = row.venue === 'Hensol Castle' ? 'Hensol Castle' : 'The Vale Resort';
+                const pkgLbl = packageLabel(row.package);
+                const surcharge = (row.occupancy === 'Double' && row.package !== 'Room Only') ? 11 : 0;
+                if (row.sameRate) {
+                    const baseRate = row.rates[0] || 0;
+                    if (baseRate <= 0 || row.qty <= 0 || row.nights <= 0) return;
+                    const effRate = baseRate + surcharge;
+                    const lineTotal = effRate * row.qty * row.nights;
+                    const range = bedroomDateRange(row.arrivalDate, row.nights);
+                    summary.push({
+                        label: `${row.occupancy} Occ ${pkgLbl} — ${venueName} — ${range} (${row.qty} room${row.qty !== 1 ? 's' : ''} x ${row.nights} night${row.nights !== 1 ? 's' : ''} x £${effRate.toFixed(2)})`,
+                        price: lineTotal, qty: row.qty * row.nights, unitPrice: effRate
+                    });
+                    total += lineTotal;
+                } else {
+                    row.rates.forEach((nightRate, i) => {
+                        const baseRate = nightRate || 0;
+                        if (baseRate <= 0 || row.qty <= 0) return;
+                        const effRate = baseRate + surcharge;
+                        const lineTotal = effRate * row.qty;
+                        const d = bedroomDateForOffset(row.arrivalDate, i);
+                        const dateLabel = d ? bedroomFormatDate(d) : `Night ${i + 1}`;
+                        summary.push({
+                            label: `${row.occupancy} Occ ${pkgLbl} — ${venueName} — ${dateLabel} (${row.qty} room${row.qty !== 1 ? 's' : ''} x £${effRate.toFixed(2)})`,
+                            price: lineTotal, qty: row.qty, unitPrice: effRate
+                        });
+                        total += lineTotal;
+                    });
+                }
+            });
 
             // Custom item
             const customItemDescEl = document.getElementById('customItemDesc');
@@ -1591,17 +1673,6 @@
             document.getElementById('customItemDesc').value = '';
             document.getElementById('customItemQty').value = '1';
             document.getElementById('customItemPrice').value = '0';
-            document.getElementById('singleRate').value = '0';
-            document.getElementById('twinRate').value = '0';
-            document.getElementById('twinCount').value = '0';
-            document.getElementById('twinArrival').value = '';
-            document.getElementById('twinNights').value = '1';
-            document.getElementById('singleCount').value = '0';
-            document.getElementById('singleArrival').value = '';
-            document.getElementById('singleNights').value = '1';
-            document.getElementById('dayLetPrice').value = '0';
-            document.getElementById('dayLetCount').value = '0';
-            document.getElementById('dayLetDate').value = '';
 
             selectedOptions = {
                 arrivalDate: '', departureDate: '', nights: 1, guests: 20,
@@ -1609,14 +1680,11 @@
                 teamRooms: [], physioRooms: [], pitches: [],
                 menus: [], drinks: [],
                 towelsPrice: 0.50, towelsQty: 0,
-                bedroomLocation: 'Vale Resort',
-                singleRate: 0, twinRate: 0,
-                twinCount: 0, twinArrival: '', twinNights: 1,
-                singleCount: 0, singleArrival: '', singleNights: 1,
-                dayLetPrice: 0, dayLetCount: 0, dayLetDate: '',
+                bedrooms: [],
                 quote: {}
             };
-            setBedroomLocation('Vale Resort');
+            selectedOptions.bedrooms = [];
+            renderBedrooms();
             buildMenuRows();
             addPitchRow();
 
@@ -1833,6 +1901,7 @@
 
         buildMenuRows();
         addPitchRow();
+        renderBedrooms();
         recalculate();
     </script>
 </body>
