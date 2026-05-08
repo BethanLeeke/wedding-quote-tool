@@ -655,6 +655,82 @@
             font-weight: 700;
             letter-spacing: 0.5px;
         }
+
+        .package-day-card {
+            border: 1px solid var(--accent-light);
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 18px;
+            background: #faf8f3;
+        }
+
+        .package-day-card .day-header {
+            font-weight: 700;
+            font-size: 1em;
+            color: var(--primary-burgundy);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--accent-light);
+            margin-bottom: 14px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .day-package-block {
+            background: white;
+            border: 1px solid #e8e4d8;
+            border-radius: 6px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
+
+        .day-package-block:last-child { margin-bottom: 0; }
+
+        .day-package-toggle {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .day-package-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            accent-color: var(--primary-burgundy);
+            cursor: pointer;
+        }
+
+        .day-package-fields {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #e0d8c4;
+            display: grid;
+            gap: 10px;
+        }
+
+        .day-package-fields .form-group { margin-bottom: 0; }
+        .day-package-fields label { font-size: 0.85em; }
+        .day-package-fields input,
+        .day-package-fields select {
+            padding: 8px 10px;
+            font-size: 0.9em;
+        }
+
+        .custom-item-row {
+            display: grid;
+            grid-template-columns: 1fr 90px 120px 36px;
+            gap: 10px;
+            align-items: end;
+            padding: 12px;
+            background: var(--primary-cream);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .custom-item-row .form-group { margin-bottom: 0; }
     </style>
 </head>
 <body>
@@ -720,127 +796,38 @@
 
                 <h2 class="section-heading">Package Details</h2>
 
-                <div class="form-group">
-                    <label for="ddrFunctionRoomPicker">Function Room <span style="font-weight:400; color:var(--text-light);">(main conference room)</span></label>
-                    <select id="ddrFunctionRoomPicker" onchange="selectDdrFunctionRoom();">
-                        <option value="">Select function room...</option>
-                        <optgroup label="Vale Resort">
-                            <option value="Vale Resort|Castle Suite">Castle Suite</option>
-                            <option value="Vale Resort|Castle 1">Castle 1</option>
-                            <option value="Vale Resort|Castle 2">Castle 2</option>
-                            <option value="Vale Resort|Castle 1 &amp; 2">Castle 1 &amp; 2</option>
-                            <option value="Vale Resort|Castle 3 &amp; 4">Castle 3 &amp; 4</option>
-                            <option value="Vale Resort|Morgannwg Suite &amp; Lounge">Morgannwg Suite &amp; Lounge</option>
-                            <option value="Vale Resort|Morgannwg Suite">Morgannwg Suite</option>
-                            <option value="Vale Resort|Morgannwg Lounge">Morgannwg Lounge</option>
-                            <option value="Vale Resort|Pendoylan Suite">Pendoylan Suite</option>
-                            <option value="Vale Resort|Hensol Suite">Hensol Suite</option>
-                            <option value="Vale Resort|The Boardroom">The Boardroom</option>
-                            <option value="Vale Resort|Dyffryn Suite">Dyffryn Suite</option>
-                            <option value="Vale Resort|Cowbridge Lounge">Cowbridge Lounge</option>
-                            <option value="Vale Resort|Conservatory">Conservatory</option>
-                            <option value="Vale Resort|Trecastell Suite">Trecastell Suite</option>
-                            <option value="Vale Resort|Tre-Dodridge Suite">Tre-Dodridge Suite</option>
-                        </optgroup>
-                        <optgroup label="Hensol Castle">
-                            <option value="Hensol Castle|Drawing Room">Drawing Room</option>
-                            <option value="Hensol Castle|Courtyard Hall">Courtyard Hall</option>
-                            <option value="Hensol Castle|Courtyard Hall 1">Courtyard Hall 1</option>
-                            <option value="Hensol Castle|Courtyard Hall 2">Courtyard Hall 2</option>
-                            <option value="Hensol Castle|Oak Room">Oak Room</option>
-                            <option value="Hensol Castle|Morning Room">Morning Room</option>
-                            <option value="Hensol Castle|The Buttery">The Buttery</option>
-                            <option value="Hensol Castle|Coach House">Coach House</option>
-                            <option value="Hensol Castle|West Tower Boardroom">West Tower Boardroom</option>
-                            <option value="Hensol Castle|Reading Room">Reading Room</option>
-                            <option value="Hensol Castle|Garden Room">Garden Room</option>
-                        </optgroup>
-                    </select>
-                    <div id="ddrRoomDates" style="display:none; margin-top:10px; padding:10px 12px; background:#f5f1e8; border-radius:6px;">
-                        <div style="font-size:0.82em; font-weight:600; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Room Booked</div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label for="ddrRoomStart" style="font-size:0.85em;">Start</label>
-                                <input type="date" id="ddrRoomStart" onchange="updateDdrRoomDates();">
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label for="ddrRoomEnd" style="font-size:0.85em;">End</label>
-                                <input type="date" id="ddrRoomEnd" onchange="updateDdrRoomDates();">
-                            </div>
-                        </div>
-                        <div class="helper-text" style="margin-top:6px; font-size:0.78em;">Defaults to the booking arrival → departure dates.</div>
-                    </div>
-                </div>
-
                 <div class="package-box">
-                    <div class="ddr-checkbox-wrap" style="margin-bottom:0;">
-                        <input type="checkbox" id="ddrEnabled" onchange="toggleDDR();">
-                        <label for="ddrEnabled" style="font-weight:600;">Apply Day Delegate Package Rate (DDR)</label>
+                    <div style="font-weight:700; margin-bottom:12px; color:var(--primary-burgundy); letter-spacing:0.5px; text-transform:uppercase; font-size:0.9em;">
+                        Default Rates
+                        <span class="helper-text" style="font-weight:400; font-size:0.85em; text-transform:none; letter-spacing:0; color:var(--text-light); margin-left:8px;">used as starting values when packages are enabled on each day</span>
                     </div>
-                    <div id="ddrFields" style="display:none; margin-top:14px;">
-                        <div style="display:grid; grid-template-columns:1fr 1fr 100px; gap:14px; align-items:end;">
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label for="ddrRate">DDR Price per Delegate (&pound;)</label>
-                                <input type="number" id="ddrRate" min="0" step="0.01" value="0" oninput="recalculate();">
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label for="dayDelegates">Number of Day Delegates</label>
-                                <input type="number" id="dayDelegates" min="0" value="0" oninput="recalculate();">
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label for="ddrDays">Days</label>
-                                <input type="number" id="ddrDays" min="1" value="1" oninput="recalculate();">
-                            </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="halfDdrDefaultRate">1/2 DDR (&pound;/del)</label>
+                            <input type="number" id="halfDdrDefaultRate" min="0" step="0.01" value="0" oninput="updateDefaultRate('halfDdr', this.value);">
                         </div>
-                        <div class="helper-text" style="font-size:0.78em; margin-top:8px;">Days = number of days the DDR repeats. The quote shows one line per day with the actual date.</div>
-                    </div>
-                </div>
-
-                <div class="package-box">
-                    <div class="ddr-checkbox-wrap" style="margin-bottom:0;">
-                        <input type="checkbox" id="twentyFourHourEnabled" onchange="toggleTwentyFourHour();">
-                        <label for="twentyFourHourEnabled" style="font-weight:600;">Apply 24 Hour Rate</label>
-                    </div>
-                    <div id="twentyFourHourFields" style="display:none; margin-top:14px;">
-                        <div style="display:grid; grid-template-columns:1fr 1fr 100px; gap:14px; align-items:end;">
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label for="twentyFourHourRate">24 Hour Rate per Delegate (&pound;)</label>
-                                <input type="number" id="twentyFourHourRate" min="0" step="0.01" value="0" oninput="recalculate();">
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label for="overnightDelegates">Number of Overnight Delegates</label>
-                                <input type="number" id="overnightDelegates" min="0" value="0" oninput="syncOvernightToSingleOcc(); recalculate();">
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label for="twentyFourHourDays">Days</label>
-                                <input type="number" id="twentyFourHourDays" min="1" value="1" oninput="recalculate();">
-                            </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="ddrDefaultRate">DDR (&pound;/del)</label>
+                            <input type="number" id="ddrDefaultRate" min="0" step="0.01" value="0" oninput="updateDefaultRate('ddr', this.value);">
                         </div>
-                        <div class="helper-text" style="font-size:0.78em; margin-top:8px;">Rate is based on single occupancy. Days = number of 24-hour periods; the quote shows one line per day with the date.</div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="tfhValeDefaultRate">24h Vale (&pound;/del)</label>
+                            <input type="number" id="tfhValeDefaultRate" min="0" step="0.01" value="0" oninput="updateDefaultRate('tfhVale', this.value);">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="tfhHensolDefaultRate">24h Hensol (&pound;/del)</label>
+                            <input type="number" id="tfhHensolDefaultRate" min="0" step="0.01" value="0" oninput="updateDefaultRate('tfhHensol', this.value);">
+                        </div>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <button type="button" class="btn btn-secondary" style="font-size:0.82em; padding:8px 14px; flex:none; display:inline-block;" onclick="applyDefaultsToAllDays();">Apply defaults to all days</button>
                     </div>
                 </div>
 
-                <div class="form-group" id="lunchMenuChoiceGroup" style="display:none;">
-                    <label for="lunchMenuChoice">Lunch Menu Choice</label>
-                    <select id="lunchMenuChoice" onchange="recalculate();">
-                        <option value="">Select lunch menu...</option>
-                        <option value="Working Lunch Menu">Working Lunch Menu</option>
-                        <option value="Lunch Buffet Menu">Lunch Buffet Menu</option>
-                        <option value="Vale Grill Delegate Lunch">Vale Grill Delegate Lunch</option>
-                    </select>
-                </div>
-
-                <div class="form-group" id="dinnerMenuChoiceGroup" style="display:none;">
-                    <label for="dinnerMenuChoice">Dinner Menu Choice</label>
-                    <select id="dinnerMenuChoice" onchange="recalculate();">
-                        <option value="">Select dinner menu...</option>
-                        <option value="Menu A|0">Menu A (+&pound;0 pp)</option>
-                        <option value="Menu B|3">Menu B (+&pound;3 pp)</option>
-                        <option value="Menu C|16.45">Menu C (+&pound;16.45 pp)</option>
-                        <option value="Choice Menu|6">Choice Menu (+&pound;6 pp)</option>
-                        <option value="Evening Buffet|0">Evening Buffet (+&pound;0 pp)</option>
-                        <option value="Vegetarian Menu|0">Vegetarian Menu (+&pound;0 pp)</option>
-                    </select>
+                <div id="packageDaysContainer" style="margin-top:18px;">
+                    <div class="helper-text" style="text-align:center; padding:14px; border:1px dashed var(--accent-light); border-radius:6px;">
+                        Set an arrival date and number of nights to configure per-day packages.
+                    </div>
                 </div>
 
                 <div id="packageBedroomsGroup" style="display:none;">
@@ -993,22 +980,10 @@
                     </div>
                 </div>
 
-                <h2 class="section-heading">Custom Item</h2>
-                <p class="helper-text" style="margin-bottom:12px;">Add a custom line item (e.g., bespoke service or special request).</p>
-                <div class="grid-3">
-                    <div class="form-group">
-                        <label for="customItemDesc">Description</label>
-                        <input type="text" id="customItemDesc" placeholder="Item description" oninput="recalculate();">
-                    </div>
-                    <div class="form-group">
-                        <label for="customItemQty">Qty</label>
-                        <input type="number" id="customItemQty" min="1" value="1" oninput="recalculate();">
-                    </div>
-                    <div class="form-group">
-                        <label for="customItemPrice">Unit Price (£)</label>
-                        <input type="number" id="customItemPrice" min="0" step="0.01" value="0" oninput="recalculate();">
-                    </div>
-                </div>
+                <h2 class="section-heading">Custom Items</h2>
+                <p class="helper-text" style="margin-bottom:12px;">Add one or more custom line items (e.g., bespoke services or special requests).</p>
+                <div id="customItemsContainer"></div>
+                <button type="button" class="btn btn-secondary" style="margin-top:8px; font-size:0.85em; padding:8px 14px; flex:none; display:inline-block;" onclick="addCustomItem()">+ Add Custom Item</button>
 
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">Generate Quote</button>
@@ -1121,6 +1096,31 @@
             { id: 'afternoon',   label: 'Afternoon' }
         ];
 
+        const FUNCTION_ROOMS = {
+            'Vale Resort': [
+                'Castle Suite', 'Castle 1', 'Castle 2', 'Castle 1 & 2', 'Castle 3 & 4',
+                'Morgannwg Suite & Lounge', 'Morgannwg Suite', 'Morgannwg Lounge',
+                'Pendoylan Suite', 'Hensol Suite', 'The Boardroom', 'Dyffryn Suite',
+                'Cowbridge Lounge', 'Conservatory', 'Trecastell Suite', 'Tre-Dodridge Suite'
+            ],
+            'Hensol Castle': [
+                'Drawing Room', 'Courtyard Hall', 'Courtyard Hall 1', 'Courtyard Hall 2',
+                'Oak Room', 'Morning Room', 'The Buttery', 'Coach House',
+                'West Tower Boardroom', 'Reading Room', 'Garden Room'
+            ]
+        };
+
+        const LUNCH_CHOICES = ['Working Lunch Menu', 'Lunch Buffet Menu', 'Vale Grill Delegate Lunch'];
+
+        const DINNER_CHOICES = [
+            { name: 'Menu A', surcharge: 0 },
+            { name: 'Menu B', surcharge: 3 },
+            { name: 'Menu C', surcharge: 16.45 },
+            { name: 'Choice Menu', surcharge: 6 },
+            { name: 'Evening Buffet', surcharge: 0 },
+            { name: 'Vegetarian Menu', surcharge: 0 }
+        ];
+
         let selectedOptions = {
             arrivalDate: '',
             numberOfNights: 0,
@@ -1128,18 +1128,15 @@
             bookingName: '',
             preparedBy: '',
             venue: 'Vale Resort',
-            ddrFunctionRoom: null,   // { venue, name, startDate, endDate } — the main package room
-            functionRooms: [],       // [{ venue, name, price, startDate, endDate }] — extra rooms with prices
-            ddrEnabled: false,
-            ddrRate: 0,
-            dayDelegates: 0,
-            ddrDays: 1,
-            twentyFourHourEnabled: false,
-            twentyFourHourRate: 0,
-            overnightDelegates: 0,
-            twentyFourHourDays: 1,
-            lunchMenuChoice: '',
-            dinnerMenuChoice: '',     // "Menu A|0" format
+            functionRooms: [],       // [{ venue, name, price, startDate, endDate }] — extra chargeable rooms
+            // Default rates used as starting values when packages are enabled on a new day
+            halfDdrDefaultRate: 0,
+            ddrDefaultRate: 0,
+            tfhValeDefaultRate: 0,
+            tfhHensolDefaultRate: 0,
+            // Per-day package configuration (one entry per date in the arrival -> departure range)
+            packageDays: [],
+            // Package bedroom totals (single global breakdown for accommodation)
             pkgValeSingleOcc: 0,
             pkgValeDoubleOcc: 0,
             pkgHensolSingleOcc: 0,
@@ -1157,8 +1154,11 @@
             flipcharts: [],
             extraQtys: {},
             bedrooms: [],
+            customItems: [],
             quote: {}
         };
+
+        let customItemCounter = 0;
 
         let bedroomRowCounter = 1;
 
@@ -1182,19 +1182,23 @@
             const arrival = document.getElementById('arrivalDate').value;
             const nights = Math.max(0, parseInt(document.getElementById('numberOfNights').value) || 0);
             const dep = document.getElementById('departureDate');
-            if (!arrival) { dep.value = ''; return; }
-            const d = new Date(arrival);
-            if (isNaN(d.getTime())) { dep.value = ''; return; }
-            d.setDate(d.getDate() + nights);
-            dep.value = d.toISOString().split('T')[0];
+            if (!arrival) {
+                dep.value = '';
+            } else {
+                const d = new Date(arrival);
+                if (isNaN(d.getTime())) {
+                    dep.value = '';
+                } else {
+                    d.setDate(d.getDate() + nights);
+                    dep.value = d.toISOString().split('T')[0];
+                }
+            }
+            regeneratePackageDays();
         }
 
-        function updateConditionalSections() {
-            const ddr = document.getElementById('ddrEnabled').checked;
-            const tfh = document.getElementById('twentyFourHourEnabled').checked;
-            document.getElementById('lunchMenuChoiceGroup').style.display = (ddr || tfh) ? 'block' : 'none';
-            document.getElementById('dinnerMenuChoiceGroup').style.display = tfh ? 'block' : 'none';
-            document.getElementById('packageBedroomsGroup').style.display = tfh ? 'block' : 'none';
+        function updatePackageBedroomsVisibility() {
+            const anyTfh = (selectedOptions.packageDays || []).some(d => d.twentyFourHour && d.twentyFourHour.enabled);
+            document.getElementById('packageBedroomsGroup').style.display = anyTfh ? 'block' : 'none';
         }
 
         function formatExtraLabel(item) {
@@ -1330,9 +1334,19 @@
         }
 
         function totalDelegates() {
-            const day = Math.max(0, parseInt(document.getElementById('dayDelegates').value) || 0);
-            const overnight = Math.max(0, parseInt(document.getElementById('overnightDelegates').value) || 0);
-            return Math.max(1, day + overnight);
+            // Largest single-day total across all enabled packages — used as a sensible default
+            // for "per person" extras quantities (refreshments, canapes, etc.)
+            let max = 0;
+            (selectedOptions.packageDays || []).forEach(d => {
+                let day = 0;
+                if (d.halfDdr && d.halfDdr.enabled) day += d.halfDdr.delegates;
+                if (d.ddr && d.ddr.enabled) day += d.ddr.delegates;
+                if (d.twentyFourHour && d.twentyFourHour.enabled) {
+                    day += d.twentyFourHour.valeDelegates + d.twentyFourHour.hensolDelegates;
+                }
+                if (day > max) max = day;
+            });
+            return Math.max(1, max);
         }
 
         function defaultExtraQty(item) {
@@ -1345,56 +1359,356 @@
             return 1;
         }
 
-        function toggleDDR() {
-            const enabled = document.getElementById('ddrEnabled').checked;
-            selectedOptions.ddrEnabled = enabled;
-            document.getElementById('ddrFields').style.display = enabled ? 'block' : 'none';
-            updateConditionalSections();
+        function updateDefaultRate(kind, value) {
+            const v = Math.max(0, parseFloat(value) || 0);
+            if (kind === 'halfDdr') selectedOptions.halfDdrDefaultRate = v;
+            else if (kind === 'ddr') selectedOptions.ddrDefaultRate = v;
+            else if (kind === 'tfhVale') selectedOptions.tfhValeDefaultRate = v;
+            else if (kind === 'tfhHensol') selectedOptions.tfhHensolDefaultRate = v;
+        }
+
+        function applyDefaultsToAllDays() {
+            (selectedOptions.packageDays || []).forEach(d => {
+                if (d.halfDdr) d.halfDdr.rate = selectedOptions.halfDdrDefaultRate;
+                if (d.ddr) d.ddr.rate = selectedOptions.ddrDefaultRate;
+                if (d.twentyFourHour) {
+                    d.twentyFourHour.valeRate = selectedOptions.tfhValeDefaultRate;
+                    d.twentyFourHour.hensolRate = selectedOptions.tfhHensolDefaultRate;
+                }
+            });
+            renderPackageDays();
             recalculate();
         }
 
-        function toggleTwentyFourHour() {
-            const enabled = document.getElementById('twentyFourHourEnabled').checked;
-            selectedOptions.twentyFourHourEnabled = enabled;
-            document.getElementById('twentyFourHourFields').style.display = enabled ? 'block' : 'none';
-            updateConditionalSections();
+        /* ====== Per-day packages ====== */
+        function getPackageDateRange() {
+            const arrival = document.getElementById('arrivalDate').value;
+            const nights = Math.max(0, parseInt(document.getElementById('numberOfNights').value) || 0);
+            if (!arrival) return [];
+            const start = new Date(arrival);
+            if (isNaN(start.getTime())) return [];
+            const dates = [];
+            for (let i = 0; i <= nights; i++) {
+                const d = new Date(start);
+                d.setDate(d.getDate() + i);
+                dates.push(d.toISOString().split('T')[0]);
+            }
+            return dates;
+        }
+
+        function makeEmptyPackageDay(date) {
+            return {
+                date,
+                halfDdr: {
+                    enabled: false,
+                    delegates: 0,
+                    rate: selectedOptions.halfDdrDefaultRate || 0,
+                    startTime: '09:00',
+                    endTime: '13:00',
+                    lunchChoice: '',
+                    functionRoom: ''   // "Venue|Name" or ''
+                },
+                ddr: {
+                    enabled: false,
+                    delegates: 0,
+                    rate: selectedOptions.ddrDefaultRate || 0,
+                    lunchChoice: '',
+                    functionRoom: ''
+                },
+                twentyFourHour: {
+                    enabled: false,
+                    valeDelegates: 0,
+                    valeRate: selectedOptions.tfhValeDefaultRate || 0,
+                    hensolDelegates: 0,
+                    hensolRate: selectedOptions.tfhHensolDefaultRate || 0,
+                    lunchChoice: '',
+                    dinnerChoice: '',
+                    functionRoom: ''
+                }
+            };
+        }
+
+        function regeneratePackageDays() {
+            const dates = getPackageDateRange();
+            const existing = new Map((selectedOptions.packageDays || []).map(d => [d.date, d]));
+            selectedOptions.packageDays = dates.map(date => existing.get(date) || makeEmptyPackageDay(date));
+            renderPackageDays();
+            updatePackageBedroomsVisibility();
             recalculate();
         }
 
-        function syncOvernightToSingleOcc() {
-            const n = Math.max(0, parseInt(document.getElementById('overnightDelegates').value) || 0);
-            const singleOccEl = document.getElementById('pkgValeSingleOcc');
-            singleOccEl.value = n;
-            singleOccEl.dispatchEvent(new Event('input', { bubbles: true }));
+        function functionRoomOptionsHTML(currentValue) {
+            let html = '<option value="">Select function room...</option>';
+            Object.keys(FUNCTION_ROOMS).forEach(venue => {
+                html += `<optgroup label="${venue}">`;
+                FUNCTION_ROOMS[venue].forEach(name => {
+                    const value = `${venue}|${name}`;
+                    const sel = value === currentValue ? ' selected' : '';
+                    html += `<option value="${value.replace(/&/g, '&amp;')}"${sel}>${name.replace(/&/g, '&amp;')}</option>`;
+                });
+                html += '</optgroup>';
+            });
+            return html;
         }
 
-        function selectDdrFunctionRoom() {
-            const picker = document.getElementById('ddrFunctionRoomPicker');
-            const dateBox = document.getElementById('ddrRoomDates');
-            if (!picker.value) {
-                selectedOptions.ddrFunctionRoom = null;
-                dateBox.style.display = 'none';
+        function lunchChoiceOptionsHTML(currentValue) {
+            let html = '<option value="">Select lunch menu...</option>';
+            LUNCH_CHOICES.forEach(name => {
+                const sel = name === currentValue ? ' selected' : '';
+                html += `<option value="${name}"${sel}>${name}</option>`;
+            });
+            return html;
+        }
+
+        function dinnerChoiceOptionsHTML(currentValue) {
+            let html = '<option value="">Select dinner menu...</option>';
+            DINNER_CHOICES.forEach(d => {
+                const value = `${d.name}|${d.surcharge}`;
+                const sel = value === currentValue ? ' selected' : '';
+                const surTxt = d.surcharge > 0 ? ` (+£${d.surcharge.toFixed(2)} pp)` : ' (+£0 pp)';
+                html += `<option value="${value}"${sel}>${d.name}${surTxt}</option>`;
+            });
+            return html;
+        }
+
+        function formatLongDate(iso) {
+            if (!iso) return iso;
+            const d = new Date(iso);
+            if (isNaN(d.getTime())) return iso;
+            return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function renderPackageDays() {
+            const container = document.getElementById('packageDaysContainer');
+            if (!container) return;
+            const days = selectedOptions.packageDays || [];
+            if (days.length === 0) {
+                container.innerHTML = `<div class="helper-text" style="text-align:center; padding:14px; border:1px dashed var(--accent-light); border-radius:6px;">
+                    Set an arrival date and number of nights to configure per-day packages.
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = days.map((day, idx) => {
+                const halfBlock = renderPackageBlock(day, idx, 'halfDdr', '1/2 DDR Package');
+                const ddrBlock = renderPackageBlock(day, idx, 'ddr', 'Day Delegate Package (DDR)');
+                const tfhBlock = renderPackageBlock(day, idx, 'twentyFourHour', '24 Hour Package');
+                return `<div class="package-day-card">
+                    <div class="day-header">Day ${idx + 1} &mdash; ${formatLongDate(day.date)}</div>
+                    ${halfBlock}
+                    ${ddrBlock}
+                    ${tfhBlock}
+                </div>`;
+            }).join('');
+        }
+
+        function renderPackageBlock(day, dayIdx, pkgKey, title) {
+            const pkg = day[pkgKey];
+            const enabled = !!pkg.enabled;
+            const safeDate = day.date;
+            let fieldsHTML = '';
+            if (enabled) {
+                if (pkgKey === 'halfDdr') {
+                    fieldsHTML = `
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <div class="form-group">
+                                <label>Rate (&pound;/delegate)</label>
+                                <input type="number" min="0" step="0.01" value="${pkg.rate}" oninput="updatePackageFieldLive('${safeDate}', 'halfDdr', 'rate', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Delegates</label>
+                                <input type="number" min="0" value="${pkg.delegates}" oninput="updatePackageFieldLive('${safeDate}', 'halfDdr', 'delegates', this.value)">
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <div class="form-group">
+                                <label>Start time</label>
+                                <input type="time" value="${pkg.startTime || '09:00'}" onchange="updatePackageField('${safeDate}', 'halfDdr', 'startTime', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>End time</label>
+                                <input type="time" value="${pkg.endTime || '13:00'}" onchange="updatePackageField('${safeDate}', 'halfDdr', 'endTime', this.value)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Function room</label>
+                            <select onchange="updatePackageField('${safeDate}', 'halfDdr', 'functionRoom', this.value)">${functionRoomOptionsHTML(pkg.functionRoom)}</select>
+                        </div>
+                        <div class="form-group">
+                            <label>Lunch menu</label>
+                            <select onchange="updatePackageField('${safeDate}', 'halfDdr', 'lunchChoice', this.value)">${lunchChoiceOptionsHTML(pkg.lunchChoice)}</select>
+                        </div>
+                        <div class="helper-text" style="margin-top:0;">Includes: mid-morning tea & coffee with Danishes/Welsh cakes, lunch, flipchart.</div>`;
+                } else if (pkgKey === 'ddr') {
+                    fieldsHTML = `
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <div class="form-group">
+                                <label>Rate (&pound;/delegate)</label>
+                                <input type="number" min="0" step="0.01" value="${pkg.rate}" oninput="updatePackageFieldLive('${safeDate}', 'ddr', 'rate', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Delegates</label>
+                                <input type="number" min="0" value="${pkg.delegates}" oninput="updatePackageFieldLive('${safeDate}', 'ddr', 'delegates', this.value)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Function room</label>
+                            <select onchange="updatePackageField('${safeDate}', 'ddr', 'functionRoom', this.value)">${functionRoomOptionsHTML(pkg.functionRoom)}</select>
+                        </div>
+                        <div class="form-group">
+                            <label>Lunch menu</label>
+                            <select onchange="updatePackageField('${safeDate}', 'ddr', 'lunchChoice', this.value)">${lunchChoiceOptionsHTML(pkg.lunchChoice)}</select>
+                        </div>
+                        <div class="helper-text" style="margin-top:0;">Includes: arrival/mid-morning/afternoon tea & coffee, lunch, flipchart.</div>`;
+                } else if (pkgKey === 'twentyFourHour') {
+                    fieldsHTML = `
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <div class="form-group">
+                                <label>Vale Resort accommodation rate (&pound;/del)</label>
+                                <input type="number" min="0" step="0.01" value="${pkg.valeRate}" oninput="updatePackageFieldLive('${safeDate}', 'twentyFourHour', 'valeRate', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Vale delegates</label>
+                                <input type="number" min="0" value="${pkg.valeDelegates}" oninput="updatePackageFieldLive('${safeDate}', 'twentyFourHour', 'valeDelegates', this.value)">
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <div class="form-group">
+                                <label>Hensol Castle accommodation rate (&pound;/del)</label>
+                                <input type="number" min="0" step="0.01" value="${pkg.hensolRate}" oninput="updatePackageFieldLive('${safeDate}', 'twentyFourHour', 'hensolRate', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Hensol delegates</label>
+                                <input type="number" min="0" value="${pkg.hensolDelegates}" oninput="updatePackageFieldLive('${safeDate}', 'twentyFourHour', 'hensolDelegates', this.value)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Function room</label>
+                            <select onchange="updatePackageField('${safeDate}', 'twentyFourHour', 'functionRoom', this.value)">${functionRoomOptionsHTML(pkg.functionRoom)}</select>
+                        </div>
+                        <div class="form-group">
+                            <label>Lunch menu</label>
+                            <select onchange="updatePackageField('${safeDate}', 'twentyFourHour', 'lunchChoice', this.value)">${lunchChoiceOptionsHTML(pkg.lunchChoice)}</select>
+                        </div>
+                        <div class="form-group">
+                            <label>Dinner menu</label>
+                            <select onchange="updatePackageField('${safeDate}', 'twentyFourHour', 'dinnerChoice', this.value)">${dinnerChoiceOptionsHTML(pkg.dinnerChoice)}</select>
+                        </div>
+                        <div class="helper-text" style="margin-top:0;">Includes: arrival/mid/afternoon T&amp;C, lunch, dinner (surcharge applies for B/C/Choice), flipchart, accommodation.</div>`;
+                }
+            }
+            return `<div class="day-package-block">
+                <label class="day-package-toggle">
+                    <input type="checkbox" ${enabled ? 'checked' : ''} onchange="togglePackageOnDay('${safeDate}', '${pkgKey}', this.checked)">
+                    <span>${title}</span>
+                </label>
+                ${enabled ? `<div class="day-package-fields">${fieldsHTML}</div>` : ''}
+            </div>`;
+        }
+
+        function togglePackageOnDay(date, pkgKey, enabled) {
+            const day = (selectedOptions.packageDays || []).find(d => d.date === date);
+            if (!day) return;
+            day[pkgKey].enabled = !!enabled;
+            // When enabling, refresh rate from current default if zero
+            if (enabled) {
+                if (pkgKey === 'halfDdr' && day.halfDdr.rate === 0) day.halfDdr.rate = selectedOptions.halfDdrDefaultRate || 0;
+                if (pkgKey === 'ddr' && day.ddr.rate === 0) day.ddr.rate = selectedOptions.ddrDefaultRate || 0;
+                if (pkgKey === 'twentyFourHour') {
+                    if (day.twentyFourHour.valeRate === 0) day.twentyFourHour.valeRate = selectedOptions.tfhValeDefaultRate || 0;
+                    if (day.twentyFourHour.hensolRate === 0) day.twentyFourHour.hensolRate = selectedOptions.tfhHensolDefaultRate || 0;
+                }
+            }
+            renderPackageDays();
+            updatePackageBedroomsVisibility();
+            recalculate();
+        }
+
+        // Field updates that don't need re-render (preserve focus while typing)
+        function updatePackageFieldLive(date, pkgKey, field, value) {
+            const day = (selectedOptions.packageDays || []).find(d => d.date === date);
+            if (!day || !day[pkgKey]) return;
+            const target = day[pkgKey];
+            const intFields = new Set(['delegates', 'valeDelegates', 'hensolDelegates']);
+            const numFields = new Set(['rate', 'valeRate', 'hensolRate']);
+            if (intFields.has(field)) {
+                const n = parseInt(value);
+                target[field] = isNaN(n) || n < 0 ? 0 : n;
+            } else if (numFields.has(field)) {
+                const n = parseFloat(value);
+                target[field] = isNaN(n) || n < 0 ? 0 : n;
             } else {
-                const [venue, name] = picker.value.split('|');
-                const arrival = document.getElementById('arrivalDate').value || '';
-                const departure = document.getElementById('departureDate').value || arrival;
-                selectedOptions.ddrFunctionRoom = { venue, name, startDate: arrival, endDate: departure };
-                document.getElementById('ddrRoomStart').value = arrival;
-                document.getElementById('ddrRoomEnd').value = departure;
-                dateBox.style.display = 'block';
-                selectedOptions.functionRooms = selectedOptions.functionRooms.filter(
-                    r => !(r.venue === venue && r.name === name)
-                );
-                renderSelectedRooms();
+                target[field] = value;
             }
             recalculate();
         }
 
-        function updateDdrRoomDates() {
-            if (!selectedOptions.ddrFunctionRoom) return;
-            selectedOptions.ddrFunctionRoom.startDate = document.getElementById('ddrRoomStart').value || '';
-            selectedOptions.ddrFunctionRoom.endDate = document.getElementById('ddrRoomEnd').value || '';
+        // Field updates that come from selects/time pickers — no re-render needed either
+        function updatePackageField(date, pkgKey, field, value) {
+            const day = (selectedOptions.packageDays || []).find(d => d.date === date);
+            if (!day || !day[pkgKey]) return;
+            day[pkgKey][field] = value;
             recalculate();
+        }
+
+        /* ====== Custom items (multiple) ====== */
+        function addCustomItem() {
+            selectedOptions.customItems.push({
+                id: 'ci_' + (customItemCounter++),
+                desc: '',
+                qty: 1,
+                price: 0
+            });
+            renderCustomItems();
+            recalculate();
+        }
+
+        function removeCustomItem(id) {
+            selectedOptions.customItems = selectedOptions.customItems.filter(c => c.id !== id);
+            renderCustomItems();
+            recalculate();
+        }
+
+        function updateCustomItemLive(id, field, value) {
+            const item = selectedOptions.customItems.find(c => c.id === id);
+            if (!item) return;
+            if (field === 'qty') {
+                const n = parseInt(value);
+                item.qty = isNaN(n) || n < 1 ? 1 : n;
+            } else if (field === 'price') {
+                const n = parseFloat(value);
+                item.price = isNaN(n) || n < 0 ? 0 : n;
+            } else {
+                item.desc = value;
+            }
+            recalculate();
+        }
+
+        function renderCustomItems() {
+            const container = document.getElementById('customItemsContainer');
+            if (!container) return;
+            const items = selectedOptions.customItems || [];
+            if (items.length === 0) {
+                container.innerHTML = `<div class="helper-text" style="text-align:center; padding:12px; border:1px dashed var(--accent-light); border-radius:6px;">No custom items added.</div>`;
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <div class="custom-item-row">
+                    <div class="form-group">
+                        <label style="font-size:0.78em;">Description</label>
+                        <input type="text" placeholder="Item description" value="${(item.desc || '').replace(/"/g, '&quot;')}" oninput="updateCustomItemLive('${item.id}', 'desc', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:0.78em;">Qty</label>
+                        <input type="number" min="1" value="${item.qty}" oninput="updateCustomItemLive('${item.id}', 'qty', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:0.78em;">Unit Price (&pound;)</label>
+                        <input type="number" min="0" step="0.01" value="${item.price}" oninput="updateCustomItemLive('${item.id}', 'price', this.value)">
+                    </div>
+                    <button type="button" class="remove-drink-btn" title="Remove item" onclick="removeCustomItem('${item.id}')">&times;</button>
+                </div>
+            `).join('');
         }
 
         function updateExtraRoomDate(idx, field, value) {
@@ -1426,12 +1740,6 @@
             const [venue, name] = picker.value.split('|');
             // Avoid duplicates in extras
             if (selectedOptions.functionRooms.some(r => r.venue === venue && r.name === name)) {
-                picker.value = '';
-                return;
-            }
-            // Prevent adding the DDR room as an extra
-            if (selectedOptions.ddrFunctionRoom && selectedOptions.ddrFunctionRoom.venue === venue && selectedOptions.ddrFunctionRoom.name === name) {
-                alert('This room is already selected as the DDR function room.');
                 picker.value = '';
                 return;
             }
@@ -1750,22 +2058,10 @@
         }
 
         function recalculate() {
-            const ddrEnabled = document.getElementById('ddrEnabled').checked;
-            const ddrRate = Math.max(0, parseFloat(document.getElementById('ddrRate').value) || 0);
-            const dayDelegates = Math.max(0, parseInt(document.getElementById('dayDelegates').value) || 0);
-            const ddrDays = Math.max(1, parseInt(document.getElementById('ddrDays').value) || 1);
-            const tfhEnabled = document.getElementById('twentyFourHourEnabled').checked;
-            const tfhRate = Math.max(0, parseFloat(document.getElementById('twentyFourHourRate').value) || 0);
-            const overnightDelegates = Math.max(0, parseInt(document.getElementById('overnightDelegates').value) || 0);
-            const tfhDays = Math.max(1, parseInt(document.getElementById('twentyFourHourDays').value) || 1);
-            const lunchMenuChoice = document.getElementById('lunchMenuChoice').value;
-            const dinnerMenuChoice = document.getElementById('dinnerMenuChoice').value;
             const pkgValeSingleOcc = Math.max(0, parseInt(document.getElementById('pkgValeSingleOcc').value) || 0);
             const pkgValeDoubleOcc = Math.max(0, parseInt(document.getElementById('pkgValeDoubleOcc').value) || 0);
             const pkgHensolSingleOcc = Math.max(0, parseInt(document.getElementById('pkgHensolSingleOcc').value) || 0);
             const pkgHensolDoubleOcc = Math.max(0, parseInt(document.getElementById('pkgHensolDoubleOcc').value) || 0);
-
-            const totalDel = dayDelegates + overnightDelegates;
 
             selectedOptions.arrivalDate = document.getElementById('arrivalDate').value;
             selectedOptions.numberOfNights = Math.max(0, parseInt(document.getElementById('numberOfNights').value) || 0);
@@ -1773,28 +2069,26 @@
             selectedOptions.bookingName = document.getElementById('bookingName').value;
             selectedOptions.preparedBy = document.getElementById('preparedBy').value;
             selectedOptions.venue = document.getElementById('venue').value;
-            selectedOptions.ddrEnabled = ddrEnabled;
-            selectedOptions.ddrRate = ddrRate;
-            selectedOptions.dayDelegates = dayDelegates;
-            selectedOptions.ddrDays = ddrDays;
-            selectedOptions.twentyFourHourEnabled = tfhEnabled;
-            selectedOptions.twentyFourHourRate = tfhRate;
-            selectedOptions.overnightDelegates = overnightDelegates;
-            selectedOptions.twentyFourHourDays = tfhDays;
-            selectedOptions.lunchMenuChoice = lunchMenuChoice;
-            selectedOptions.dinnerMenuChoice = dinnerMenuChoice;
             selectedOptions.pkgValeSingleOcc = pkgValeSingleOcc;
             selectedOptions.pkgValeDoubleOcc = pkgValeDoubleOcc;
             selectedOptions.pkgHensolSingleOcc = pkgHensolSingleOcc;
             selectedOptions.pkgHensolDoubleOcc = pkgHensolDoubleOcc;
 
-            // Bedroom validation: overnight delegates == single + 2*double
+            const days = selectedOptions.packageDays || [];
+            const anyTfh = days.some(d => d.twentyFourHour && d.twentyFourHour.enabled);
+
+            // Soft validation: total package rooms vs the largest day's overnight delegates
             const totalPkgRooms = pkgValeSingleOcc + pkgValeDoubleOcc + pkgHensolSingleOcc + pkgHensolDoubleOcc;
             const expectedDelegates = pkgValeSingleOcc + (2 * pkgValeDoubleOcc) + pkgHensolSingleOcc + (2 * pkgHensolDoubleOcc);
+            const maxOvernightDelegates = days.reduce((m, d) => {
+                if (!d.twentyFourHour || !d.twentyFourHour.enabled) return m;
+                const t = d.twentyFourHour.valeDelegates + d.twentyFourHour.hensolDelegates;
+                return t > m ? t : m;
+            }, 0);
             const validationDiv = document.getElementById('bedroomValidation');
-            if (tfhEnabled && totalPkgRooms > 0 && expectedDelegates !== overnightDelegates) {
+            if (anyTfh && totalPkgRooms > 0 && expectedDelegates !== maxOvernightDelegates) {
                 validationDiv.style.display = 'block';
-                validationDiv.textContent = `\u26A0 Mismatch: ${pkgValeSingleOcc} + ${pkgValeDoubleOcc}\u00D72 + ${pkgHensolSingleOcc} + ${pkgHensolDoubleOcc}\u00D72 = ${expectedDelegates} delegates, but ${overnightDelegates} overnight delegates entered.`;
+                validationDiv.textContent = `\u26A0 Mismatch: ${pkgValeSingleOcc} + ${pkgValeDoubleOcc}\u00D72 + ${pkgHensolSingleOcc} + ${pkgHensolDoubleOcc}\u00D72 = ${expectedDelegates} sleepers, but the largest 24-hour day has ${maxOvernightDelegates} overnight delegates.`;
             } else {
                 validationDiv.style.display = 'none';
             }
@@ -1802,148 +2096,199 @@
             let total = 0;
             const summary = [];
 
-            // Main package room (always included if selected)
-            if (selectedOptions.ddrFunctionRoom) {
-                const ddrRoomDateRange = formatRoomDateRange(selectedOptions.ddrFunctionRoom.startDate, selectedOptions.ddrFunctionRoom.endDate);
-                const ddrRoomLabel = ddrRoomDateRange
-                    ? `Function Room Hire \u2014 ${selectedOptions.ddrFunctionRoom.name} (${ddrRoomDateRange}) (included in package)`
-                    : `Function Room Hire \u2014 ${selectedOptions.ddrFunctionRoom.name} (included in package)`;
-                summary.push({
-                    label: ddrRoomLabel,
-                    price: 0, qty: 1, unitPrice: 0, ddrZero: true
-                });
-            }
+            const fmtDateShort = iso => {
+                if (!iso) return '';
+                const d = new Date(iso);
+                if (isNaN(d.getTime())) return iso;
+                return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+            };
+            const formatRoomNamed = roomVal => {
+                if (!roomVal) return '';
+                const [v, n] = roomVal.split('|');
+                return `${n} (${v})`;
+            };
 
-            // DDR: itemise per day with dates if days > 1
-            if (ddrEnabled && ddrRate > 0 && dayDelegates > 0) {
-                const ddrPerDay = ddrRate * dayDelegates;
-                if (ddrDays === 1) {
-                    total += ddrPerDay;
+            // ==== Per-day packages ====
+            days.forEach((day, idx) => {
+                const dayPrefix = `Day ${idx + 1} \u2014 ${fmtDateShort(day.date)}`;
+
+                // 1/2 DDR
+                const half = day.halfDdr;
+                if (half && half.enabled && half.rate > 0 && half.delegates > 0) {
+                    const lineTotal = half.rate * half.delegates;
+                    total += lineTotal;
+                    const timing = (half.startTime && half.endTime) ? ` (${half.startTime}\u2013${half.endTime})` : '';
                     summary.push({
-                        label: `Day Delegate Package (${dayDelegates} \u00D7 \u00A3${ddrRate.toFixed(2)})`,
-                        price: ddrPerDay, qty: dayDelegates, unitPrice: ddrRate
+                        label: `${dayPrefix}: 1/2 DDR Package${timing} (${half.delegates} \u00D7 \u00A3${half.rate.toFixed(2)})`,
+                        price: lineTotal, qty: half.delegates, unitPrice: half.rate
                     });
-                } else {
-                    const ddrStart = (selectedOptions.ddrFunctionRoom && selectedOptions.ddrFunctionRoom.startDate) || selectedOptions.arrivalDate;
-                    for (let i = 0; i < ddrDays; i++) {
-                        const d = bedroomDateForOffset(ddrStart, i);
-                        const dateLabel = d ? bedroomFormatDate(d) : `Day ${i + 1}`;
-                        total += ddrPerDay;
+                    if (half.functionRoom) {
                         summary.push({
-                            label: `Day Delegate Package \u2014 ${dateLabel} (${dayDelegates} \u00D7 \u00A3${ddrRate.toFixed(2)})`,
-                            price: ddrPerDay, qty: dayDelegates, unitPrice: ddrRate
+                            label: `${dayPrefix}: 1/2 DDR Function Room \u2014 ${formatRoomNamed(half.functionRoom)} (included)`,
+                            price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                        });
+                    }
+                    summary.push({
+                        label: `${dayPrefix}: Mid-Morning Tea & Coffee with Danishes/Welsh Cakes (\u00D7 ${half.delegates}) (included in 1/2 DDR)`,
+                        price: 0, qty: half.delegates, unitPrice: 0, ddrZero: true
+                    });
+                    if (half.lunchChoice) {
+                        summary.push({
+                            label: `${dayPrefix}: ${half.lunchChoice} (\u00D7 ${half.delegates}) (included in 1/2 DDR)`,
+                            price: 0, qty: half.delegates, unitPrice: 0, ddrZero: true
+                        });
+                    }
+                    summary.push({
+                        label: `${dayPrefix}: Flipchart \u00D7 1 (included in 1/2 DDR)`,
+                        price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                    });
+                }
+
+                // DDR
+                const ddr = day.ddr;
+                if (ddr && ddr.enabled && ddr.rate > 0 && ddr.delegates > 0) {
+                    const lineTotal = ddr.rate * ddr.delegates;
+                    total += lineTotal;
+                    summary.push({
+                        label: `${dayPrefix}: Day Delegate Package (${ddr.delegates} \u00D7 \u00A3${ddr.rate.toFixed(2)})`,
+                        price: lineTotal, qty: ddr.delegates, unitPrice: ddr.rate
+                    });
+                    if (ddr.functionRoom) {
+                        summary.push({
+                            label: `${dayPrefix}: DDR Function Room \u2014 ${formatRoomNamed(ddr.functionRoom)} (included)`,
+                            price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                        });
+                    }
+                    ['Arrival Tea, Coffee & Danishes/Welsh Cakes', 'Mid-Morning Tea, Coffee & Biscuits', 'Afternoon Tea, Coffee & Biscuits'].forEach(label => {
+                        summary.push({
+                            label: `${dayPrefix}: ${label} (\u00D7 ${ddr.delegates}) (included in DDR)`,
+                            price: 0, qty: ddr.delegates, unitPrice: 0, ddrZero: true
+                        });
+                    });
+                    if (ddr.lunchChoice) {
+                        summary.push({
+                            label: `${dayPrefix}: ${ddr.lunchChoice} (\u00D7 ${ddr.delegates}) (included in DDR)`,
+                            price: 0, qty: ddr.delegates, unitPrice: 0, ddrZero: true
+                        });
+                    }
+                    summary.push({
+                        label: `${dayPrefix}: Flipchart \u00D7 1 (included in DDR)`,
+                        price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                    });
+                }
+
+                // 24 Hour
+                const tfh = day.twentyFourHour;
+                if (tfh && tfh.enabled) {
+                    let tfhDayHasCharge = false;
+                    if (tfh.valeRate > 0 && tfh.valeDelegates > 0) {
+                        const lineTotal = tfh.valeRate * tfh.valeDelegates;
+                        total += lineTotal;
+                        tfhDayHasCharge = true;
+                        summary.push({
+                            label: `${dayPrefix}: 24 Hour Package — Vale Resort accommodation (${tfh.valeDelegates} × £${tfh.valeRate.toFixed(2)})`,
+                            price: lineTotal, qty: tfh.valeDelegates, unitPrice: tfh.valeRate
+                        });
+                    }
+                    if (tfh.hensolRate > 0 && tfh.hensolDelegates > 0) {
+                        const lineTotal = tfh.hensolRate * tfh.hensolDelegates;
+                        total += lineTotal;
+                        tfhDayHasCharge = true;
+                        summary.push({
+                            label: `${dayPrefix}: 24 Hour Package — Hensol Castle accommodation (${tfh.hensolDelegates} × £${tfh.hensolRate.toFixed(2)})`,
+                            price: lineTotal, qty: tfh.hensolDelegates, unitPrice: tfh.hensolRate
+                        });
+                    }
+                    const tfhDelegates = tfh.valeDelegates + tfh.hensolDelegates;
+                    if (tfhDayHasCharge && tfhDelegates > 0) {
+                        if (tfh.functionRoom) {
+                            summary.push({
+                                label: `${dayPrefix}: 24 Hour Function Room — ${formatRoomNamed(tfh.functionRoom)} (included)`,
+                                price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                            });
+                        }
+                        ['Arrival Tea, Coffee & Danishes/Welsh Cakes', 'Mid-Morning Tea, Coffee & Biscuits', 'Afternoon Tea, Coffee & Biscuits'].forEach(label => {
+                            summary.push({
+                                label: `${dayPrefix}: ${label} (× ${tfhDelegates}) (included in 24 Hour)`,
+                                price: 0, qty: tfhDelegates, unitPrice: 0, ddrZero: true
+                            });
+                        });
+                        if (tfh.lunchChoice) {
+                            summary.push({
+                                label: `${dayPrefix}: ${tfh.lunchChoice} (× ${tfhDelegates}) (included in 24 Hour)`,
+                                price: 0, qty: tfhDelegates, unitPrice: 0, ddrZero: true
+                            });
+                        }
+                        if (tfh.dinnerChoice) {
+                            const [dName, dSurStr] = tfh.dinnerChoice.split('|');
+                            const dSur = parseFloat(dSurStr) || 0;
+                            if (dSur > 0) {
+                                const dTotal = dSur * tfhDelegates;
+                                total += dTotal;
+                                summary.push({
+                                    label: `${dayPrefix}: ${dName} (× ${tfhDelegates} × £${dSur.toFixed(2)} surcharge) (included in 24 Hour, surcharge applies)`,
+                                    price: dTotal, qty: tfhDelegates, unitPrice: dSur
+                                });
+                            } else {
+                                summary.push({
+                                    label: `${dayPrefix}: ${dName} (× ${tfhDelegates}) (included in 24 Hour)`,
+                                    price: 0, qty: tfhDelegates, unitPrice: 0, ddrZero: true
+                                });
+                            }
+                        }
+                        summary.push({
+                            label: `${dayPrefix}: Flipchart × 1 (included in 24 Hour)`,
+                            price: 0, qty: 1, unitPrice: 0, ddrZero: true
                         });
                     }
                 }
-            }
+            });
 
-            // 24 Hour Rate: itemise per day with dates if days > 1
+            // Double-occupancy discount (single £80/double-room across the booking)
             const totalDoubleOccRooms = pkgValeDoubleOcc + pkgHensolDoubleOcc;
-            if (tfhEnabled && tfhRate > 0 && overnightDelegates > 0) {
-                const tfhPerDay = tfhRate * overnightDelegates;
-                if (tfhDays === 1) {
-                    total += tfhPerDay;
-                    summary.push({
-                        label: `24 Hour Package (${overnightDelegates} \u00D7 \u00A3${tfhRate.toFixed(2)})`,
-                        price: tfhPerDay, qty: overnightDelegates, unitPrice: tfhRate
-                    });
-                } else {
-                    const tfhStart = (selectedOptions.ddrFunctionRoom && selectedOptions.ddrFunctionRoom.startDate) || selectedOptions.arrivalDate;
-                    for (let i = 0; i < tfhDays; i++) {
-                        const d = bedroomDateForOffset(tfhStart, i);
-                        const dateLabel = d ? bedroomFormatDate(d) : `Day ${i + 1}`;
-                        total += tfhPerDay;
-                        summary.push({
-                            label: `24 Hour Package \u2014 ${dateLabel} (${overnightDelegates} \u00D7 \u00A3${tfhRate.toFixed(2)})`,
-                            price: tfhPerDay, qty: overnightDelegates, unitPrice: tfhRate
-                        });
-                    }
-                }
-            }
-            if (tfhEnabled && totalDoubleOccRooms > 0) {
+            if (anyTfh && totalDoubleOccRooms > 0) {
                 const doubleDiscount = totalDoubleOccRooms * 80;
                 total -= doubleDiscount;
                 summary.push({
-                    label: `Double Occupancy Discount (${totalDoubleOccRooms} room${totalDoubleOccRooms !== 1 ? 's' : ''} \u00D7 \u00A3${(80).toFixed(2)})`,
+                    label: `Double Occupancy Discount (${totalDoubleOccRooms} room${totalDoubleOccRooms !== 1 ? 's' : ''} × £${(80).toFixed(2)})`,
                     price: -doubleDiscount, qty: totalDoubleOccRooms, unitPrice: -80
                 });
             }
 
-            // Update total sleepers counter
+            // Total sleepers counter
             const totalSleepers = pkgValeSingleOcc + (pkgValeDoubleOcc * 2) + pkgHensolSingleOcc + (pkgHensolDoubleOcc * 2);
             const sleeperBadge = document.getElementById('totalSleepersBadge');
             const sleeperCount = document.getElementById('totalSleepersCount');
-            if (tfhEnabled && (pkgValeSingleOcc + pkgValeDoubleOcc + pkgHensolSingleOcc + pkgHensolDoubleOcc) > 0) {
+            if (anyTfh && totalPkgRooms > 0) {
                 sleeperBadge.style.display = 'block';
                 sleeperCount.textContent = totalSleepers;
             } else {
                 sleeperBadge.style.display = 'none';
             }
 
-            // Lunch menu (included in DDR / 24 hour, applied to total delegates)
-            if ((ddrEnabled || tfhEnabled) && lunchMenuChoice && totalDel > 0) {
-                summary.push({
-                    label: `${lunchMenuChoice} (\u00D7 ${totalDel} delegates) (included in package)`,
-                    price: 0, qty: totalDel, unitPrice: 0, ddrZero: true
-                });
-            }
-
-            // Standard refreshments included in package (Arrival, Mid-Morning, Afternoon T&C)
-            if ((ddrEnabled || tfhEnabled) && totalDel > 0) {
-                ['Arrival Tea, Coffee & Danishes/Welsh Cakes', 'Mid-Morning Tea, Coffee & Biscuits', 'Afternoon Tea, Coffee & Biscuits'].forEach(label => {
-                    summary.push({
-                        label: `${label} (\u00D7 ${totalDel} delegates) (included in package)`,
-                        price: 0, qty: totalDel, unitPrice: 0, ddrZero: true
-                    });
-                });
-                summary.push({
-                    label: `Flipchart \u00D7 1 (included in package)`,
-                    price: 0, qty: 1, unitPrice: 0, ddrZero: true
-                });
-            }
-
-            // Dinner menu — surcharge added on top of 24 hour rate
-            if (tfhEnabled && dinnerMenuChoice && overnightDelegates > 0) {
-                const [dName, dSurStr] = dinnerMenuChoice.split('|');
-                const dSur = parseFloat(dSurStr) || 0;
-                if (dSur > 0) {
-                    const dTotal = dSur * overnightDelegates;
-                    total += dTotal;
-                    summary.push({
-                        label: `${dName} (\u00D7 ${overnightDelegates} overnight delegates \u00D7 \u00A3${dSur.toFixed(2)} surcharge) (included in 24 hour rate)`,
-                        price: dTotal, qty: overnightDelegates, unitPrice: dSur
-                    });
-                } else {
-                    summary.push({
-                        label: `${dName} (\u00D7 ${overnightDelegates} overnight delegates) (included in 24 hour rate)`,
-                        price: 0, qty: overnightDelegates, unitPrice: 0, ddrZero: true
-                    });
-                }
-            }
-
-            // Package bedrooms — included in 24 hour rate (B&B), zero-cost lines
-            if (tfhEnabled) {
+            // Package bedroom breakdown (informational, included in 24 Hour)
+            if (anyTfh) {
                 if (pkgValeSingleOcc > 0) {
                     summary.push({
-                        label: `Single Occ Rooms at The Vale Resort (B&B) \u00D7 ${pkgValeSingleOcc} (included in 24 hour rate)`,
+                        label: `Single Occ Rooms at The Vale Resort (B&B) × ${pkgValeSingleOcc} (included in 24 hour rate)`,
                         price: 0, qty: pkgValeSingleOcc, unitPrice: 0, ddrZero: true
                     });
                 }
                 if (pkgValeDoubleOcc > 0) {
                     summary.push({
-                        label: `Double Occ Rooms at The Vale Resort (B&B) \u00D7 ${pkgValeDoubleOcc} (included in 24 hour rate)`,
+                        label: `Double Occ Rooms at The Vale Resort (B&B) × ${pkgValeDoubleOcc} (included in 24 hour rate)`,
                         price: 0, qty: pkgValeDoubleOcc, unitPrice: 0, ddrZero: true
                     });
                 }
                 if (pkgHensolSingleOcc > 0) {
                     summary.push({
-                        label: `Single Occ Rooms at Hensol Castle (B&B) \u00D7 ${pkgHensolSingleOcc} (included in 24 hour rate)`,
+                        label: `Single Occ Rooms at Hensol Castle (B&B) × ${pkgHensolSingleOcc} (included in 24 hour rate)`,
                         price: 0, qty: pkgHensolSingleOcc, unitPrice: 0, ddrZero: true
                     });
                 }
                 if (pkgHensolDoubleOcc > 0) {
                     summary.push({
-                        label: `Double Occ Rooms at Hensol Castle (B&B) \u00D7 ${pkgHensolDoubleOcc} (included in 24 hour rate)`,
+                        label: `Double Occ Rooms at Hensol Castle (B&B) × ${pkgHensolDoubleOcc} (included in 24 hour rate)`,
                         price: 0, qty: pkgHensolDoubleOcc, unitPrice: 0, ddrZero: true
                     });
                 }
@@ -2092,21 +2437,20 @@
                     });
                 }
             });
-            // Custom item
-            const customItemDescEl = document.getElementById('customItemDesc');
-            if (customItemDescEl) {
-                const customDesc = customItemDescEl.value.trim();
-                const customQty = Math.max(0, parseInt(document.getElementById('customItemQty').value) || 0);
-                const customPrice = Math.max(0, parseFloat(document.getElementById('customItemPrice').value) || 0);
-                if (customDesc && customQty > 0 && customPrice > 0) {
-                    const customTotal = customQty * customPrice;
+            // Custom items (multiple)
+            (selectedOptions.customItems || []).forEach(ci => {
+                const desc = (ci.desc || '').trim();
+                const qty = Math.max(0, parseInt(ci.qty) || 0);
+                const price = Math.max(0, parseFloat(ci.price) || 0);
+                if (desc && qty > 0 && price > 0) {
+                    const lineTotal = qty * price;
                     summary.push({
-                        label: customQty > 1 ? `${customDesc} (${customQty} x £${customPrice.toFixed(2)})` : customDesc,
-                        price: customTotal, qty: customQty, unitPrice: customPrice
+                        label: qty > 1 ? `${desc} (${qty} x £${price.toFixed(2)})` : desc,
+                        price: lineTotal, qty: qty, unitPrice: price
                     });
-                    total += customTotal;
+                    total += lineTotal;
                 }
-            }
+            });
 
             const summaryDiv = document.getElementById('quoteSummary');
             if (summary.length === 0) {
@@ -2138,24 +2482,37 @@
                 alert('Please select arrival date and number of nights so the departure date can be calculated.');
                 return;
             }
-            if (!selectedOptions.ddrFunctionRoom && selectedOptions.functionRooms.length === 0) {
-                alert('Please select at least one function room.');
+            const days = selectedOptions.packageDays || [];
+            // At least one package on at least one day must be enabled, OR there must be a chargeable extra room
+            const anyPackage = days.some(d =>
+                (d.halfDdr && d.halfDdr.enabled) ||
+                (d.ddr && d.ddr.enabled) ||
+                (d.twentyFourHour && d.twentyFourHour.enabled)
+            );
+            if (!anyPackage && selectedOptions.functionRooms.length === 0) {
+                alert('Please enable at least one package on a day, or add an extra function room.');
                 return;
             }
-            if (selectedOptions.ddrEnabled && selectedOptions.ddrRate <= 0) {
-                alert('Please enter a DDR price per delegate, or uncheck DDR.');
-                return;
-            }
-            if (selectedOptions.twentyFourHourEnabled && selectedOptions.twentyFourHourRate <= 0) {
-                alert('Please enter a 24 Hour rate per delegate, or uncheck the 24 Hour Rate.');
-                return;
-            }
-            if (selectedOptions.twentyFourHourEnabled) {
-                const expected = selectedOptions.pkgValeSingleOcc + (2 * selectedOptions.pkgValeDoubleOcc) + selectedOptions.pkgHensolSingleOcc + (2 * selectedOptions.pkgHensolDoubleOcc);
-                const totalRooms = selectedOptions.pkgValeSingleOcc + selectedOptions.pkgValeDoubleOcc + selectedOptions.pkgHensolSingleOcc + selectedOptions.pkgHensolDoubleOcc;
-                if (totalRooms > 0 && expected !== selectedOptions.overnightDelegates) {
-                    alert(`Bedroom mismatch: package bedrooms account for ${expected} delegates, but ${selectedOptions.overnightDelegates} overnight delegates entered. Please correct before generating the quote.`);
-                    return;
+            // Each enabled package must have non-zero rate and delegate count where applicable
+            for (let i = 0; i < days.length; i++) {
+                const d = days[i];
+                const dayLabel = `Day ${i + 1} (${d.date})`;
+                if (d.halfDdr && d.halfDdr.enabled) {
+                    if (d.halfDdr.rate <= 0) { alert(`${dayLabel}: enter a 1/2 DDR rate or disable the package.`); return; }
+                    if (d.halfDdr.delegates <= 0) { alert(`${dayLabel}: enter a 1/2 DDR delegate count.`); return; }
+                }
+                if (d.ddr && d.ddr.enabled) {
+                    if (d.ddr.rate <= 0) { alert(`${dayLabel}: enter a DDR rate or disable the package.`); return; }
+                    if (d.ddr.delegates <= 0) { alert(`${dayLabel}: enter a DDR delegate count.`); return; }
+                }
+                if (d.twentyFourHour && d.twentyFourHour.enabled) {
+                    const tfh = d.twentyFourHour;
+                    const valeSet = tfh.valeRate > 0 && tfh.valeDelegates > 0;
+                    const hensolSet = tfh.hensolRate > 0 && tfh.hensolDelegates > 0;
+                    if (!valeSet && !hensolSet) {
+                        alert(`${dayLabel}: enter Vale and/or Hensol rate × delegates for the 24 Hour package, or disable it.`);
+                        return;
+                    }
                 }
             }
 
@@ -2175,24 +2532,44 @@
         }
 
         function displayQuoteModal() {
-            const dayDelegates = selectedOptions.dayDelegates;
-            const overnightDelegates = selectedOptions.overnightDelegates;
-            const totalDel = dayDelegates + overnightDelegates;
+            const days = selectedOptions.packageDays || [];
+            // Aggregates
+            let totalHalfDdrDelDays = 0;
+            let totalDdrDelDays = 0;
+            let totalTfhDelDays = 0;
+            days.forEach(d => {
+                if (d.halfDdr && d.halfDdr.enabled) totalHalfDdrDelDays += d.halfDdr.delegates;
+                if (d.ddr && d.ddr.enabled) totalDdrDelDays += d.ddr.delegates;
+                if (d.twentyFourHour && d.twentyFourHour.enabled) {
+                    totalTfhDelDays += d.twentyFourHour.valeDelegates + d.twentyFourHour.hensolDelegates;
+                }
+            });
             const bookingName = selectedOptions.bookingName || '—';
             const preparedBy = selectedOptions.preparedBy || '—';
             const arrivalStr = formatDate(selectedOptions.arrivalDate);
             const departureStr = formatDate(selectedOptions.departureDate);
             const nights = selectedOptions.numberOfNights;
 
-            const ddrRoomDateStr = selectedOptions.ddrFunctionRoom ? formatRoomDateRange(selectedOptions.ddrFunctionRoom.startDate, selectedOptions.ddrFunctionRoom.endDate) : '';
-            const ddrRoomLine = selectedOptions.ddrFunctionRoom
-                ? `${selectedOptions.ddrFunctionRoom.name} (${selectedOptions.ddrFunctionRoom.venue})${ddrRoomDateStr ? ' — ' + ddrRoomDateStr : ''} — main package room`
-                : '';
+            // Collect unique function rooms used across all packages on all days
+            const usedRoomKeys = new Set();
+            const usedRoomLines = [];
+            days.forEach(d => {
+                ['halfDdr', 'ddr', 'twentyFourHour'].forEach(k => {
+                    const pkg = d[k];
+                    if (pkg && pkg.enabled && pkg.functionRoom) {
+                        if (!usedRoomKeys.has(pkg.functionRoom)) {
+                            usedRoomKeys.add(pkg.functionRoom);
+                            const [v, n] = pkg.functionRoom.split('|');
+                            usedRoomLines.push(`${n} (${v}) — package room`);
+                        }
+                    }
+                });
+            });
             const extraRoomLines = selectedOptions.functionRooms.map(r => {
                 const range = formatRoomDateRange(r.startDate, r.endDate);
                 return `${r.name} (${r.venue})${range ? ' — ' + range : ''} - £${r.price.toFixed(2)}`;
             });
-            const allRoomLines = [ddrRoomLine, ...extraRoomLines].filter(Boolean);
+            const allRoomLines = [...usedRoomLines, ...extraRoomLines];
             const roomsList = allRoomLines.join('<br>') || '—';
 
             let modalHTML = `
@@ -2209,11 +2586,12 @@
                     </div>
                 </div>
                 <div class="modal-item">
-                    <div class="modal-item-label">Delegates</div>
+                    <div class="modal-item-label">Delegate-days</div>
                     <div class="modal-item-value">
-                        Day Delegates: ${dayDelegates}<br>
-                        Overnight Delegates: ${overnightDelegates}<br>
-                        <strong>Total Delegates: ${totalDel}</strong>
+                        ${totalHalfDdrDelDays > 0 ? `1/2 DDR delegate-days: ${totalHalfDdrDelDays}<br>` : ''}
+                        ${totalDdrDelDays > 0 ? `DDR delegate-days: ${totalDdrDelDays}<br>` : ''}
+                        ${totalTfhDelDays > 0 ? `24 Hour delegate-days: ${totalTfhDelDays}<br>` : ''}
+                        ${(totalHalfDdrDelDays + totalDdrDelDays + totalTfhDelDays) === 0 ? 'No package delegates configured' : ''}
                     </div>
                 </div>
                 <div class="modal-item">
@@ -2222,16 +2600,32 @@
                 </div>
             `;
 
-            if (selectedOptions.ddrEnabled) {
+            // Per-day package summary
+            const dayBlocks = days.map((d, idx) => {
+                const lines = [];
+                const dStr = (() => {
+                    const date = new Date(d.date);
+                    return isNaN(date.getTime()) ? d.date : date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+                })();
+                if (d.halfDdr && d.halfDdr.enabled && d.halfDdr.rate > 0 && d.halfDdr.delegates > 0) {
+                    const t = (d.halfDdr.startTime && d.halfDdr.endTime) ? ` ${d.halfDdr.startTime}–${d.halfDdr.endTime}` : '';
+                    lines.push(`1/2 DDR${t}: £${d.halfDdr.rate.toFixed(2)} × ${d.halfDdr.delegates} = £${(d.halfDdr.rate * d.halfDdr.delegates).toFixed(2)}`);
+                }
+                if (d.ddr && d.ddr.enabled && d.ddr.rate > 0 && d.ddr.delegates > 0) {
+                    lines.push(`DDR: £${d.ddr.rate.toFixed(2)} × ${d.ddr.delegates} = £${(d.ddr.rate * d.ddr.delegates).toFixed(2)}`);
+                }
+                if (d.twentyFourHour && d.twentyFourHour.enabled) {
+                    const tfh = d.twentyFourHour;
+                    if (tfh.valeRate > 0 && tfh.valeDelegates > 0) lines.push(`24h Vale: £${tfh.valeRate.toFixed(2)} × ${tfh.valeDelegates} = £${(tfh.valeRate * tfh.valeDelegates).toFixed(2)}`);
+                    if (tfh.hensolRate > 0 && tfh.hensolDelegates > 0) lines.push(`24h Hensol: £${tfh.hensolRate.toFixed(2)} × ${tfh.hensolDelegates} = £${(tfh.hensolRate * tfh.hensolDelegates).toFixed(2)}`);
+                }
+                if (lines.length === 0) return '';
+                return `<div class="modal-item-value" style="margin:6px 0;"><strong>Day ${idx + 1} — ${dStr}</strong><br>${lines.join('<br>')}</div>`;
+            }).filter(Boolean).join('');
+            if (dayBlocks) {
                 modalHTML += `<div class="modal-item" style="background:#eef5e8; border-left:4px solid var(--primary-green);">
-                    <div class="modal-item-label">Day Delegate Package</div>
-                    <div class="modal-item-value">£${selectedOptions.ddrRate.toFixed(2)} per delegate × ${dayDelegates} = £${(selectedOptions.ddrRate * dayDelegates).toFixed(2)}</div>
-                </div>`;
-            }
-            if (selectedOptions.twentyFourHourEnabled) {
-                modalHTML += `<div class="modal-item" style="background:#eef5e8; border-left:4px solid var(--primary-green);">
-                    <div class="modal-item-label">24 Hour Package</div>
-                    <div class="modal-item-value">£${selectedOptions.twentyFourHourRate.toFixed(2)} per delegate × ${overnightDelegates} = £${(selectedOptions.twentyFourHourRate * overnightDelegates).toFixed(2)}</div>
+                    <div class="modal-item-label">Per-Day Packages</div>
+                    ${dayBlocks}
                 </div>`;
             }
 
@@ -2268,35 +2662,18 @@
             document.getElementById('departureDate').value = '';
             document.getElementById('bookingName').value = '';
             document.getElementById('preparedBy').value = '';
-            document.getElementById('ddrEnabled').checked = false;
-            document.getElementById('ddrRate').value = '0';
-            document.getElementById('dayDelegates').value = '0';
-            document.getElementById('ddrDays').value = '1';
-            document.getElementById('ddrFields').style.display = 'none';
-            document.getElementById('twentyFourHourEnabled').checked = false;
-            document.getElementById('twentyFourHourRate').value = '0';
-            document.getElementById('overnightDelegates').value = '0';
-            document.getElementById('twentyFourHourDays').value = '1';
-            document.getElementById('twentyFourHourFields').style.display = 'none';
-            document.getElementById('ddrRoomStart').value = '';
-            document.getElementById('ddrRoomEnd').value = '';
-            document.getElementById('ddrRoomDates').style.display = 'none';
-            document.getElementById('lunchMenuChoice').value = '';
-            document.getElementById('dinnerMenuChoice').value = '';
-            document.getElementById('lunchMenuChoiceGroup').style.display = 'none';
-            document.getElementById('dinnerMenuChoiceGroup').style.display = 'none';
+            document.getElementById('halfDdrDefaultRate').value = '0';
+            document.getElementById('ddrDefaultRate').value = '0';
+            document.getElementById('tfhValeDefaultRate').value = '0';
+            document.getElementById('tfhHensolDefaultRate').value = '0';
             document.getElementById('packageBedroomsGroup').style.display = 'none';
             document.getElementById('pkgValeSingleOcc').value = '0';
             document.getElementById('pkgValeDoubleOcc').value = '0';
             document.getElementById('pkgHensolSingleOcc').value = '0';
             document.getElementById('pkgHensolDoubleOcc').value = '0';
             document.getElementById('bedroomValidation').style.display = 'none';
-            document.getElementById('ddrFunctionRoomPicker').value = '';
             selectedOptions.bedrooms = [];
             renderBedrooms();
-            document.getElementById('customItemDesc').value = '';
-            document.getElementById('customItemQty').value = '1';
-            document.getElementById('customItemPrice').value = '0';
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             ['preDinner', 'dinner'].forEach(type => {
                 document.getElementById(type + 'DrinkRows').innerHTML = '';
@@ -2308,10 +2685,10 @@
             selectedOptions = {
                 arrivalDate: '', numberOfNights: 0, departureDate: '',
                 bookingName: '', preparedBy: '', venue: 'Vale Resort',
-                ddrFunctionRoom: null, functionRooms: [],
-                ddrEnabled: false, ddrRate: 0, dayDelegates: 0, ddrDays: 1,
-                twentyFourHourEnabled: false, twentyFourHourRate: 0, overnightDelegates: 0, twentyFourHourDays: 1,
-                lunchMenuChoice: '', dinnerMenuChoice: '',
+                functionRooms: [],
+                halfDdrDefaultRate: 0, ddrDefaultRate: 0,
+                tfhValeDefaultRate: 0, tfhHensolDefaultRate: 0,
+                packageDays: [],
                 pkgValeSingleOcc: 0, pkgValeDoubleOcc: 0,
                 pkgHensolSingleOcc: 0, pkgHensolDoubleOcc: 0,
                 lunchMenus: [], dinnerMenus: [],
@@ -2320,10 +2697,13 @@
                 canapes: [], cheeses: [], grazing: [], flipcharts: [],
                 extraQtys: {},
                 bedrooms: [],
+                customItems: [],
                 quote: {}
             };
 
             renderSelectedRooms();
+            renderPackageDays();
+            renderCustomItems();
 
             document.getElementById('generateBtn').textContent = 'Generate Quote';
             document.getElementById('quoteSummary').innerHTML = '<div class="quote-item" style="color: #999;">Select options to see price summary</div>';
@@ -2342,9 +2722,14 @@
 
             const arrivalStr = formatDate(selectedOptions.arrivalDate);
             const departureStr = formatDate(selectedOptions.departureDate);
-            const dayDelegates = selectedOptions.dayDelegates;
-            const overnightDelegates = selectedOptions.overnightDelegates;
-            const totalDel = dayDelegates + overnightDelegates;
+            const pkgDays = selectedOptions.packageDays || [];
+            let totalHalfDdrDelDays = 0, totalDdrDelDays = 0, totalTfhDelDays = 0;
+            pkgDays.forEach(d => {
+                if (d.halfDdr && d.halfDdr.enabled) totalHalfDdrDelDays += d.halfDdr.delegates;
+                if (d.ddr && d.ddr.enabled) totalDdrDelDays += d.ddr.delegates;
+                if (d.twentyFourHour && d.twentyFourHour.enabled) totalTfhDelDays += d.twentyFourHour.valeDelegates + d.twentyFourHour.hensolDelegates;
+            });
+            const totalDel = totalHalfDdrDelDays + totalDdrDelDays + totalTfhDelDays;
             const nights = selectedOptions.numberOfNights;
             const bookingName = selectedOptions.bookingName || '—';
             const preparedBy = selectedOptions.preparedBy || '—';
@@ -2377,15 +2762,26 @@
             const logoAreaHTMLSm = isHensol
                 ? `<div class="logo-area" style="margin-bottom:24px;"><img src="${logoUrl}" alt="Hensol Castle Logo" style="max-width:260px;height:auto;display:block;margin:0 auto 8px;">${hcTagline}</div>`
                 : `<div class="logo-area" style="margin-bottom:24px;"><img src="${logoUrl}" alt="Vale Resort Logo" style="max-width:140px;"><h1>The Vale Resort</h1><div class="tagline">Hensol &bull; Vale of Glamorgan</div></div>`;
-            const pdfDdrRoomDateStr = selectedOptions.ddrFunctionRoom ? formatRoomDateRange(selectedOptions.ddrFunctionRoom.startDate, selectedOptions.ddrFunctionRoom.endDate) : '';
-            const pdfDdrRoom = selectedOptions.ddrFunctionRoom
-                ? `${selectedOptions.ddrFunctionRoom.name} (${selectedOptions.ddrFunctionRoom.venue})${pdfDdrRoomDateStr ? ' — ' + pdfDdrRoomDateStr : ''}`
-                : '';
+            // Collect unique package rooms used across all per-day packages
+            const usedRoomKeys = new Set();
+            const pdfPackageRooms = [];
+            pkgDays.forEach(d => {
+                ['halfDdr', 'ddr', 'twentyFourHour'].forEach(k => {
+                    const pkg = d[k];
+                    if (pkg && pkg.enabled && pkg.functionRoom) {
+                        if (!usedRoomKeys.has(pkg.functionRoom)) {
+                            usedRoomKeys.add(pkg.functionRoom);
+                            const [v, n] = pkg.functionRoom.split('|');
+                            pdfPackageRooms.push(`${n} (${v})`);
+                        }
+                    }
+                });
+            });
             const pdfExtraRooms = selectedOptions.functionRooms.map(r => {
                 const range = formatRoomDateRange(r.startDate, r.endDate);
                 return `${r.name} (${r.venue})${range ? ' — ' + range : ''}`;
             });
-            const roomsList = [pdfDdrRoom, ...pdfExtraRooms].filter(Boolean).join('<br>') || '—';
+            const roomsList = [...pdfPackageRooms, ...pdfExtraRooms].filter(Boolean).join('<br>') || '—';
 
             const quoteDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
             const total = selectedOptions.quote.total;
@@ -2562,30 +2958,22 @@
                 <span class="meta-label">Departure Date</span>
                 <span class="meta-value">${departureStr}</span>
             </div>
-            ${selectedOptions.ddrEnabled ? `<div class="meta-row">
-                <span class="meta-label">Day Delegates</span>
-                <span class="meta-value">${dayDelegates}</span>
+            ${totalHalfDdrDelDays > 0 ? `<div class="meta-row">
+                <span class="meta-label">1/2 DDR Delegate-Days</span>
+                <span class="meta-value">${totalHalfDdrDelDays}</span>
             </div>` : ''}
-            ${selectedOptions.twentyFourHourEnabled ? `<div class="meta-row">
-                <span class="meta-label">Overnight Delegates</span>
-                <span class="meta-value">${overnightDelegates}</span>
+            ${totalDdrDelDays > 0 ? `<div class="meta-row">
+                <span class="meta-label">DDR Delegate-Days</span>
+                <span class="meta-value">${totalDdrDelDays}</span>
             </div>` : ''}
-            ${(selectedOptions.ddrEnabled && selectedOptions.twentyFourHourEnabled) ? `<div class="meta-row">
-                <span class="meta-label">Total Delegates</span>
-                <span class="meta-value">${totalDel}</span>
+            ${totalTfhDelDays > 0 ? `<div class="meta-row">
+                <span class="meta-label">24 Hour Delegate-Days</span>
+                <span class="meta-value">${totalTfhDelDays}</span>
             </div>` : ''}
             <div class="meta-row">
                 <span class="meta-label">Function Rooms</span>
                 <span class="meta-value">${roomsList}</span>
             </div>
-            ${selectedOptions.ddrEnabled ? `<div class="meta-row">
-                <span class="meta-label">DDR Rate</span>
-                <span class="meta-value">£${selectedOptions.ddrRate.toFixed(2)} per delegate</span>
-            </div>` : ''}
-            ${selectedOptions.twentyFourHourEnabled ? `<div class="meta-row">
-                <span class="meta-label">24 Hour Rate</span>
-                <span class="meta-value">£${selectedOptions.twentyFourHourRate.toFixed(2)} per delegate</span>
-            </div>` : ''}
         </div>
         <div class="meta-col">
             <div class="meta-row">
@@ -2735,6 +3123,8 @@
         populateOptions();
         renderSelectedRooms();
         renderBedrooms();
+        renderPackageDays();
+        renderCustomItems();
         recalculate();
     </script>
 </body>
