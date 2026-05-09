@@ -2118,6 +2118,7 @@
                     const lineTotal = half.rate * half.delegates;
                     total += lineTotal;
                     const timing = (half.startTime && half.endTime) ? ` (${half.startTime}\u2013${half.endTime})` : '';
+                    const halfPkg = `1/2 DDR Package${timing} (${half.delegates} delegates)`;
                     summary.push({
                         label: `${dayPrefix}: 1/2 DDR Package${timing} (${half.delegates} \u00D7 \u00A3${half.rate.toFixed(2)})`,
                         price: lineTotal, qty: half.delegates, unitPrice: half.rate
@@ -2125,22 +2126,30 @@
                     if (half.functionRoom) {
                         summary.push({
                             label: `${dayPrefix}: 1/2 DDR Function Room \u2014 ${formatRoomNamed(half.functionRoom)} (included)`,
-                            price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                            price: 0, qty: 1, unitPrice: 0, ddrZero: true,
+                            groupDay: dayPrefix, groupPkg: halfPkg,
+                            groupItem: `Function Room \u2014 ${formatRoomNamed(half.functionRoom)}`
                         });
                     }
                     summary.push({
                         label: `${dayPrefix}: Mid-Morning Tea & Coffee with Danishes/Welsh Cakes (\u00D7 ${half.delegates}) (included in 1/2 DDR)`,
-                        price: 0, qty: half.delegates, unitPrice: 0, ddrZero: true
+                        price: 0, qty: half.delegates, unitPrice: 0, ddrZero: true,
+                        groupDay: dayPrefix, groupPkg: halfPkg,
+                        groupItem: `Mid-Morning Tea & Coffee with Danishes/Welsh Cakes (\u00D7 ${half.delegates})`
                     });
                     if (half.lunchChoice) {
                         summary.push({
                             label: `${dayPrefix}: ${half.lunchChoice} (\u00D7 ${half.delegates}) (included in 1/2 DDR)`,
-                            price: 0, qty: half.delegates, unitPrice: 0, ddrZero: true
+                            price: 0, qty: half.delegates, unitPrice: 0, ddrZero: true,
+                            groupDay: dayPrefix, groupPkg: halfPkg,
+                            groupItem: `${half.lunchChoice} (\u00D7 ${half.delegates})`
                         });
                     }
                     summary.push({
                         label: `${dayPrefix}: Flipchart \u00D7 1 (included in 1/2 DDR)`,
-                        price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                        price: 0, qty: 1, unitPrice: 0, ddrZero: true,
+                        groupDay: dayPrefix, groupPkg: halfPkg,
+                        groupItem: 'Flipchart \u00D7 1'
                     });
                 }
 
@@ -2149,6 +2158,7 @@
                 if (ddr && ddr.enabled && ddr.rate > 0 && ddr.delegates > 0) {
                     const lineTotal = ddr.rate * ddr.delegates;
                     total += lineTotal;
+                    const ddrPkg = `Day Delegate Package (${ddr.delegates} delegates)`;
                     summary.push({
                         label: `${dayPrefix}: Day Delegate Package (${ddr.delegates} \u00D7 \u00A3${ddr.rate.toFixed(2)})`,
                         price: lineTotal, qty: ddr.delegates, unitPrice: ddr.rate
@@ -2156,24 +2166,32 @@
                     if (ddr.functionRoom) {
                         summary.push({
                             label: `${dayPrefix}: DDR Function Room \u2014 ${formatRoomNamed(ddr.functionRoom)} (included)`,
-                            price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                            price: 0, qty: 1, unitPrice: 0, ddrZero: true,
+                            groupDay: dayPrefix, groupPkg: ddrPkg,
+                            groupItem: `Function Room \u2014 ${formatRoomNamed(ddr.functionRoom)}`
                         });
                     }
                     ['Arrival Tea, Coffee & Danishes/Welsh Cakes', 'Mid-Morning Tea, Coffee & Biscuits', 'Afternoon Tea, Coffee & Biscuits'].forEach(label => {
                         summary.push({
                             label: `${dayPrefix}: ${label} (\u00D7 ${ddr.delegates}) (included in DDR)`,
-                            price: 0, qty: ddr.delegates, unitPrice: 0, ddrZero: true
+                            price: 0, qty: ddr.delegates, unitPrice: 0, ddrZero: true,
+                            groupDay: dayPrefix, groupPkg: ddrPkg,
+                            groupItem: `${label} (\u00D7 ${ddr.delegates})`
                         });
                     });
                     if (ddr.lunchChoice) {
                         summary.push({
                             label: `${dayPrefix}: ${ddr.lunchChoice} (\u00D7 ${ddr.delegates}) (included in DDR)`,
-                            price: 0, qty: ddr.delegates, unitPrice: 0, ddrZero: true
+                            price: 0, qty: ddr.delegates, unitPrice: 0, ddrZero: true,
+                            groupDay: dayPrefix, groupPkg: ddrPkg,
+                            groupItem: `${ddr.lunchChoice} (\u00D7 ${ddr.delegates})`
                         });
                     }
                     summary.push({
                         label: `${dayPrefix}: Flipchart \u00D7 1 (included in DDR)`,
-                        price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                        price: 0, qty: 1, unitPrice: 0, ddrZero: true,
+                        groupDay: dayPrefix, groupPkg: ddrPkg,
+                        groupItem: 'Flipchart \u00D7 1'
                     });
                 }
 
@@ -2201,22 +2219,29 @@
                     }
                     const tfhDelegates = tfh.valeDelegates + tfh.hensolDelegates;
                     if (tfhDayHasCharge && tfhDelegates > 0) {
+                        const tfhPkg = `24 Hour Package (${tfhDelegates} delegate${tfhDelegates !== 1 ? 's' : ''})`;
                         if (tfh.functionRoom) {
                             summary.push({
                                 label: `${dayPrefix}: 24 Hour Function Room — ${formatRoomNamed(tfh.functionRoom)} (included)`,
-                                price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                                price: 0, qty: 1, unitPrice: 0, ddrZero: true,
+                                groupDay: dayPrefix, groupPkg: tfhPkg,
+                                groupItem: `Function Room — ${formatRoomNamed(tfh.functionRoom)}`
                             });
                         }
                         ['Arrival Tea, Coffee & Danishes/Welsh Cakes', 'Mid-Morning Tea, Coffee & Biscuits', 'Afternoon Tea, Coffee & Biscuits'].forEach(label => {
                             summary.push({
                                 label: `${dayPrefix}: ${label} (× ${tfhDelegates}) (included in 24 Hour)`,
-                                price: 0, qty: tfhDelegates, unitPrice: 0, ddrZero: true
+                                price: 0, qty: tfhDelegates, unitPrice: 0, ddrZero: true,
+                                groupDay: dayPrefix, groupPkg: tfhPkg,
+                                groupItem: `${label} (× ${tfhDelegates})`
                             });
                         });
                         if (tfh.lunchChoice) {
                             summary.push({
                                 label: `${dayPrefix}: ${tfh.lunchChoice} (× ${tfhDelegates}) (included in 24 Hour)`,
-                                price: 0, qty: tfhDelegates, unitPrice: 0, ddrZero: true
+                                price: 0, qty: tfhDelegates, unitPrice: 0, ddrZero: true,
+                                groupDay: dayPrefix, groupPkg: tfhPkg,
+                                groupItem: `${tfh.lunchChoice} (× ${tfhDelegates})`
                             });
                         }
                         if (tfh.dinnerChoice) {
@@ -2232,13 +2257,17 @@
                             } else {
                                 summary.push({
                                     label: `${dayPrefix}: ${dName} (× ${tfhDelegates}) (included in 24 Hour)`,
-                                    price: 0, qty: tfhDelegates, unitPrice: 0, ddrZero: true
+                                    price: 0, qty: tfhDelegates, unitPrice: 0, ddrZero: true,
+                                    groupDay: dayPrefix, groupPkg: tfhPkg,
+                                    groupItem: `${dName} (× ${tfhDelegates})`
                                 });
                             }
                         }
                         summary.push({
                             label: `${dayPrefix}: Flipchart × 1 (included in 24 Hour)`,
-                            price: 0, qty: 1, unitPrice: 0, ddrZero: true
+                            price: 0, qty: 1, unitPrice: 0, ddrZero: true,
+                            groupDay: dayPrefix, groupPkg: tfhPkg,
+                            groupItem: 'Flipchart × 1'
                         });
                     }
                 }
@@ -2268,28 +2297,38 @@
 
             // Package bedroom breakdown (informational, included in 24 Hour)
             if (anyTfh) {
+                const bedDay = '__booking__';
+                const bedPkg = 'Package Bedrooms (Included in 24 Hour Rate)';
                 if (pkgValeSingleOcc > 0) {
                     summary.push({
                         label: `Single Occ Rooms at The Vale Resort (B&B) × ${pkgValeSingleOcc} (included in 24 hour rate)`,
-                        price: 0, qty: pkgValeSingleOcc, unitPrice: 0, ddrZero: true
+                        price: 0, qty: pkgValeSingleOcc, unitPrice: 0, ddrZero: true,
+                        groupDay: bedDay, groupPkg: bedPkg,
+                        groupItem: `Single Occ Rooms at The Vale Resort (B&B) × ${pkgValeSingleOcc}`
                     });
                 }
                 if (pkgValeDoubleOcc > 0) {
                     summary.push({
                         label: `Double Occ Rooms at The Vale Resort (B&B) × ${pkgValeDoubleOcc} (included in 24 hour rate)`,
-                        price: 0, qty: pkgValeDoubleOcc, unitPrice: 0, ddrZero: true
+                        price: 0, qty: pkgValeDoubleOcc, unitPrice: 0, ddrZero: true,
+                        groupDay: bedDay, groupPkg: bedPkg,
+                        groupItem: `Double Occ Rooms at The Vale Resort (B&B) × ${pkgValeDoubleOcc}`
                     });
                 }
                 if (pkgHensolSingleOcc > 0) {
                     summary.push({
                         label: `Single Occ Rooms at Hensol Castle (B&B) × ${pkgHensolSingleOcc} (included in 24 hour rate)`,
-                        price: 0, qty: pkgHensolSingleOcc, unitPrice: 0, ddrZero: true
+                        price: 0, qty: pkgHensolSingleOcc, unitPrice: 0, ddrZero: true,
+                        groupDay: bedDay, groupPkg: bedPkg,
+                        groupItem: `Single Occ Rooms at Hensol Castle (B&B) × ${pkgHensolSingleOcc}`
                     });
                 }
                 if (pkgHensolDoubleOcc > 0) {
                     summary.push({
                         label: `Double Occ Rooms at Hensol Castle (B&B) × ${pkgHensolDoubleOcc} (included in 24 hour rate)`,
-                        price: 0, qty: pkgHensolDoubleOcc, unitPrice: 0, ddrZero: true
+                        price: 0, qty: pkgHensolDoubleOcc, unitPrice: 0, ddrZero: true,
+                        groupDay: bedDay, groupPkg: bedPkg,
+                        groupItem: `Double Occ Rooms at Hensol Castle (B&B) × ${pkgHensolDoubleOcc}`
                     });
                 }
             }
@@ -2788,13 +2827,12 @@
             const exVat = total / 1.2;
             const vatAmount = total - exVat;
 
-            const lineRows = selectedOptions.quote.summary.map(item => {
+            // Charged line items only — £0 included items move to a separate "What's Included" section
+            const lineRows = selectedOptions.quote.summary.filter(item => !item.ddrZero).map(item => {
                 const isHeader = item.qty === null && item.unitPrice === null;
                 const qtyCell = item.qty != null ? item.qty : '—';
                 const unitCell = item.unitPrice != null ? `£${item.unitPrice.toFixed(2)}` : '—';
-                const rowStyle = isHeader
-                    ? 'background:#edf0ea; font-weight:bold;'
-                    : (item.ddrZero ? 'color:#6d8062; font-style:italic;' : '');
+                const rowStyle = isHeader ? 'background:#edf0ea; font-weight:bold;' : '';
                 return `<tr style="${rowStyle}">
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">${item.label}</td>
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">${qtyCell}</td>
@@ -2802,6 +2840,55 @@
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">${isHeader ? '' : `£${item.price.toFixed(2)}`}</td>
                 </tr>`;
             }).join('');
+
+            // Build per-package inclusions, grouped by day → package
+            const inclusionItems = selectedOptions.quote.summary.filter(item => item.ddrZero && item.groupPkg);
+            const inclusionGroups = []; // [{ dayLabel, packages: [{ pkgLabel, items: [] }] }]
+            const dayIndex = {};
+            const pkgIndex = {};
+            inclusionItems.forEach(item => {
+                const dayKey = item.groupDay || '_';
+                if (dayIndex[dayKey] == null) {
+                    dayIndex[dayKey] = inclusionGroups.length;
+                    inclusionGroups.push({ dayKey, dayLabel: dayKey === '__booking__' ? '' : dayKey, packages: [] });
+                }
+                const dayBucket = inclusionGroups[dayIndex[dayKey]];
+                const pkgKey = `${dayKey}|${item.groupPkg}`;
+                if (pkgIndex[pkgKey] == null) {
+                    pkgIndex[pkgKey] = dayBucket.packages.length;
+                    dayBucket.packages.push({ pkgLabel: item.groupPkg, items: [] });
+                }
+                dayBucket.packages[pkgIndex[pkgKey]].items.push(item.groupItem || item.label);
+            });
+
+            const inclusionsHTML = inclusionGroups.length === 0 ? '' : inclusionGroups.map(group => {
+                const dayHeader = group.dayLabel
+                    ? `<div style="font-size:13px; font-weight:bold; color:#2a2e3a; letter-spacing:1px; text-transform:uppercase; margin:18px 0 8px 0; padding-bottom:5px; border-bottom:2px solid #8b3a4a;">${group.dayLabel}</div>`
+                    : `<div style="font-size:13px; font-weight:bold; color:#2a2e3a; letter-spacing:1px; text-transform:uppercase; margin:18px 0 8px 0; padding-bottom:5px; border-bottom:2px solid #8b3a4a;">Booking-wide</div>`;
+                const pkgBlocks = group.packages.map(pkg => {
+                    const bullets = pkg.items.map(it =>
+                        `<li style="padding:3px 0; font-size:11.5px; color:#2a2e3a;">${it}</li>`
+                    ).join('');
+                    return `<div style="margin:10px 0 14px 0;">
+                        <div style="font-size:12px; font-weight:bold; color:#8b3a4a; margin-bottom:4px;">${pkg.pkgLabel}</div>
+                        <ul style="list-style:disc; margin:0 0 0 24px; padding:0;">${bullets}</ul>
+                    </div>`;
+                }).join('');
+                return `${dayHeader}${pkgBlocks}`;
+            }).join('');
+
+            const inclusionsSection = inclusionsHTML
+                ? `<div style="page-break-before: always; padding-top: 32px;">
+                    ${logoAreaHTMLSm}
+                    <div style="text-align:center; font-size:18px; letter-spacing:3px; color:#8b3a4a; text-transform:uppercase; margin-bottom:8px; font-weight:normal;">
+                        What's Included in Your Packages
+                    </div>
+                    <p style="text-align:center; font-size:11px; color:#6b6b6b; margin-bottom:18px; font-style:italic;">
+                        The items below are included at no extra cost as part of each priced package.
+                    </p>
+                    ${inclusionsHTML}
+                </div>`
+                : '';
 
             const printWindow = window.open('', '_blank', 'width=850,height=1100');
             if (!printWindow) {
@@ -3036,7 +3123,9 @@
         ${contactEmail} &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; ${venueWebsite}
     </div>
 
-    <!-- Page 2: What's Included -->
+    ${inclusionsSection}
+
+    <!-- Page 3: General What's Included -->
     <div style="page-break-before: always; padding-top: 48px;">
 
         ${logoAreaHTMLSm}
