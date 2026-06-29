@@ -670,7 +670,7 @@
                     <div class="form-group">
                         <label for="breakGolferPrice">Price Per Person &mdash; Golfers (&pound;)</label>
                         <input type="number" id="breakGolferPrice" min="0" step="0.01" value="0" oninput="recalculate();">
-                        <div class="helper-text">1 in 16 go free</div>
+                        <div class="helper-text">1 in <input type="number" id="breakFreeRatio" min="1" value="16" style="width:50px;display:inline-block;padding:1px 4px;font-size:inherit;" oninput="recalculate();"> go free</div>
                     </div>
 
                     <div class="section-subtitle">Non-Golfer Packages</div>
@@ -1254,12 +1254,13 @@
                 }
             });
 
-            // 1 in 16 go free (golfers only)
-            const freePlaces = Math.floor(golfers / 16);
+            // 1 in X go free (golfers only)
+            const freeRatio = parseInt(document.getElementById('breakFreeRatio').value) || 16;
+            const freePlaces = Math.floor(golfers / freeRatio);
             if (freePlaces > 0 && golferPrice > 0) {
                 const discount = freePlaces * golferPrice;
                 total -= discount;
-                summary.push({ label: `1 in 16 Free (${freePlaces} place${freePlaces > 1 ? 's' : ''} x -\u00A3${golferPrice.toFixed(2)})`, price: -discount, type: 'discount' });
+                summary.push({ label: `1 in ${freeRatio} Free (${freePlaces} place${freePlaces > 1 ? 's' : ''} x -\u00A3${golferPrice.toFixed(2)})`, price: -discount, type: 'discount' });
             }
 
             if (buggies > 0) {
@@ -1312,7 +1313,7 @@
                 mode: 'break', summary, total, deposit, golfers, nonGolfers, totalGuests, nights, rounds,
                 buggies, golferPrice, drinksVoucher, courseMaintenance, courseMaintenanceText,
                 valeTwinRooms, valeSingleRooms, hensolTwinRooms, hensolSingleRooms, totalSingleRooms,
-                teeTimes, freePlaces, nonGolferPackages, customItems, customDiscounts
+                teeTimes, freePlaces, freeRatio, nonGolferPackages, customItems, customDiscounts
             };
         }
 
@@ -1502,7 +1503,7 @@
                 html += modalItem('Guests', `${q.golfers} golfer${q.golfers !== 1 ? 's' : ''}, ${q.nonGolfers} non-golfer${q.nonGolfers !== 1 ? 's' : ''} (${q.totalGuests} total)`);
                 html += modalItem('Rounds', q.rounds);
                 html += modalItem('Buggies', q.buggies);
-                if (q.freePlaces > 0) html += modalItem('1 in 16 Free', `${q.freePlaces} free place${q.freePlaces > 1 ? 's' : ''}`);
+                if (q.freePlaces > 0) html += modalItem(`1 in ${q.freeRatio || 16} Free`, `${q.freePlaces} free place${q.freePlaces > 1 ? 's' : ''}`);
                 if (q.drinksVoucher) html += modalItem('Drinks Voucher', `\u00A310 per person (\u00A3${(q.totalGuests * 10).toFixed(2)} total)`);
                 if (q.courseMaintenance) {
                     html += modalItem('Course Maintenance', q.courseMaintenanceText || 'May be taking place');
@@ -2085,7 +2086,7 @@
             if (q.freePlaces > 0 && q.golferPrice > 0) {
                 const disc = q.freePlaces * q.golferPrice;
                 lineRows += `<tr style="color:#6d8062; font-weight:600;">
-                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">1 in 16 Free (${q.freePlaces} place${q.freePlaces > 1 ? 's' : ''})</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">1 in ${q.freeRatio || 16} Free (${q.freePlaces} place${q.freePlaces > 1 ? 's' : ''})</td>
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">${q.freePlaces}</td>
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${q.golferPrice.toFixed(2)}</td>
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${disc.toFixed(2)}</td>
