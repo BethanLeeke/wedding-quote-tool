@@ -677,12 +677,26 @@
                     <p class="helper-text" style="margin-bottom:10px;">Allocate non-golfers to packages and set the price for each.</p>
                     <div id="breakNonGolferPackagesContainer"></div>
 
-                    <div class="section-subtitle">Options</div>
+                    <div class="section-subtitle">Package Add Ons</div>
                     <div class="form-group">
                         <label style="margin-bottom:10px;">Drinks Voucher</label>
                         <div class="toggle-wrap">
                             <input type="checkbox" id="breakDrinksVoucher" onchange="recalculate();">
                             <label for="breakDrinksVoucher">&pound;10 per person drinks voucher</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Private Dining</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakPrivateDining" onchange="recalculate();">
+                            <label for="breakPrivateDining">Private dining</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Lunch</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakLunch" onchange="recalculate();">
+                            <label for="breakLunch">Lunch</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -1226,6 +1240,8 @@
             const buggies = Math.max(0, parseInt(document.getElementById('breakBuggies').value) || 0);
             const golferPrice = Math.max(0, parseFloat(document.getElementById('breakGolferPrice').value) || 0);
             const drinksVoucher = document.getElementById('breakDrinksVoucher').checked;
+            const privateDining = document.getElementById('breakPrivateDining').checked;
+            const lunch = document.getElementById('breakLunch').checked;
             const courseMaintenance = document.getElementById('breakCourseMaintenance').checked;
             const courseMaintenanceText = (document.getElementById('breakCourseMaintenanceText').value || '').trim();
             const valeTwinRooms = Math.max(0, parseInt(document.getElementById('breakValeTwinRooms').value) || 0);
@@ -1290,6 +1306,12 @@
             if (drinksVoucher) {
                 packageIncludes.push('\u00A310 per person drinks voucher');
             }
+            if (privateDining) {
+                packageIncludes.push('Private dining');
+            }
+            if (lunch) {
+                packageIncludes.push('Lunch');
+            }
 
             // Custom items
             const customItems = readCustomItems();
@@ -1311,7 +1333,7 @@
 
             window._currentQuote = {
                 mode: 'break', summary, total, deposit, golfers, nonGolfers, totalGuests, nights, rounds,
-                buggies, golferPrice, drinksVoucher, courseMaintenance, courseMaintenanceText,
+                buggies, golferPrice, drinksVoucher, privateDining, lunch, courseMaintenance, courseMaintenanceText,
                 valeTwinRooms, valeSingleRooms, hensolTwinRooms, hensolSingleRooms, totalSingleRooms,
                 teeTimes, freePlaces, freeRatio, nonGolferPackages, customItems, customDiscounts
             };
@@ -1505,6 +1527,8 @@
                 html += modalItem('Buggies', q.buggies);
                 if (q.freePlaces > 0) html += modalItem(`1 in ${q.freeRatio || 16} Free`, `${q.freePlaces} free place${q.freePlaces > 1 ? 's' : ''}`);
                 if (q.drinksVoucher) html += modalItem('Drinks Voucher', `\u00A310 per person (\u00A3${(q.totalGuests * 10).toFixed(2)} total)`);
+                if (q.privateDining) html += modalItem('Private Dining', 'Included');
+                if (q.lunch) html += modalItem('Lunch', 'Included');
                 if (q.courseMaintenance) {
                     html += modalItem('Course Maintenance', q.courseMaintenanceText || 'May be taking place');
                 } else {
@@ -1615,6 +1639,8 @@
                 document.getElementById('breakBuggies').value = '0';
                 document.getElementById('breakGolferPrice').value = '0';
                 document.getElementById('breakDrinksVoucher').checked = false;
+                document.getElementById('breakPrivateDining').checked = false;
+                document.getElementById('breakLunch').checked = false;
                 document.getElementById('breakCourseMaintenance').checked = false;
                 document.getElementById('breakCourseMaintenanceText').value = '';
                 document.getElementById('breakCourseMaintenanceTextWrap').style.display = 'none';
@@ -2202,25 +2228,19 @@
                 <div style="text-align:center; font-size:20px; letter-spacing:3px; color:#8b3a4a; text-transform:uppercase; margin-bottom:36px; font-weight:normal;">Your Golf Break Package Includes</div>
                 <table style="width:100%; border-collapse:collapse; margin-bottom:24px;">
                     <tbody>
-                        <tr>
+                        ${[
+                            `${q.rounds} Round${q.rounds > 1 ? 's' : ''} of Championship golf`,
+                            '3 course dinner served at the Golf Club',
+                            'Bed &amp; Breakfast Accommodation at The Vale Resort',
+                            q.drinksVoucher ? '\u00A310 per person drinks voucher' : null,
+                            q.privateDining ? 'Private dining' : null,
+                            q.lunch ? 'Lunch' : null
+                        ].filter(Boolean).map((text, idx) => `<tr style="${idx % 2 === 1 ? 'background:#f7f4eb;' : ''}">
                             <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
                                 <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
-                                ${q.rounds} Round${q.rounds > 1 ? 's' : ''} of Championship golf
+                                ${text}
                             </td>
-                        </tr>
-                        <tr style="background:#f7f4eb;">
-                            <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
-                                <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
-                                3 course dinner served at the Golf Club
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
-                                <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
-                                Bed &amp; Breakfast Accommodation at The Vale Resort
-                            </td>
-                        </tr>
-                        ${q.drinksVoucher ? `<tr style="background:#f7f4eb;"><td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;"><span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>\u00A310 per person drinks voucher</td></tr>` : ''}
+                        </tr>`).join('')}
                     </tbody>
                 </table>
 
