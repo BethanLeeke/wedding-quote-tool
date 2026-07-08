@@ -728,24 +728,28 @@
                     <div class="checkbox-group" id="preWeddingOptions"></div>
                 </div>
 
-                <!-- Custom Item -->
+                <!-- Custom Items -->
                 <div class="form-group" style="margin-top:24px;">
-                    <h3 class="section-subtitle">Custom Item</h3>
-                    <p class="helper-text" style="margin-bottom:12px;">Add a custom line item (e.g., bespoke service or special request).</p>
-                    <div style="display:grid; grid-template-columns:1fr 80px 120px; gap:12px;">
-                        <div>
-                            <label for="customItemDesc">Description</label>
-                            <input type="text" id="customItemDesc" placeholder="Item description" oninput="recalculate();">
-                        </div>
-                        <div>
-                            <label for="customItemQty">Qty</label>
-                            <input type="number" id="customItemQty" min="1" value="1" oninput="recalculate();">
-                        </div>
-                        <div>
-                            <label for="customItemPrice">Unit Price (£)</label>
-                            <input type="number" id="customItemPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                    <h3 class="section-subtitle">Custom Items</h3>
+                    <p class="helper-text" style="margin-bottom:12px;">Add custom line items (e.g., bespoke services or special requests).</p>
+                    <div id="customItemsContainer">
+                        <div class="custom-item-row" style="display:grid; grid-template-columns:1fr 80px 120px 32px; gap:12px; margin-bottom:12px;">
+                            <div>
+                                <label for="customItemDesc">Description</label>
+                                <input type="text" id="customItemDesc" class="customItemDesc" placeholder="Item description" oninput="recalculate();">
+                            </div>
+                            <div>
+                                <label for="customItemQty">Qty</label>
+                                <input type="number" id="customItemQty" class="customItemQty" min="1" value="1" oninput="recalculate();">
+                            </div>
+                            <div>
+                                <label for="customItemPrice">Unit Price (£)</label>
+                                <input type="number" id="customItemPrice" class="customItemPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                            </div>
+                            <div></div>
                         </div>
                     </div>
+                    <button type="button" class="btn btn-secondary" onclick="addCustomItemRow();" style="margin-top:4px;">+ Add Another Item</button>
                 </div>
 
                 <!-- Action Buttons -->
@@ -1584,12 +1588,15 @@
             }
 
             // Update summary display
-            // Custom item
-            const customItemDescEl = document.getElementById('customItemDesc');
-            if (customItemDescEl) {
-                const customDesc = customItemDescEl.value.trim();
-                const customQty = Math.max(0, parseInt(document.getElementById('customItemQty').value) || 0);
-                const customPrice = Math.max(0, parseFloat(document.getElementById('customItemPrice').value) || 0);
+            // Custom items
+            document.querySelectorAll('#customItemsContainer .custom-item-row').forEach(row => {
+                const descEl = row.querySelector('.customItemDesc');
+                const qtyEl = row.querySelector('.customItemQty');
+                const priceEl = row.querySelector('.customItemPrice');
+                if (!descEl || !qtyEl || !priceEl) return;
+                const customDesc = descEl.value.trim();
+                const customQty = Math.max(0, parseInt(qtyEl.value) || 0);
+                const customPrice = Math.max(0, parseFloat(priceEl.value) || 0);
                 if (customDesc && customQty > 0 && customPrice > 0) {
                     const customTotal = customQty * customPrice;
                     summary.push({
@@ -1598,7 +1605,7 @@
                     });
                     total += customTotal;
                 }
-            }
+            });
 
             const summaryDiv = document.getElementById('quoteSummary');
             if (summary.length === 0) {
@@ -1764,6 +1771,26 @@
             document.body.style.pointerEvents = '';
         }
 
+        function addCustomItemRow() {
+            const container = document.getElementById('customItemsContainer');
+            const row = document.createElement('div');
+            row.className = 'custom-item-row';
+            row.style.cssText = 'display:grid; grid-template-columns:1fr 80px 120px 32px; gap:12px; margin-bottom:12px;';
+            row.innerHTML = `
+                <div><input type="text" class="customItemDesc" placeholder="Item description" oninput="recalculate();"></div>
+                <div><input type="number" class="customItemQty" min="1" value="1" oninput="recalculate();"></div>
+                <div><input type="number" class="customItemPrice" min="0" step="0.01" value="0" oninput="recalculate();"></div>
+                <button type="button" onclick="removeCustomItemRow(this);" title="Remove item" style="background:none; border:1px solid #ccc; border-radius:4px; cursor:pointer; color:#8b5a5a; font-size:18px; line-height:1; width:32px; height:38px;">&times;</button>
+            `;
+            container.appendChild(row);
+            recalculate();
+        }
+
+        function removeCustomItemRow(btn) {
+            btn.closest('.custom-item-row').remove();
+            recalculate();
+        }
+
         function resetForm() {
             document.getElementById('date').value = '';
             document.getElementById('dayGuests').value = '80';
@@ -1773,9 +1800,26 @@
             document.getElementById('brideName').value = '';
             document.getElementById('groomName').value = '';
             document.getElementById('preparedBy').value = '';
-            document.getElementById('customItemDesc').value = '';
-            document.getElementById('customItemQty').value = '1';
-            document.getElementById('customItemPrice').value = '0';
+            const customItemsContainer = document.getElementById('customItemsContainer');
+            if (customItemsContainer) {
+                customItemsContainer.innerHTML = `
+                    <div class="custom-item-row" style="display:grid; grid-template-columns:1fr 80px 120px 32px; gap:12px; margin-bottom:12px;">
+                        <div>
+                            <label for="customItemDesc">Description</label>
+                            <input type="text" id="customItemDesc" class="customItemDesc" placeholder="Item description" oninput="recalculate();">
+                        </div>
+                        <div>
+                            <label for="customItemQty">Qty</label>
+                            <input type="number" id="customItemQty" class="customItemQty" min="1" value="1" oninput="recalculate();">
+                        </div>
+                        <div>
+                            <label for="customItemPrice">Unit Price (£)</label>
+                            <input type="number" id="customItemPrice" class="customItemPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                        </div>
+                        <div></div>
+                    </div>
+                `;
+            }
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.querySelectorAll('input[type="radio"]').forEach(rb => rb.checked = false);
             ['arrival', 'breakfast', 'reception', 'toast'].forEach(type => {
