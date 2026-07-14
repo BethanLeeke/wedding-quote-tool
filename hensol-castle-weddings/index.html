@@ -1545,10 +1545,10 @@
                     extraQty = qty;
                     extraUnit = extra.price;
                 } else if (extra.unit.includes('Canape')) {
-                    const quantity = parseInt(extra.unit.match(/\d+/)[0]);
-                    extraPrice = extra.price * Math.ceil(dayGuests / quantity);
-                    extraLabel = `${extra.name} (${Math.ceil(dayGuests / quantity)} x ${quantity})`;
-                    extraQty = Math.ceil(dayGuests / quantity);
+                    const piecesPerServing = parseInt(extra.unit.match(/\d+/)[0]);
+                    extraPrice = extra.price * dayGuests;
+                    extraLabel = `${extra.name} (${dayGuests} x ${piecesPerServing})`;
+                    extraQty = dayGuests;
                     extraUnit = extra.price;
                 }
 
