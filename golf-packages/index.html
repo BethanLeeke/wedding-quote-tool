@@ -478,7 +478,7 @@
                         <div class="form-group">
                             <label for="dayGolfNumbers">Golf Numbers</label>
                             <input type="number" id="dayGolfNumbers" min="1" value="20" oninput="recalculate();">
-                            <div class="helper-text">1 in 12 go free</div>
+                            <div class="helper-text">1 in <input type="number" id="dayFreeRatio" min="1" value="12" style="width:50px;display:inline-block;padding:1px 4px;font-size:inherit;" oninput="recalculate();"> go free</div>
                         </div>
                         <div class="form-group">
                             <label for="dayCourse">Course</label>
@@ -1132,12 +1132,13 @@
                 });
             }
 
-            // 1 in 12 go free (Golf Numbers)
-            const freePlaces = Math.floor(golfers / 12);
+            // 1 in X go free (Golf Numbers)
+            const dayFreeRatio = parseInt(document.getElementById('dayFreeRatio').value) || 12;
+            const freePlaces = Math.floor(golfers / dayFreeRatio);
             if (freePlaces > 0 && pricePerPerson > 0) {
                 const discount = freePlaces * pricePerPerson;
                 total -= discount;
-                summary.push({ label: `1 in 12 Free (${freePlaces} place${freePlaces > 1 ? 's' : ''} x -\u00A3${pricePerPerson.toFixed(2)})`, price: -discount, type: 'discount' });
+                summary.push({ label: `1 in ${dayFreeRatio} Free (${freePlaces} place${freePlaces > 1 ? 's' : ''} x -\u00A3${pricePerPerson.toFixed(2)})`, price: -discount, type: 'discount' });
             }
 
             if (buggies > 0) {
@@ -1220,7 +1221,7 @@
                 mode: 'day', summary, total, deposit, golfers, rounds, buggies, pricePerPerson,
                 courseMaintenance, courseMaintenanceText, course, mealOption, mealCourses, mealTime,
                 arrivalTime, teeTimesText,
-                additionalBaconRolls, additionalMeals, freePlaces,
+                additionalBaconRolls, additionalMeals, freePlaces, dayFreeRatio,
                 discountedBuggies, discountedBuggyPrice, greenFeeDiscount, freeGreenFees,
                 accommodationRows, customItems, customDiscounts
             };
@@ -1495,7 +1496,7 @@
                     if (q.freeGreenFees > 0) gfText += (gfText ? ' &mdash; ' : '') + `${q.freeGreenFees} free green fee${q.freeGreenFees > 1 ? 's' : ''}`;
                     html += modalItem('Green Fee Discount', gfText);
                 }
-                if (q.freePlaces > 0) html += modalItem('1 in 12 Free', `${q.freePlaces} free place${q.freePlaces > 1 ? 's' : ''}`);
+                if (q.freePlaces > 0) html += modalItem(`1 in ${q.dayFreeRatio || 12} Free`, `${q.freePlaces} free place${q.freePlaces > 1 ? 's' : ''}`);
                 if (q.accommodationRows && q.accommodationRows.length > 0) {
                     let accomTxt = '';
                     q.accommodationRows.forEach(r => {
@@ -1841,7 +1842,7 @@
             if (q.freePlaces > 0 && q.pricePerPerson > 0) {
                 const disc = q.freePlaces * q.pricePerPerson;
                 lineRows += `<tr style="color:#6d8062; font-weight:600;">
-                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">1 in 12 Free (${q.freePlaces} place${q.freePlaces > 1 ? 's' : ''})</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">1 in ${q.dayFreeRatio || 12} Free (${q.freePlaces} place${q.freePlaces > 1 ? 's' : ''})</td>
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">${q.freePlaces}</td>
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${q.pricePerPerson.toFixed(2)}</td>
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${disc.toFixed(2)}</td>
