@@ -737,7 +737,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="helper-text" style="margin-top:-10px; margin-bottom:20px;">&pound;50 single supplement per single room applies</div>
+                    <div class="helper-text" style="margin-top:-10px; margin-bottom:20px;">&pound;50 single supplement per single room, per night applies</div>
 
                     <div class="section-subtitle">Tee Times <span style="color:var(--text-light); font-weight:500; text-transform:none;">(optional &mdash; one row per day including arrival &amp; departure)</span></div>
                     <div id="breakTeeTimesContainer"></div>
@@ -1250,6 +1250,7 @@
             const hensolTwinRooms = Math.max(0, parseInt(document.getElementById('breakHensolTwinRooms').value) || 0);
             const hensolSingleRooms = Math.max(0, parseInt(document.getElementById('breakHensolSingleRooms').value) || 0);
             const totalSingleRooms = valeSingleRooms + hensolSingleRooms;
+            const totalSingleRoomNights = totalSingleRooms * nights;
             const teeTimes = collectBreakTeeTimes();
 
             const summary = [];
@@ -1287,9 +1288,9 @@
             }
 
             if (totalSingleRooms > 0) {
-                const ss = totalSingleRooms * 50;
+                const ss = totalSingleRoomNights * 50;
                 total += ss;
-                summary.push({ label: `Single Supplement (${totalSingleRooms} x \u00A350.00)`, price: ss });
+                summary.push({ label: `Single Supplement (${totalSingleRooms} x ${nights} night${nights > 1 ? 's' : ''} x \u00A350.00)`, price: ss });
             }
 
             if (courseMaintenance) {
@@ -1335,7 +1336,7 @@
             window._currentQuote = {
                 mode: 'break', summary, total, deposit, golfers, nonGolfers, totalGuests, nights, rounds,
                 buggies, golferPrice, drinksVoucher, privateDining, lunch, courseMaintenance, courseMaintenanceText,
-                valeTwinRooms, valeSingleRooms, hensolTwinRooms, hensolSingleRooms, totalSingleRooms,
+                valeTwinRooms, valeSingleRooms, hensolTwinRooms, hensolSingleRooms, totalSingleRooms, totalSingleRoomNights,
                 teeTimes, freePlaces, freeRatio, nonGolferPackages, customItems, customDiscounts
             };
         }
@@ -1562,7 +1563,7 @@
                     accomParts.push(`<strong>Hensol Castle:</strong> ${q.hensolTwinRooms} twin, ${q.hensolSingleRooms} single`);
                 }
                 if (accomParts.length > 0) html += modalItem('Accommodation', accomParts.join('<br>'));
-                if (q.totalSingleRooms > 0) html += modalItem('Single Supplement', `${q.totalSingleRooms} x \u00A350.00`);
+                if (q.totalSingleRooms > 0) html += modalItem('Single Supplement', `${q.totalSingleRooms} x ${q.nights} night${q.nights > 1 ? 's' : ''} x \u00A350.00`);
             }
 
             // Cost breakdown
@@ -2123,7 +2124,7 @@
                 lineRows += pdfRow('Buggies', q.buggies, 50, q.buggies * 50);
             }
             if (q.totalSingleRooms > 0) {
-                lineRows += pdfRow('Single Supplement', q.totalSingleRooms, 50, q.totalSingleRooms * 50);
+                lineRows += pdfRow(`Single Supplement (${q.totalSingleRooms} room${q.totalSingleRooms > 1 ? 's' : ''} x ${q.nights} night${q.nights > 1 ? 's' : ''})`, q.totalSingleRoomNights, 50, q.totalSingleRoomNights * 50);
             }
             if (q.customItems && q.customItems.length > 0) {
                 q.customItems.forEach(ci => {
