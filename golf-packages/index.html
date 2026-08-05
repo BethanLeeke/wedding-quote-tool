@@ -716,6 +716,14 @@
                             <label for="breakOrganiserUpgrade">Free room upgrade for Group Organiser</label>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Early Bird Discount</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakEarlyBird" onchange="recalculate();">
+                            <label for="breakEarlyBird">Apply Early Bird discount</label>
+                        </div>
+                        <div class="helper-text" style="margin-top:8px;">&pound;10 per golfer per night off the golfers package price (&pound;10 for 1 night, &pound;20 for 2, &pound;30 for 3)</div>
+                    </div>
 
                     <div class="section-subtitle">Accommodation</div>
                     <div style="padding:12px 16px; background:var(--primary-cream); border-radius:4px; margin-bottom:10px; border-left:3px solid var(--primary-green);">
@@ -1253,6 +1261,7 @@
             const courseMaintenance = document.getElementById('breakCourseMaintenance').checked;
             const courseMaintenanceText = (document.getElementById('breakCourseMaintenanceText').value || '').trim();
             const organiserUpgrade = document.getElementById('breakOrganiserUpgrade').checked;
+            const earlyBird = document.getElementById('breakEarlyBird').checked;
             const valeTwinRooms = Math.max(0, parseInt(document.getElementById('breakValeTwinRooms').value) || 0);
             const valeSingleRooms = Math.max(0, parseInt(document.getElementById('breakValeSingleRooms').value) || 0);
             const hensolTwinRooms = Math.max(0, parseInt(document.getElementById('breakHensolTwinRooms').value) || 0);
@@ -1287,6 +1296,14 @@
                 const discount = freePlaces * golferPrice;
                 total -= discount;
                 summary.push({ label: `1 in ${freeRatio} Free (${freePlaces} place${freePlaces > 1 ? 's' : ''} x -\u00A3${golferPrice.toFixed(2)})`, price: -discount, type: 'discount' });
+            }
+
+            // Early Bird discount (golfers only): 10 per golfer per night
+            const earlyBirdPerPerson = earlyBird ? 10 * nights : 0;
+            const earlyBirdDiscount = (earlyBird && golfers > 0 && golferPrice > 0) ? earlyBirdPerPerson * golfers : 0;
+            if (earlyBirdDiscount > 0) {
+                total -= earlyBirdDiscount;
+                summary.push({ label: `Early Bird Discount (${golfers} x ${nights} night${nights > 1 ? 's' : ''} x -\u00A310.00)`, price: -earlyBirdDiscount, type: 'discount' });
             }
 
             if (buggies > 0) {
@@ -1347,6 +1364,7 @@
             window._currentQuote = {
                 mode: 'break', summary, total, deposit, golfers, nonGolfers, totalGuests, nights, rounds,
                 buggies, golferPrice, drinksVoucher, privateDining, lunch, organiserUpgrade, courseMaintenance, courseMaintenanceText,
+                earlyBird, earlyBirdPerPerson, earlyBirdDiscount,
                 valeTwinRooms, valeSingleRooms, hensolTwinRooms, hensolSingleRooms, totalSingleRooms, totalSingleRoomNights,
                 teeTimes, freePlaces, freeRatio, nonGolferPackages, customItems, customDiscounts
             };
@@ -1543,6 +1561,7 @@
                 if (q.privateDining) html += modalItem('Private Dining', 'Included');
                 if (q.lunch) html += modalItem('Lunch', 'Included');
                 if (q.organiserUpgrade) html += modalItem('Group Organiser', 'Free room upgrade included');
+                if (q.earlyBirdDiscount > 0) html += modalItem('Early Bird Discount', `£${q.earlyBirdPerPerson.toFixed(2)} per golfer (£${q.earlyBirdDiscount.toFixed(2)} total)`);
                 if (q.courseMaintenance) {
                     html += modalItem('Course Maintenance', q.courseMaintenanceText || 'May be taking place');
                 } else {
@@ -1659,6 +1678,7 @@
                 document.getElementById('breakCourseMaintenanceText').value = '';
                 document.getElementById('breakCourseMaintenanceTextWrap').style.display = 'none';
                 document.getElementById('breakOrganiserUpgrade').checked = true;
+                document.getElementById('breakEarlyBird').checked = false;
                 document.getElementById('breakValeTwinRooms').value = '0';
                 document.getElementById('breakValeSingleRooms').value = '0';
                 document.getElementById('breakHensolTwinRooms').value = '0';
@@ -2132,6 +2152,14 @@
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">${q.freePlaces}</td>
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${q.golferPrice.toFixed(2)}</td>
                     <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${disc.toFixed(2)}</td>
+                </tr>`;
+            }
+            if (q.earlyBirdDiscount > 0) {
+                lineRows += `<tr style="color:#6d8062; font-weight:600;">
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7;">Early Bird Discount (${q.nights} night${q.nights > 1 ? 's' : ''} x -\u00A310.00 per golfer)</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:center;">${q.golfers}</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${q.earlyBirdPerPerson.toFixed(2)}</td>
+                    <td style="padding:7px 10px; border-bottom:1px solid #dcd6c7; text-align:right;">-\u00A3${q.earlyBirdDiscount.toFixed(2)}</td>
                 </tr>`;
             }
             if (q.buggies > 0) {
