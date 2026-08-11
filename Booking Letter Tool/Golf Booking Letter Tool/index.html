@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vale Resort Golf Booking Letter Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-dark: #2a2e3a;
+            --primary-burgundy: #8b3a4a;
+            --primary-green: #8fa17e;
+            --primary-green-dark: #6d8062;
+            --primary-cream: #f5f1e8;
+            --accent-light: #e8e4d8;
+            --text-dark: #2a2e3a;
+            --text-light: #6b6b6b;
+            --bg-light: #faf8f3;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #faf8f3 0%, #f5f1e8 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0; }
+
+        .header {
+            background: linear-gradient(rgba(42, 46, 58, 0.55), rgba(143, 161, 126, 0.35));
+            padding: 60px 40px;
+            text-align: center;
+            color: white;
+            border-bottom: 3px solid var(--primary-green);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            background: rgba(42, 46, 58, 0.65);
+            padding: 36px 50px;
+            border-radius: 8px;
+            backdrop-filter: blur(2px);
+            display: inline-block;
+        }
+
+        .header-logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 18px;
+            background: white;
+            padding: 14px 22px;
+            border-radius: 6px;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.7em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .header-tagline { font-size: 0.9em; color: #f5f5f5; margin-top: 14px; font-weight: 500; }
+
+        .back-link {
+            display: inline-block;
+            margin: 18px 0 0 40px;
+            font-size: 0.82em;
+            color: var(--primary-burgundy);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 30px 40px 60px;
+        }
+
+        .form-section, .output-section {
+            background: white;
+            border-radius: 8px;
+            padding: 36px;
+            box-shadow: 0 4px 20px rgba(42, 46, 58, 0.08);
+            border: 1px solid var(--accent-light);
+        }
+
+        .form-section { border-top: 4px solid var(--primary-green); }
+        .output-section { border-top: 4px solid var(--primary-burgundy); }
+
+        .form-section h2, .output-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7em;
+            margin-bottom: 26px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--primary-green);
+        }
+
+        .step-badge {
+            display: inline-block;
+            background: var(--primary-burgundy);
+            color: #fff;
+            font-size: 0.72em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 3px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .step-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25em;
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin: 34px 0 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--accent-light);
+        }
+        .step-heading:first-of-type { margin-top: 0; }
+
+        .form-group { margin-bottom: 22px; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 9px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.92em;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group select,
+        .form-group input[type="number"],
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="date"],
+        .form-group textarea {
+            width: 100%;
+            padding: 13px 15px;
+            border: 2px solid var(--accent-light);
+            border-radius: 4px;
+            font-size: 0.98em;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .form-group select:focus,
+        .form-group textarea:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(143, 161, 126, 0.2);
+            background: #fffbf7;
+        }
+
+        .form-group input[readonly] { background: var(--accent-light); color: var(--text-light); cursor: default; }
+
+        .date-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+        .date-grid .form-group { margin-bottom: 0; }
+
+        .helper-text { font-size: 0.8em; color: var(--text-light); margin-top: 6px; font-style: italic; }
+
+        .section-subtitle {
+            color: var(--primary-burgundy);
+            font-size: 0.86em;
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Mode tabs */
+        .mode-tabs {
+            display: flex;
+            margin-bottom: 26px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 2px solid var(--primary-burgundy);
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 16px 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            background: white;
+            color: var(--primary-burgundy);
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .mode-tab:not(:last-child) { border-right: 2px solid var(--primary-burgundy); }
+        .mode-tab.active { background: var(--primary-burgundy); color: white; }
+        .mode-tab:hover:not(.active) { background: #fbeaec; }
+
+        /* Drop zone */
+        .dropzone {
+            border: 2px dashed var(--primary-green);
+            border-radius: 8px;
+            background: var(--primary-cream);
+            padding: 38px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .dropzone:hover { background: #f0ece0; border-color: var(--primary-green-dark); }
+        .dropzone.dragover { background: #e6ecdd; border-color: var(--primary-burgundy); transform: scale(1.01); }
+        .dropzone .dz-icon { font-size: 2.2em; margin-bottom: 10px; }
+        .dropzone .dz-main { font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; letter-spacing: 0.5px; }
+        .dropzone .dz-sub { font-size: 0.83em; color: var(--text-light); }
+
+        .parse-status {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-size: 0.87em;
+            display: none;
+            line-height: 1.6;
+        }
+        .parse-status.ok { display: block; background: #eef2e8; color: var(--primary-green-dark); border-left: 4px solid var(--primary-green); }
+        .parse-status.err { display: block; background: #fbeaec; color: var(--primary-burgundy); border-left: 4px solid var(--primary-burgundy); }
+        .parse-status.busy { display: block; background: var(--primary-cream); color: var(--text-light); border-left: 4px solid var(--accent-light); }
+
+        /* Toggle */
+        .toggle-wrap {
+            display: flex;
+            align-items: center;
+            padding: 13px 16px;
+            background: var(--primary-cream);
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid var(--accent-light);
+            transition: all 0.3s ease;
+        }
+        .toggle-wrap:hover { border-color: var(--primary-green); }
+        .toggle-wrap input[type="checkbox"] { width: 20px; height: 20px; margin-right: 14px; accent-color: var(--primary-burgundy); cursor: pointer; }
+        .toggle-wrap label { margin: 0 !important; cursor: pointer; font-weight: 600 !important; color: var(--text-dark); letter-spacing: 0.3px; }
+
+        .boxed {
+            padding: 12px 16px;
+            background: var(--primary-cream);
+            border-radius: 4px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--primary-green);
+        }
+        .boxed .boxed-title { font-size: 0.82em; font-weight: 700; color: var(--primary-burgundy); margin-bottom: 10px; letter-spacing: 0.5px; }
+
+        /* Summary */
+        .output-section { position: sticky; top: 20px; height: fit-content; max-height: calc(100vh - 40px); overflow-y: auto; }
+        .output-section::-webkit-scrollbar { width: 6px; }
+        .output-section::-webkit-scrollbar-track { background: var(--primary-cream); }
+        .output-section::-webkit-scrollbar-thumb { background: var(--primary-green); border-radius: 3px; }
+
+        .quote-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 11px 0;
+            border-bottom: 1px solid var(--accent-light);
+            color: var(--text-dark);
+            font-size: 0.92em;
+        }
+        .quote-item.total {
+            font-size: 1.25em;
+            font-weight: 700;
+            color: var(--primary-burgundy);
+            padding-top: 18px;
+            padding-bottom: 10px;
+            border-top: 2px solid var(--primary-green);
+            border-bottom: none;
+            margin-top: 14px;
+            font-family: 'Playfair Display', serif;
+        }
+        .quote-item.deposit-line { font-size: 0.87em; color: var(--primary-green-dark); font-weight: 600; border-bottom: none; padding: 6px 0; }
+        .quote-item.info-line { font-size: 0.84em; color: var(--text-light); font-style: italic; border-bottom: none; padding: 4px 0; }
+        .quote-item.discount { color: var(--primary-green-dark); font-weight: 600; }
+
+        .btn-group { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
+
+        button.btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.98em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, var(--primary-burgundy) 0%, #a65060 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(139, 58, 74, 0.3); }
+        .btn-secondary { background: white; color: var(--primary-green-dark); border: 2px solid #e0e0e0; }
+        .btn-secondary:hover { background: var(--primary-cream); border-color: #ccc; }
+
+        .email-box {
+            margin-top: 26px;
+            border: 1px solid var(--accent-light);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .email-box-head {
+            background: var(--primary-dark);
+            color: #fff;
+            padding: 12px 16px;
+            font-size: 0.8em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .email-box-head button {
+            background: var(--primary-green);
+            color: #fff;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 3px;
+            font-size: 0.95em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+        .email-box-head button:hover { background: var(--primary-green-dark); }
+        #emailTemplate {
+            width: 100%;
+            min-height: 340px;
+            border: none;
+            padding: 18px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 0.86em;
+            line-height: 1.65;
+            color: var(--text-dark);
+            resize: vertical;
+            background: #fffdf9;
+        }
+        #emailTemplate:focus { outline: none; }
+
+        .rowgrid-4 { display: grid; grid-template-columns: 1.1fr 1.4fr 0.6fr 0.9fr 38px; gap: 10px; align-items: end; margin-bottom: 10px; }
+        .rowgrid-4 .form-group { margin-bottom: 0; }
+        .rowgrid-4 label { font-size: 0.78em; }
+        .rm-btn { background: #c75366; color: white; border: none; border-radius: 4px; padding: 13px 8px; cursor: pointer; font-weight: bold; font-size: 1.15em; line-height: 1; }
+
+        .empty-note { color: #999; font-size: 0.88em; font-style: italic; padding: 10px 0; }
+
+        @media (max-width: 1024px) {
+            .content { grid-template-columns: 1fr; }
+            .header h1 { font-size: 2em; }
+            .output-section { position: static; max-height: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1776162028/vale_logo_April_2026_p4grbk.jpg" alt="Vale Resort Logo" class="header-logo">
+                <h1>THE VALE RESORT</h1>
+                <p>Golf Booking Letter Generator</p>
+                <p class="header-tagline">Pro Forma in &rarr; booking confirmation letter, invoice &amp; email out</p>
+            </div>
+        </div>
+
+        <a class="back-link" href="../../">&larr; Back to all tools</a>
+
+        <div class="content">
+            <div class="form-section">
+                <h2>Booking Letter Details</h2>
+
+                <!-- STEP 1 -->
+                <div class="step-heading"><span class="step-badge">STEP 1</span>Booking Type</div>
+                <div class="mode-tabs">
+                    <button class="mode-tab active" data-mode="day" onclick="switchMode('day')">Golf Day</button>
+                    <button class="mode-tab" data-mode="break" onclick="switchMode('break')">Golf Break</button>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="step-heading"><span class="step-badge">STEP 2</span>Upload Pro Forma Invoice</div>
+                <div class="dropzone" id="dropzone">
+                    <div class="dz-icon">&#128196;</div>
+                    <div class="dz-main">Drag &amp; drop the Pro Forma Invoice PDF here</div>
+                    <div class="dz-sub">or click to browse &mdash; bedrooms, dates and contact details are read automatically (prices are ignored)</div>
+                    <input type="file" id="fileInput" accept="application/pdf" style="display:none;">
+                </div>
+                <div class="parse-status" id="parseStatus"></div>
+
+                <div class="section-subtitle" style="margin-top:24px;">Booking Details</div>
+                <div class="date-grid">
+                    <div class="form-group">
+                        <label for="bookingId">Booking ID</label>
+                        <input type="text" id="bookingId" placeholder="e.g. VBKG6139" oninput="recalculate();">
+                    </div>
+                    <div class="form-group">
+                        <label for="groupName">Group / Event Name</label>
+                        <input type="text" id="groupName" placeholder="e.g. Andy Barr Golf Group" oninput="recalculate();">
+                    </div>
+                </div>
+                <div class="date-grid">
+                    <div class="form-group">
+                        <label for="arrivalDate">Arrival / Event Date</label>
+                        <input type="date" id="arrivalDate" onchange="datesChanged();">
+                    </div>
+                    <div class="form-group">
+                        <label for="departureDate">Departure Date</label>
+                        <input type="date" id="departureDate" onchange="datesChanged();">
+                    </div>
+                </div>
+                <div class="date-grid">
+                    <div class="form-group">
+                        <label for="bookingContact">Booking Contact</label>
+                        <input type="text" id="bookingContact" placeholder="e.g. Andy Barr" oninput="recalculate();">
+                    </div>
+                    <div class="form-group">
+                        <label for="companyName">Company Name</label>
+                        <input type="text" id="companyName" placeholder="e.g. Golf Society Bks" oninput="recalculate();">
+                    </div>
+                </div>
+                <div class="date-grid">
+                    <div class="form-group">
+                        <label for="contactEmail">Contact Email</label>
+                        <input type="email" id="contactEmail" placeholder="e.g. andy@example.co.uk" oninput="recalculate();">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactPhone">Contact Phone</label>
+                        <input type="text" id="contactPhone" placeholder="e.g. +44 0774 305 7458" oninput="recalculate();">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="companyAddress">Company Address</label>
+                    <input type="text" id="companyAddress" placeholder="Optional" oninput="recalculate();">
+                </div>
+                <div class="form-group">
+                    <label for="preparedBy">Prepared By (Hotel Contact)</label>
+                    <select id="preparedBy" onchange="recalculate();">
+                        <option value="">Select team member</option>
+                        <option value="Liam Williams">Liam Williams</option>
+                        <option value="Richard Williams">Richard Williams</option>
+                        <option value="Natalie Williams">Natalie Williams</option>
+                        <option value="Linda Taylor">Linda Taylor</option>
+                        <option value="Ed Williams">Ed Williams</option>
+                        <option value="Cally Birt">Cally Birt</option>
+                        <option value="Naomi Jones">Naomi Jones</option>
+                        <option value="Hollie Crowe">Hollie Crowe</option>
+                        <option value="Laura Williams">Laura Williams</option>
+                        <option value="Katie Thomas">Katie Thomas</option>
+                    </select>
+                </div>
+
+                <div class="section-subtitle">Bedrooms <span style="color:var(--text-light); font-weight:500; text-transform:none;">(pulled from the Pro Forma)</span></div>
+                <div id="bedroomsContainer"></div>
+                <button type="button" class="btn btn-secondary" onclick="addBedroomRow()" style="margin-top:6px; padding:10px 16px; font-size:0.88em; flex:0 0 auto;">+ Add Bedroom Row</button>
+                <div class="helper-text">Rate is optional &mdash; leave at 0 when bedrooms are included in the package price. Any rate entered is charged per room on the Pro Forma.</div>
+
+                <!-- STEP 3 -->
+                <div class="step-heading"><span class="step-badge">STEP 3</span>Package Details</div>
+
+                <!-- =============== GOLF DAY FIELDS =============== -->
+                <div id="dayFields">
+                    <div class="section-subtitle">Golf</div>
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="dayGolfNumbers">Golf Numbers</label>
+                            <input type="number" id="dayGolfNumbers" min="1" value="20" oninput="recalculate();">
+                            <div class="helper-text">1 in <input type="number" id="dayFreeRatio" min="1" value="12" style="width:50px;display:inline-block;padding:1px 4px;font-size:inherit;" oninput="recalculate();"> go free</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="dayCourse">Course</label>
+                            <select id="dayCourse" onchange="recalculate();">
+                                <option value="Wales National Course">Wales National Course</option>
+                                <option value="Lakes Course">Lakes Course</option>
+                                <option value="Lakes Course, Wales National">Lakes Course, Wales National</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dayBuggies">Number of Buggies</label>
+                        <input type="number" id="dayBuggies" min="0" value="0" oninput="recalculate();">
+                        <div class="helper-text">&pound;50 per buggy</div>
+                    </div>
+
+                    <div class="section-subtitle">Pricing</div>
+                    <div class="form-group">
+                        <label for="dayPricePerPerson">Package Price Per Person (&pound;)</label>
+                        <input type="number" id="dayPricePerPerson" min="0" step="0.01" value="0" oninput="recalculate();">
+                        <div class="helper-text">Includes 1 round of golf, bacon roll on arrival &amp; society dinner/lunch</div>
+                    </div>
+
+                    <div class="section-subtitle">Catering</div>
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="dayMealOption">Meal Option</label>
+                            <select id="dayMealOption" onchange="recalculate();">
+                                <option value="Dinner">Dinner</option>
+                                <option value="Lunch">Lunch</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dayMealCourses">Number of Courses</label>
+                            <select id="dayMealCourses" onchange="recalculate();">
+                                <option value="2" selected>2 Courses</option>
+                                <option value="1">1 Course</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="dayAdditionalBaconRolls">Additional Bacon Rolls</label>
+                            <input type="number" id="dayAdditionalBaconRolls" min="0" value="0" oninput="recalculate();">
+                            <div class="helper-text">&pound;7 per roll</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="dayAdditionalMeals">Additional Lunch/Dinner Numbers</label>
+                            <input type="number" id="dayAdditionalMeals" min="0" value="0" oninput="recalculate();">
+                            <div class="helper-text">1 course &pound;19.50 / 2 course &pound;25</div>
+                        </div>
+                    </div>
+
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="dayArrivalTime">Time for Tea/Coffee &amp; Bacon Rolls</label>
+                            <input type="text" id="dayArrivalTime" placeholder="e.g. 09:00" oninput="recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="dayTeeTimes">Tee Times</label>
+                            <input type="text" id="dayTeeTimes" placeholder="e.g. 10:00 from the 1st &amp; 10th" oninput="recalculate();">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dayMealTime">Time for Dinner / Lunch</label>
+                        <input type="text" id="dayMealTime" placeholder="e.g. 19:00" oninput="recalculate();">
+                    </div>
+
+                    <div class="section-subtitle">Discounts</div>
+                    <div class="boxed">
+                        <div class="boxed-title">DISCOUNTED BUGGIES</div>
+                        <div class="date-grid" style="margin-bottom:0;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="dayDiscountedBuggies">Number of Discounted Buggies</label>
+                                <input type="number" id="dayDiscountedBuggies" min="0" value="0" oninput="recalculate();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="dayDiscountedBuggyPrice">Price per Discounted Buggy (&pound;)</label>
+                                <input type="number" id="dayDiscountedBuggyPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="boxed" style="border-left-color:var(--primary-burgundy);">
+                        <div class="boxed-title">GREEN FEE DISCOUNT</div>
+                        <div class="date-grid" style="margin-bottom:0;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="dayGreenFeeDiscount">Discount Amount (&pound;)</label>
+                                <input type="number" id="dayGreenFeeDiscount" min="0" step="0.01" value="0" oninput="recalculate();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="dayFreeGreenFees">Number of Free Green Fees</label>
+                                <input type="number" id="dayFreeGreenFees" min="0" value="0" oninput="recalculate();">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-subtitle">Options</div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Course Maintenance</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="dayCourseMaintenance" onchange="toggleDayCourseMaintenance(); recalculate();">
+                            <label for="dayCourseMaintenance">Course maintenance may be taking place</label>
+                        </div>
+                        <div id="dayCourseMaintenanceTextWrap" style="display:none; margin-top:10px;">
+                            <input type="text" id="dayCourseMaintenanceText" placeholder="Describe the course maintenance (e.g. greens hollow-tining on 12th &amp; 14th)" oninput="recalculate();">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =============== GOLF BREAK FIELDS =============== -->
+                <div id="breakFields" style="display:none;">
+                    <div class="section-subtitle">Stay</div>
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="breakNights">Number of Nights</label>
+                            <input type="number" id="breakNights" min="1" value="1" readonly>
+                            <div class="helper-text">Auto-calculated from arrival &amp; departure dates</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="breakRounds">Number of Rounds</label>
+                            <input type="number" id="breakRounds" min="1" value="1" oninput="recalculate();">
+                            <div class="helper-text">Default: 1 &times; number of nights</div>
+                        </div>
+                    </div>
+
+                    <div class="section-subtitle">Guests</div>
+                    <div class="date-grid">
+                        <div class="form-group">
+                            <label for="breakGolfers">Number of Golfers</label>
+                            <input type="number" id="breakGolfers" min="0" value="12" oninput="updateBreakDefaults(); recalculate();">
+                        </div>
+                        <div class="form-group">
+                            <label for="breakNonGolfers">Number of Non-Golfers</label>
+                            <input type="number" id="breakNonGolfers" value="0" readonly>
+                            <div class="helper-text">Auto-calculated from packages below</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="breakTotalGuests">Total Guests</label>
+                        <input type="number" id="breakTotalGuests" value="12" readonly>
+                    </div>
+
+                    <div class="section-subtitle">Golf</div>
+                    <div class="form-group">
+                        <label for="breakBuggies">Number of Buggies</label>
+                        <input type="number" id="breakBuggies" min="0" value="0" oninput="recalculate();">
+                        <div class="helper-text">&pound;50 per buggy</div>
+                    </div>
+
+                    <div class="section-subtitle">Golfer Pricing</div>
+                    <div class="form-group">
+                        <label for="breakGolferPrice">Price Per Person &mdash; Golfers (&pound;)</label>
+                        <input type="number" id="breakGolferPrice" min="0" step="0.01" value="0" oninput="recalculate();">
+                        <div class="helper-text">1 in <input type="number" id="breakFreeRatio" min="1" value="16" style="width:50px;display:inline-block;padding:1px 4px;font-size:inherit;" oninput="recalculate();"> go free</div>
+                    </div>
+
+                    <div class="section-subtitle">Non-Golfer Packages</div>
+                    <p class="helper-text" style="margin-bottom:10px;">Allocate non-golfers to packages and set the price for each.</p>
+                    <div id="breakNonGolferPackagesContainer"></div>
+
+                    <div class="section-subtitle">Package Add Ons</div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Drinks Voucher</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakDrinksVoucher" onchange="recalculate();">
+                            <label for="breakDrinksVoucher">&pound;10 per person drinks voucher</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Private Dining</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakPrivateDining" onchange="recalculate();">
+                            <label for="breakPrivateDining">Private dining</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Lunch</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakLunch" onchange="recalculate();">
+                            <label for="breakLunch">Lunch</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Course Maintenance</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakCourseMaintenance" onchange="toggleBreakCourseMaintenance(); recalculate();">
+                            <label for="breakCourseMaintenance">Course maintenance may be taking place</label>
+                        </div>
+                        <div id="breakCourseMaintenanceTextWrap" style="display:none; margin-top:10px;">
+                            <input type="text" id="breakCourseMaintenanceText" placeholder="Describe the course maintenance (e.g. greens hollow-tining on 12th &amp; 14th)" oninput="recalculate();">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Free Room Upgrade for Group Organiser</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakOrganiserUpgrade" checked onchange="recalculate();">
+                            <label for="breakOrganiserUpgrade">Free room upgrade for Group Organiser</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="margin-bottom:10px;">Early Bird Discount</label>
+                        <div class="toggle-wrap">
+                            <input type="checkbox" id="breakEarlyBird" onchange="recalculate();">
+                            <label for="breakEarlyBird">Apply Early Bird discount</label>
+                        </div>
+                        <div class="helper-text" style="margin-top:8px;">&pound;10 per golfer per night off the golfers package price</div>
+                    </div>
+
+                    <div class="section-subtitle">Accommodation Split</div>
+                    <div class="boxed">
+                        <div class="boxed-title">THE VALE RESORT</div>
+                        <div class="date-grid" style="margin-bottom:0;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="breakValeTwinRooms">Twin / Double Rooms</label>
+                                <input type="number" id="breakValeTwinRooms" min="0" value="0" oninput="recalculate();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="breakValeSingleRooms">Single Rooms</label>
+                                <input type="number" id="breakValeSingleRooms" min="0" value="0" oninput="recalculate();">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="boxed" style="border-left-color:var(--primary-burgundy);">
+                        <div class="boxed-title">HENSOL CASTLE</div>
+                        <div class="date-grid" style="margin-bottom:0;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="breakHensolTwinRooms">Twin / Double Rooms</label>
+                                <input type="number" id="breakHensolTwinRooms" min="0" value="0" oninput="recalculate();">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="breakHensolSingleRooms">Single Rooms</label>
+                                <input type="number" id="breakHensolSingleRooms" min="0" value="0" oninput="recalculate();">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="helper-text" style="margin-bottom:20px;">&pound;50 single supplement per single room, per night applies</div>
+
+                    <div class="section-subtitle">Tee Times <span style="color:var(--text-light); font-weight:500; text-transform:none;">(one row per day including arrival &amp; departure)</span></div>
+                    <div id="breakTeeTimesContainer"></div>
+                </div>
+
+                <!-- Custom items -->
+                <div class="section-subtitle" style="margin-top:26px;">Custom Items</div>
+                <div id="customItemsContainer"></div>
+                <button type="button" class="btn btn-secondary" onclick="addCustomItem()" style="margin-top:6px; padding:10px 16px; font-size:0.88em; flex:0 0 auto;">+ Add Custom Item</button>
+
+                <div class="section-subtitle" style="margin-top:22px;">Custom Discounts</div>
+                <div id="customDiscountsContainer"></div>
+                <button type="button" class="btn btn-secondary" onclick="addCustomDiscount()" style="margin-top:6px; padding:10px 16px; font-size:0.88em; flex:0 0 auto;">+ Add Custom Discount</button>
+
+                <!-- STEP 4 -->
+                <div class="step-heading"><span class="step-badge">STEP 4</span>Deposit</div>
+                <div class="date-grid">
+                    <div class="form-group">
+                        <label for="depositRequired">Deposit Required (&pound;)</label>
+                        <input type="number" id="depositRequired" min="0" step="0.01" value="0" oninput="depositTouched = true; recalculate();">
+                        <div class="helper-text">Auto-suggested (&pound;10 per golfer / &pound;50 per guest) until you type your own</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="depositWeeks">Deposit Due Within (weeks)</label>
+                        <input type="number" id="depositWeeks" min="1" value="4" oninput="recalculate();">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="depositPaid">Deposit Already Paid (&pound;)</label>
+                    <input type="number" id="depositPaid" min="0" step="0.01" value="0" oninput="recalculate();">
+                    <div class="helper-text">Deducted from the balance on the Pro Forma Invoice</div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="generateBookingLetter()">Generate Booking Letter PDF</button>
+                    <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <h2>Booking Summary</h2>
+                <div id="quoteSummary">
+                    <div class="quote-item" style="color:#999;">Upload a Pro Forma and enter package details to see the summary</div>
+                </div>
+
+                <div class="email-box">
+                    <div class="email-box-head">
+                        <span>Email Template</span>
+                        <button type="button" onclick="copyEmail()" id="copyEmailBtn">Copy for Outlook</button>
+                    </div>
+                    <textarea id="emailTemplate" spellcheck="false"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        const NON_GOLFER_PACKAGES = ['DBB', 'DBB + Gin Tour', 'DBB + Spa Day', 'DBB + Spa & Gin Tour', 'B&B'];
+
+        const CONTACT_EMAILS = {
+            'Natalie Williams': 'nwilliams@valeresort.com',
+            'Liam Williams': 'liam.williams@valeresort.com',
+            'Cally Birt': 'cally.birt@valeresort.com',
+            'Ed Williams': 'edward.williams@valeresort.com',
+            'Linda Taylor': 'ltaylor@valeresort.com',
+            'Naomi Jones': 'naomi.jones@valeresort.com',
+            'Laura Williams': 'laura.williams@valeresort.com',
+            'Hollie Crowe': 'hollie.crowe@valeresort.com',
+            'Katie Thomas': 'katie.thomas@valeresort.com',
+            'Richard Williams': 'Richard.Williams@valeresort.com'
+        };
+
+        const BANK_DETAILS = {
+            bank: 'Barclays Bank',
+            sortCode: '20-18-58',
+            accountNumber: '10917257',
+            iban: 'GB28BARC20185810917257',
+            swift: 'BARCGB22',
+            vatNumber: '736738108',
+            companyRegistration: '3698783'
+        };
+
+        let activeMode = 'day';
+        let depositTouched = false;
+        let emailTouched = false;
+
+        /* ===================== HELPERS ===================== */
+        function esc(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function val(id) {
+            const el = document.getElementById(id);
+            return el ? (el.value || '').trim() : '';
+        }
+
+        function num(id, fallback = 0) {
+            const el = document.getElementById(id);
+            if (!el) return fallback;
+            const n = parseFloat(el.value);
+            return isNaN(n) ? fallback : Math.max(0, n);
+        }
+
+        function int(id, fallback = 0) {
+            const el = document.getElementById(id);
+            if (!el) return fallback;
+            const n = parseInt(el.value, 10);
+            return isNaN(n) ? fallback : Math.max(0, n);
+        }
+
+        function money(n) {
+            return '£' + (Number(n) || 0).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function isoFromUK(uk) {
+            const m = String(uk).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (!m) return '';
+            return `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+        }
+
+        function formatDate(iso, opts) {
+            if (!iso) return '—';
+            const parts = String(iso).split('-');
+            if (parts.length !== 3) return iso;
+            const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            if (isNaN(d.getTime())) return iso;
+            return d.toLocaleDateString('en-GB', opts || { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace(/,/g, '');
+        }
+
+        function shortDate(iso) {
+            return formatDate(iso, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function nightsBetween(isoA, isoB) {
+            if (!isoA || !isoB) return 0;
+            const a = new Date(isoA), b = new Date(isoB);
+            if (isNaN(a.getTime()) || isNaN(b.getTime())) return 0;
+            return Math.max(0, Math.round((b - a) / 86400000));
+        }
+
+        function addDays(iso, days) {
+            const parts = String(iso).split('-');
+            if (parts.length !== 3) return '';
+            const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            d.setDate(d.getDate() + days);
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${d.getFullYear()}-${mm}-${dd}`;
+        }
+
+        function firstName(full) {
+            const s = (full || '').trim();
+            if (!s) return 'Sir/Madam';
+            return s.split(/\s+/)[0];
+        }
+
+        function titleCaseName(s) {
+            return (s || '').toLowerCase().replace(/\b([a-z])/g, (m, c) => c.toUpperCase());
+        }
+
+        /* ===================== PDF UPLOAD & PARSING ===================== */
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+
+        dropzone.addEventListener('click', () => fileInput.click());
+        dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+        dropzone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            const file = e.dataTransfer.files && e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+        fileInput.addEventListener('change', e => {
+            const file = e.target.files && e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        function setStatus(kind, html) {
+            const el = document.getElementById('parseStatus');
+            el.className = 'parse-status ' + kind;
+            el.innerHTML = html;
+        }
+
+        async function handleFile(file) {
+            if (!/\.pdf$/i.test(file.name) && file.type !== 'application/pdf') {
+                setStatus('err', 'Please upload a PDF Pro Forma Invoice.');
+                return;
+            }
+            if (!window.pdfjsLib) {
+                setStatus('err', 'The PDF reader could not be loaded. Check your internet connection and reload the page, then enter the booking details manually.');
+                return;
+            }
+            setStatus('busy', 'Reading <strong>' + esc(file.name) + '</strong>…');
+            try {
+                const buffer = await file.arrayBuffer();
+                const lines = await extractLines(buffer);
+                const data = parseProForma(lines);
+                applyParsedData(data);
+                const bits = [];
+                if (data.bookingId) bits.push('Booking ID <strong>' + esc(data.bookingId) + '</strong>');
+                if (data.arrival) bits.push('dates <strong>' + esc(shortDate(data.arrival)) + (data.departure ? ' &ndash; ' + esc(shortDate(data.departure)) : '') + '</strong>');
+                bits.push('<strong>' + data.rooms.length + '</strong> bedroom line' + (data.rooms.length === 1 ? '' : 's'));
+                setStatus('ok', '&#10003; Read <strong>' + esc(file.name) + '</strong> &mdash; ' + bits.join(', ') + '. Prices on the Pro Forma were ignored. Please check the details below.');
+            } catch (err) {
+                console.error(err);
+                setStatus('err', 'Could not read that PDF (' + esc(err.message || err) + '). Please enter the booking details manually.');
+            }
+        }
+
+        /* Reconstruct visual lines from the PDF text layer */
+        async function extractLines(arrayBuffer) {
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const lines = [];
+            for (let p = 1; p <= pdf.numPages; p++) {
+                const page = await pdf.getPage(p);
+                const content = await page.getTextContent();
+                const rows = new Map();
+                content.items.forEach(item => {
+                    if (!item.str || !item.str.trim()) return;
+                    const y = Math.round(item.transform[5] / 4) * 4;
+                    if (!rows.has(y)) rows.set(y, []);
+                    rows.get(y).push({ x: item.transform[4], s: item.str });
+                });
+                Array.from(rows.keys()).sort((a, b) => b - a).forEach(y => {
+                    const line = rows.get(y)
+                        .sort((a, b) => a.x - b.x)
+                        .map(o => o.s)
+                        .join(' ')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                    if (line) lines.push(line);
+                });
+            }
+            return lines;
+        }
+
+        function parseProForma(lines) {
+            const text = lines.join('\n');
+            const out = { rooms: [] };
+
+            const idMatch = text.match(/Booking\s*ID\s*[:\-]?\s*([A-Z0-9][A-Z0-9\-\/]{3,})/i);
+            if (idMatch) out.bookingId = idMatch[1].trim();
+
+            // Stay dates: "25/09/2026 - 27/09/2026"
+            let rangeIndex = -1;
+            for (let i = 0; i < lines.length; i++) {
+                const m = lines[i].match(/(\d{1,2}\/\d{1,2}\/\d{4})\s*(?:-|–|—|to)\s*(\d{1,2}\/\d{1,2}\/\d{4})/);
+                if (m) {
+                    out.arrival = isoFromUK(m[1]);
+                    out.departure = isoFromUK(m[2]);
+                    rangeIndex = i;
+                    break;
+                }
+            }
+
+            // Group / event name: the line directly above the date range
+            if (rangeIndex > 0) {
+                for (let i = rangeIndex - 1; i >= 0 && i >= rangeIndex - 3; i--) {
+                    const candidate = lines[i].trim();
+                    if (!candidate) continue;
+                    if (/NOT A VAT RECEIPT|Business Address|Vale of Glamorgan|Hensol|^CF\d/i.test(candidate)) continue;
+                    out.groupName = candidate;
+                    break;
+                }
+            }
+
+            lines.forEach(line => {
+                let m = line.match(/Company\s*Name\s+(.*?)\s+Hotel\s*Contact\s*(.*)$/i);
+                if (m) {
+                    if (m[1].trim()) out.companyName = m[1].trim();
+                    if (m[2].trim()) out.hotelContact = titleCaseName(m[2].trim());
+                    return;
+                }
+                m = line.match(/^Company\s*Name\s+(.+)$/i);
+                if (m && m[1].trim()) { out.companyName = m[1].trim(); return; }
+
+                m = line.match(/^Hotel\s*Contact\s+(.+)$/i);
+                if (m && m[1].trim()) { out.hotelContact = titleCaseName(m[1].trim()); return; }
+
+                m = line.match(/^Booking\s*Contact\s+(.+?)(?:\s+Phone\s*Number.*)?$/i);
+                if (m && m[1].trim()) { out.bookingContact = m[1].trim(); return; }
+
+                m = line.match(/^Company\s*Address\s+(.+)$/i);
+                if (m && m[1].trim()) { out.companyAddress = m[1].trim(); return; }
+
+                m = line.match(/Phone\s*Number\s+([+(]?\d[\d\s()+\-]{6,})/i);
+                if (m && !out.contactPhone) { out.contactPhone = m[1].trim(); return; }
+            });
+
+            const emails = text.match(/[\w.%+\-]+@[\w.\-]+\.[A-Za-z]{2,}/g) || [];
+            const clientEmail = emails.find(e => !/valeresort\.com|vale-?of-?glamorgan/i.test(e));
+            if (clientEmail) out.contactEmail = clientEmail;
+
+            // Bedrooms: rows inside the "Room" section
+            let inRoomSection = false;
+            const stopWords = /^(Item Total|Deposit|Balance|Sub ?Total|Golf|Food|Beverage|Conference|Extras|Spa|Other)\b/i;
+            lines.forEach(line => {
+                if (/^Room(s)?$/i.test(line.trim())) { inRoomSection = true; return; }
+                if (inRoomSection && stopWords.test(line.trim())) { inRoomSection = false; return; }
+                if (!inRoomSection) return;
+                const row = matchRoomRow(line);
+                if (row) out.rooms.push(row);
+            });
+
+            // Fallback: scan the whole document for bedroom-looking rows
+            if (out.rooms.length === 0) {
+                lines.forEach(line => {
+                    const row = matchRoomRow(line);
+                    if (row && /room|double|twin|single|suite|king|family|superior|standard|executive|deluxe|classic/i.test(row.item)) {
+                        out.rooms.push(row);
+                    }
+                });
+            }
+
+            return out;
+        }
+
+        /* "25/09/2026 Standard Double 2 £343.20 £686.40 £686.40" -> {date, item, qty} (prices ignored) */
+        function matchRoomRow(line) {
+            const s = line.trim();
+            let m = s.match(/^(\d{1,2}\/\d{1,2}\/\d{4})\s+(.+?)\s+(\d+)\s+[£(]/);
+            if (!m) m = s.match(/^(\d{1,2}\/\d{1,2}\/\d{4})\s+([A-Za-z][A-Za-z0-9 &'\/\-]*?)\s+(\d+)\s*$/);
+            if (!m) return null;
+            const item = m[2].replace(/\s+/g, ' ').trim();
+            if (!item) return null;
+            return { date: isoFromUK(m[1]), item, qty: Math.max(1, parseInt(m[3], 10) || 1) };
+        }
+
+        function applyParsedData(d) {
+            if (d.bookingId) document.getElementById('bookingId').value = d.bookingId;
+            if (d.groupName) document.getElementById('groupName').value = d.groupName;
+            if (d.arrival) document.getElementById('arrivalDate').value = d.arrival;
+            if (d.departure) document.getElementById('departureDate').value = d.departure;
+            if (d.bookingContact) document.getElementById('bookingContact').value = d.bookingContact;
+            if (d.companyName) document.getElementById('companyName').value = d.companyName;
+            if (d.contactEmail) document.getElementById('contactEmail').value = d.contactEmail;
+            if (d.contactPhone) document.getElementById('contactPhone').value = d.contactPhone;
+            if (d.companyAddress) document.getElementById('companyAddress').value = d.companyAddress;
+
+            if (d.hotelContact) {
+                const sel = document.getElementById('preparedBy');
+                const wanted = d.hotelContact.toLowerCase();
+                Array.from(sel.options).forEach(o => {
+                    if (o.value && o.value.toLowerCase() === wanted) sel.value = o.value;
+                });
+            }
+
+            // Bedrooms
+            document.getElementById('bedroomsContainer').innerHTML = '';
+            bedroomCounter = 0;
+            (d.rooms || []).forEach(r => addBedroomRow(r.date, r.item, r.qty, 0));
+            if ((d.rooms || []).length === 0) renderBedroomsEmptyNote();
+
+            // Suggest the accommodation split for golf breaks from the first night's rooms
+            if ((d.rooms || []).length > 0) {
+                const firstDate = d.rooms[0].date;
+                let twins = 0, singles = 0;
+                d.rooms.filter(r => r.date === firstDate).forEach(r => {
+                    if (/single/i.test(r.item)) singles += r.qty;
+                    else twins += r.qty;
+                });
+                document.getElementById('breakValeTwinRooms').value = twins;
+                document.getElementById('breakValeSingleRooms').value = singles;
+            }
+
+            datesChanged();
+        }
+
+        /* ===================== BEDROOM ROWS ===================== */
+        let bedroomCounter = 0;
+
+        function renderBedroomsEmptyNote() {
+            const container = document.getElementById('bedroomsContainer');
+            if (container.children.length === 0) {
+                container.innerHTML = '<div class="empty-note" id="bedroomsEmptyNote">No bedrooms yet &mdash; upload a Pro Forma or add rows manually.</div>';
+            }
+        }
+
+        function addBedroomRow(date = '', item = '', qty = 1, rate = 0) {
+            const note = document.getElementById('bedroomsEmptyNote');
+            if (note) note.remove();
+            const id = bedroomCounter++;
+            const container = document.getElementById('bedroomsContainer');
+            const div = document.createElement('div');
+            div.id = `bedroomRow_${id}`;
+            div.className = 'rowgrid-4';
+            div.innerHTML = `
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" class="bed-date" value="${esc(date)}" oninput="recalculate();">
+                </div>
+                <div class="form-group">
+                    <label>Room Type</label>
+                    <input type="text" class="bed-item" value="${esc(item)}" placeholder="e.g. Standard Double" oninput="recalculate();">
+                </div>
+                <div class="form-group">
+                    <label>Qty</label>
+                    <input type="number" class="bed-qty" min="1" value="${qty}" oninput="recalculate();">
+                </div>
+                <div class="form-group">
+                    <label>Rate (&pound;)</label>
+                    <input type="number" class="bed-rate" min="0" step="0.01" value="${rate}" oninput="recalculate();">
+                </div>
+                <button type="button" class="rm-btn" onclick="removeBedroomRow('bedroomRow_${id}')" title="Remove">&times;</button>
+            `;
+            container.appendChild(div);
+            recalculate();
+        }
+
+        function removeBedroomRow(rowId) {
+            const el = document.getElementById(rowId);
+            if (el) el.remove();
+            renderBedroomsEmptyNote();
+            recalculate();
+        }
+
+        function readBedrooms() {
+            const rows = [];
+            document.querySelectorAll('#bedroomsContainer > div.rowgrid-4').forEach(row => {
+                const date = row.querySelector('.bed-date').value;
+                const item = row.querySelector('.bed-item').value.trim();
+                const qty = Math.max(1, parseInt(row.querySelector('.bed-qty').value, 10) || 1);
+                const rate = Math.max(0, parseFloat(row.querySelector('.bed-rate').value) || 0);
+                if (item) rows.push({ date, item, qty, rate, total: qty * rate });
+            });
+            return rows;
+        }
+
+        function bedroomsSentence(rows) {
+            if (!rows.length) return '';
+            const byDate = {};
+            rows.forEach(r => {
+                const key = r.date || 'undated';
+                if (!byDate[key]) byDate[key] = [];
+                byDate[key].push(`${r.qty} x ${r.item}`);
+            });
+            return Object.keys(byDate).sort().map(k => {
+                const label = k === 'undated' ? 'Date TBC' : shortDate(k);
+                return `${label}: ${byDate[k].join(', ')}`;
+            }).join('; ');
+        }
+
+        /* ===================== CUSTOM ITEMS / DISCOUNTS ===================== */
+        let customItemCounter = 0;
+        function addCustomItem(desc = '', qty = 1, price = 0) {
+            const id = customItemCounter++;
+            const container = document.getElementById('customItemsContainer');
+            const div = document.createElement('div');
+            div.id = `customItemRow_${id}`;
+            div.style.cssText = 'display:grid; grid-template-columns:1fr 80px 120px 38px; gap:10px; align-items:end; margin-bottom:10px;';
+            div.innerHTML = `
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.78em;">Description</label>
+                    <input type="text" class="custom-item-desc" placeholder="Item description" value="${esc(desc)}" oninput="recalculate();">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.78em;">Qty</label>
+                    <input type="number" class="custom-item-qty" min="1" value="${qty}" oninput="recalculate();">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.78em;">Unit Price (&pound;)</label>
+                    <input type="number" class="custom-item-price" min="0" step="0.01" value="${price}" oninput="recalculate();">
+                </div>
+                <button type="button" class="rm-btn" onclick="removeCustomItem('customItemRow_${id}')" title="Remove">&times;</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeCustomItem(rowId) {
+            const el = document.getElementById(rowId);
+            if (el) el.remove();
+            recalculate();
+        }
+
+        function readCustomItems() {
+            const items = [];
+            document.querySelectorAll('#customItemsContainer > div').forEach(row => {
+                const desc = row.querySelector('.custom-item-desc').value.trim();
+                const qty = Math.max(0, parseInt(row.querySelector('.custom-item-qty').value, 10) || 0);
+                const price = Math.max(0, parseFloat(row.querySelector('.custom-item-price').value) || 0);
+                if (desc && qty > 0 && price > 0) {
+                    items.push({ desc, qty, price, total: qty * price, label: qty > 1 ? `${desc} (${qty} x ${money(price)})` : desc });
+                }
+            });
+            return items;
+        }
+
+        let customDiscountCounter = 0;
+        function addCustomDiscount(desc = '', amount = 0) {
+            const id = customDiscountCounter++;
+            const container = document.getElementById('customDiscountsContainer');
+            const div = document.createElement('div');
+            div.id = `customDiscountRow_${id}`;
+            div.style.cssText = 'display:grid; grid-template-columns:1fr 140px 38px; gap:10px; align-items:end; margin-bottom:10px;';
+            div.innerHTML = `
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.78em;">Description</label>
+                    <input type="text" class="custom-discount-desc" placeholder="Discount description" value="${esc(desc)}" oninput="recalculate();">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:0.78em;">Discount (&pound;)</label>
+                    <input type="number" class="custom-discount-amount" min="0" step="0.01" value="${amount}" oninput="recalculate();">
+                </div>
+                <button type="button" class="rm-btn" onclick="removeCustomDiscount('customDiscountRow_${id}')" title="Remove">&times;</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeCustomDiscount(rowId) {
+            const el = document.getElementById(rowId);
+            if (el) el.remove();
+            recalculate();
+        }
+
+        function readCustomDiscounts() {
+            const discounts = [];
+            document.querySelectorAll('#customDiscountsContainer > div').forEach(row => {
+                const desc = row.querySelector('.custom-discount-desc').value.trim();
+                const amount = Math.max(0, parseFloat(row.querySelector('.custom-discount-amount').value) || 0);
+                if (desc && amount > 0) discounts.push({ desc, amount });
+            });
+            return discounts;
+        }
+
+        /* ===================== NON-GOLFER PACKAGES ===================== */
+        function buildNonGolferPackages() {
+            const container = document.getElementById('breakNonGolferPackagesContainer');
+            if (!container) return;
+            const existing = {};
+            container.querySelectorAll('input').forEach(inp => { existing[inp.id] = inp.value; });
+            let html = '';
+            NON_GOLFER_PACKAGES.forEach((pkg, idx) => {
+                const countId = `ngPkgCount_${idx}`;
+                const priceId = `ngPkgPrice_${idx}`;
+                html += `
+                <div class="boxed">
+                    <div class="boxed-title">${esc(pkg.toUpperCase())}</div>
+                    <div class="date-grid" style="margin-bottom:0;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="${countId}" style="font-size:0.78em;">Number of Guests</label>
+                            <input type="number" id="${countId}" min="0" value="${existing[countId] || '0'}" oninput="updateBreakDefaults(); recalculate();">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="${priceId}" style="font-size:0.78em;">Price Per Person (&pound;)</label>
+                            <input type="number" id="${priceId}" min="0" step="0.01" value="${existing[priceId] || '0'}" oninput="recalculate();">
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function readNonGolferPackages() {
+            const rows = [];
+            NON_GOLFER_PACKAGES.forEach((pkg, idx) => {
+                const countEl = document.getElementById(`ngPkgCount_${idx}`);
+                const priceEl = document.getElementById(`ngPkgPrice_${idx}`);
+                if (!countEl || !priceEl) return;
+                const count = Math.max(0, parseInt(countEl.value, 10) || 0);
+                const price = Math.max(0, parseFloat(priceEl.value) || 0);
+                if (count > 0) rows.push({ package: pkg, count, price, total: count * price });
+            });
+            return rows;
+        }
+
+        /* ===================== MODE / DATES ===================== */
+        function switchMode(mode) {
+            activeMode = mode;
+            document.getElementById('dayFields').style.display = mode === 'day' ? 'block' : 'none';
+            document.getElementById('breakFields').style.display = mode === 'break' ? 'block' : 'none';
+            document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.mode-tab[data-mode="${mode}"]`).classList.add('active');
+            recalculate();
+        }
+
+        function datesChanged() {
+            const arrival = val('arrivalDate');
+            const departure = val('departureDate');
+            const nights = nightsBetween(arrival, departure);
+            const nightsEl = document.getElementById('breakNights');
+            nightsEl.value = Math.max(1, nights);
+            const roundsEl = document.getElementById('breakRounds');
+            if (!roundsEl.dataset.touched) roundsEl.value = Math.max(1, nights);
+            buildBreakTeeTimes();
+            recalculate();
+        }
+
+        document.getElementById('breakRounds').addEventListener('input', function () { this.dataset.touched = '1'; });
+
+        function updateBreakDefaults() {
+            const golfers = int('breakGolfers');
+            const packages = readNonGolferPackages();
+            const nonGolfers = packages.reduce((sum, p) => sum + p.count, 0);
+            document.getElementById('breakNonGolfers').value = nonGolfers;
+            document.getElementById('breakTotalGuests').value = golfers + nonGolfers;
+        }
+
+        function buildBreakTeeTimes() {
+            const arrival = val('arrivalDate');
+            const nights = Math.max(1, int('breakNights', 1));
+            const container = document.getElementById('breakTeeTimesContainer');
+            const days = nights + 1;
+            const existing = {};
+            container.querySelectorAll('input[type="text"]').forEach(inp => { existing[inp.id] = inp.value; });
+
+            let html = '';
+            for (let i = 0; i < days; i++) {
+                let dayLabel = `Day ${i + 1}`;
+                if (i === 0) dayLabel += ' (Arrival)';
+                else if (i === days - 1) dayLabel += ' (Departure)';
+
+                let dateLabel = '';
+                if (arrival) dateLabel = ' &mdash; ' + formatDate(addDays(arrival, i), { weekday: 'short', day: 'numeric', month: 'short' });
+
+                const lakeId = `breakTeeLake_${i}`;
+                const wnId = `breakTeeWN_${i}`;
+                const dinnerId = `breakDinner_${i}`;
+                html += `<div style="margin-bottom:14px;">
+                    <div style="font-size:0.83em; font-weight:600; color:var(--primary-dark); margin-bottom:8px;">${dayLabel}${dateLabel}</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="${lakeId}" style="font-size:0.76em; font-weight:500;">Lake Course</label>
+                            <input type="text" id="${lakeId}" placeholder="e.g. 08:30" value="${esc(existing[lakeId] || '')}" oninput="recalculate();">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="${wnId}" style="font-size:0.76em; font-weight:500;">Wales National</label>
+                            <input type="text" id="${wnId}" placeholder="e.g. 10:00" value="${esc(existing[wnId] || '')}" oninput="recalculate();">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="${dinnerId}" style="font-size:0.76em; font-weight:500;">Dinner Time</label>
+                            <input type="text" id="${dinnerId}" placeholder="e.g. 19:00" value="${esc(existing[dinnerId] || '')}" oninput="recalculate();">
+                        </div>
+                    </div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function collectBreakTeeTimes() {
+            const arrival = val('arrivalDate');
+            const nights = Math.max(1, int('breakNights', 1));
+            const days = nights + 1;
+            const out = [];
+            for (let i = 0; i < days; i++) {
+                const lake = val(`breakTeeLake_${i}`);
+                const wn = val(`breakTeeWN_${i}`);
+                const dinner = val(`breakDinner_${i}`);
+                let dateLabel = arrival ? formatDate(addDays(arrival, i), { weekday: 'long', day: 'numeric', month: 'long' }) : '';
+                let dayLabel = `Day ${i + 1}`;
+                if (i === 0) dayLabel += ' (Arrival)';
+                else if (i === days - 1) dayLabel += ' (Departure)';
+                if (lake || wn || dinner) out.push({ dayLabel, dateLabel, lake, wn, dinner });
+            }
+            return out;
+        }
+
+        function toggleDayCourseMaintenance() {
+            document.getElementById('dayCourseMaintenanceTextWrap').style.display =
+                document.getElementById('dayCourseMaintenance').checked ? 'block' : 'none';
+        }
+
+        function toggleBreakCourseMaintenance() {
+            document.getElementById('breakCourseMaintenanceTextWrap').style.display =
+                document.getElementById('breakCourseMaintenance').checked ? 'block' : 'none';
+        }
+
+        /* ===================== CALCULATION ===================== */
+        function line(desc, qty, unit, total, opts) {
+            return Object.assign({ desc, qty, unit, total }, opts || {});
+        }
+
+        function recalculate() {
+            const q = activeMode === 'day' ? calcDay() : calcBreak();
+
+            // Shared booking details
+            q.mode = activeMode;
+            q.bookingId = val('bookingId');
+            q.groupName = val('groupName');
+            q.arrival = val('arrivalDate');
+            q.departure = val('departureDate');
+            q.bookingContact = val('bookingContact');
+            q.companyName = val('companyName');
+            q.contactEmail = val('contactEmail');
+            q.contactPhone = val('contactPhone');
+            q.companyAddress = val('companyAddress');
+            q.preparedBy = val('preparedBy');
+            q.preparedByEmail = CONTACT_EMAILS[q.preparedBy] || 'sales@valeresort.com';
+            q.bedrooms = readBedrooms();
+            q.depositWeeks = Math.max(1, int('depositWeeks', 4));
+            q.depositPaid = num('depositPaid');
+
+            // Bedroom charges (only when a rate has been entered)
+            q.bedrooms.filter(b => b.rate > 0).forEach(b => {
+                q.lines.push(line(`${esc(b.item)}${b.date ? ' &mdash; ' + shortDate(b.date) : ''}`, b.qty, b.rate, b.total));
+            });
+
+            // Custom items & discounts
+            q.customItems = readCustomItems();
+            q.customItems.forEach(ci => q.lines.push(line(esc(ci.desc), ci.qty, ci.price, ci.total)));
+            q.customDiscounts = readCustomDiscounts();
+            q.customDiscounts.forEach(cd => q.lines.push(line(esc(cd.desc), null, null, -cd.amount, { discount: true })));
+
+            q.total = q.lines.reduce((sum, l) => sum + (l.total || 0), 0);
+            q.exVat = q.total / 1.2;
+            q.vat = q.total - q.exVat;
+
+            // Deposit
+            const suggested = activeMode === 'day' ? 10 * (q.golfers || 0) : 50 * (q.totalGuests || 0);
+            const depositEl = document.getElementById('depositRequired');
+            if (!depositTouched) depositEl.value = suggested.toFixed(2);
+            q.deposit = num('depositRequired');
+            q.balance = q.total - q.depositPaid;
+
+            window._booking = q;
+            renderSummary(q);
+            renderEmail(q);
+            return q;
+        }
+
+        function calcDay() {
+            const golfers = int('dayGolfNumbers');
+            const freeRatio = Math.max(1, int('dayFreeRatio', 12));
+            const buggies = int('dayBuggies');
+            const pricePerPerson = num('dayPricePerPerson');
+            const course = val('dayCourse');
+            const mealOption = val('dayMealOption') || 'Dinner';
+            const mealCourses = parseInt(val('dayMealCourses'), 10) || 2;
+            const additionalBaconRolls = int('dayAdditionalBaconRolls');
+            const additionalMeals = int('dayAdditionalMeals');
+            const discountedBuggies = int('dayDiscountedBuggies');
+            const discountedBuggyPrice = num('dayDiscountedBuggyPrice');
+            const greenFeeDiscount = num('dayGreenFeeDiscount');
+            const freeGreenFees = int('dayFreeGreenFees');
+            const courseMaintenance = document.getElementById('dayCourseMaintenance').checked;
+            const courseMaintenanceText = val('dayCourseMaintenanceText');
+            const unitMeal = mealCourses === 1 ? 19.50 : 25;
+
+            const lines = [];
+            if (pricePerPerson > 0 && golfers > 0) {
+                lines.push(line('Golf Package', golfers, pricePerPerson, golfers * pricePerPerson));
+            }
+            const freePlaces = Math.floor(golfers / freeRatio);
+            if (freePlaces > 0 && pricePerPerson > 0) {
+                lines.push(line(`1 in ${freeRatio} Free (${freePlaces} place${freePlaces > 1 ? 's' : ''})`, freePlaces, -pricePerPerson, -freePlaces * pricePerPerson, { discount: true }));
+            }
+            if (buggies > 0) lines.push(line('Buggies', buggies, 50, buggies * 50));
+            if (discountedBuggies > 0 && discountedBuggyPrice > 0) {
+                lines.push(line('Discounted Buggies', discountedBuggies, discountedBuggyPrice, discountedBuggies * discountedBuggyPrice));
+            }
+            if (greenFeeDiscount > 0) {
+                const lbl = freeGreenFees > 0 ? `Green Fee Discount (${freeGreenFees} free green fee${freeGreenFees > 1 ? 's' : ''})` : 'Green Fee Discount';
+                lines.push(line(lbl, null, null, -greenFeeDiscount, { discount: true }));
+            }
+            if (additionalBaconRolls > 0) lines.push(line('Additional Bacon Rolls', additionalBaconRolls, 7, additionalBaconRolls * 7));
+            if (additionalMeals > 0) {
+                lines.push(line(`Additional ${mealOption} (${mealCourses} course)`, additionalMeals, unitMeal, additionalMeals * unitMeal));
+            }
+
+            const packageIncludes = [
+                'Arrival &amp; Registration: Tea/coffee &amp; bacon rolls',
+                `18 holes Championship golf on the ${course}`,
+                `${mealCourses} course Society ${mealOption.toLowerCase()} served at the Golf Club`
+            ];
+
+            return {
+                lines, golfers, freeRatio, freePlaces, buggies, pricePerPerson, course,
+                mealOption, mealCourses, additionalBaconRolls, additionalMeals,
+                discountedBuggies, discountedBuggyPrice, greenFeeDiscount, freeGreenFees,
+                arrivalTime: val('dayArrivalTime'), teeTimesText: val('dayTeeTimes'), mealTime: val('dayMealTime'),
+                courseMaintenance, courseMaintenanceText, packageIncludes, totalGuests: golfers
+            };
+        }
+
+        function calcBreak() {
+            const golfers = int('breakGolfers');
+            const nonGolferPackages = readNonGolferPackages();
+            const nonGolfers = nonGolferPackages.reduce((s, p) => s + p.count, 0);
+            document.getElementById('breakNonGolfers').value = nonGolfers;
+            const totalGuests = golfers + nonGolfers;
+            document.getElementById('breakTotalGuests').value = totalGuests;
+
+            const nights = Math.max(1, int('breakNights', 1));
+            const rounds = Math.max(1, int('breakRounds', 1));
+            const buggies = int('breakBuggies');
+            const golferPrice = num('breakGolferPrice');
+            const freeRatio = Math.max(1, int('breakFreeRatio', 16));
+            const drinksVoucher = document.getElementById('breakDrinksVoucher').checked;
+            const privateDining = document.getElementById('breakPrivateDining').checked;
+            const lunch = document.getElementById('breakLunch').checked;
+            const organiserUpgrade = document.getElementById('breakOrganiserUpgrade').checked;
+            const earlyBird = document.getElementById('breakEarlyBird').checked;
+            const courseMaintenance = document.getElementById('breakCourseMaintenance').checked;
+            const courseMaintenanceText = val('breakCourseMaintenanceText');
+
+            const valeTwinRooms = int('breakValeTwinRooms');
+            const valeSingleRooms = int('breakValeSingleRooms');
+            const hensolTwinRooms = int('breakHensolTwinRooms');
+            const hensolSingleRooms = int('breakHensolSingleRooms');
+            const totalSingleRooms = valeSingleRooms + hensolSingleRooms;
+            const totalSingleRoomNights = totalSingleRooms * nights;
+
+            const lines = [];
+            if (golferPrice > 0 && golfers > 0) lines.push(line('Golfers Package', golfers, golferPrice, golfers * golferPrice));
+            nonGolferPackages.forEach(p => {
+                if (p.price > 0) lines.push(line(`${p.package} (Non-Golfers)`, p.count, p.price, p.total));
+                else lines.push(line(`${p.package} (Non-Golfers)`, p.count, null, 0, { tbc: true }));
+            });
+
+            const freePlaces = Math.floor(golfers / freeRatio);
+            if (freePlaces > 0 && golferPrice > 0) {
+                lines.push(line(`1 in ${freeRatio} Free (${freePlaces} place${freePlaces > 1 ? 's' : ''})`, freePlaces, -golferPrice, -freePlaces * golferPrice, { discount: true }));
+            }
+
+            const earlyBirdPerPerson = earlyBird ? 10 * nights : 0;
+            const earlyBirdDiscount = (earlyBird && golfers > 0 && golferPrice > 0) ? earlyBirdPerPerson * golfers : 0;
+            if (earlyBirdDiscount > 0) {
+                lines.push(line(`Early Bird Discount (${nights} night${nights > 1 ? 's' : ''} x -£10.00 per golfer)`, golfers, -earlyBirdPerPerson, -earlyBirdDiscount, { discount: true }));
+            }
+
+            if (buggies > 0) lines.push(line('Buggies', buggies, 50, buggies * 50));
+            if (totalSingleRooms > 0) {
+                lines.push(line(`Single Supplement (${totalSingleRooms} room${totalSingleRooms > 1 ? 's' : ''} x ${nights} night${nights > 1 ? 's' : ''})`, totalSingleRoomNights, 50, totalSingleRoomNights * 50));
+            }
+
+            const packageIncludes = [
+                `${rounds} Round${rounds > 1 ? 's' : ''} of Championship golf`,
+                '3 course dinner served at the Golf Club',
+                'Bed &amp; Breakfast Accommodation at The Vale Resort'
+            ];
+            if (drinksVoucher) packageIncludes.push('£10 per person drinks voucher');
+            if (privateDining) packageIncludes.push('Private dining');
+            if (lunch) packageIncludes.push('Lunch');
+            if (organiserUpgrade) packageIncludes.push('Free room upgrade for Group Organiser');
+
+            return {
+                lines, golfers, nonGolfers, totalGuests, nights, rounds, buggies, golferPrice, freeRatio, freePlaces,
+                nonGolferPackages, drinksVoucher, privateDining, lunch, organiserUpgrade,
+                earlyBird, earlyBirdPerPerson, earlyBirdDiscount,
+                valeTwinRooms, valeSingleRooms, hensolTwinRooms, hensolSingleRooms, totalSingleRooms, totalSingleRoomNights,
+                teeTimes: collectBreakTeeTimes(), courseMaintenance, courseMaintenanceText, packageIncludes
+            };
+        }
+
+        /* ===================== SUMMARY PANEL ===================== */
+        function renderSummary(q) {
+            const div = document.getElementById('quoteSummary');
+            let html = '';
+
+            if (q.arrival) {
+                const dateLine = q.mode === 'break' && q.departure
+                    ? `${formatDate(q.arrival)} &ndash; ${formatDate(q.departure)}`
+                    : formatDate(q.arrival);
+                html += `<div class="quote-item info-line"><span>${q.mode === 'break' ? 'Stay' : 'Event Date'}</span><span>${dateLine}</span></div>`;
+            }
+            if (q.bookingId) html += `<div class="quote-item info-line"><span>Booking ID</span><span>${esc(q.bookingId)}</span></div>`;
+            if (q.bedrooms.length) {
+                const totalRooms = q.bedrooms.reduce((s, b) => s + b.qty, 0);
+                html += `<div class="quote-item info-line"><span>Bedrooms</span><span>${totalRooms} room night${totalRooms === 1 ? '' : 's'}</span></div>`;
+            }
+
+            if (!q.lines.length) {
+                html += '<div class="quote-item" style="color:#999;">Enter package details to see the price summary</div>';
+                div.innerHTML = html;
+                return;
+            }
+
+            q.lines.forEach(l => {
+                if (l.tbc) {
+                    html += `<div class="quote-item info-line"><span>${l.desc}</span><span>${l.qty} guest${l.qty === 1 ? '' : 's'} (price TBC)</span></div>`;
+                } else if (l.discount) {
+                    html += `<div class="quote-item discount"><span>${l.desc}</span><span>-${money(Math.abs(l.total))}</span></div>`;
+                } else {
+                    const q1 = l.qty && l.unit ? ` (${l.qty} x ${money(l.unit)})` : '';
+                    html += `<div class="quote-item"><span>${l.desc}${q1}</span><span>${money(l.total)}</span></div>`;
+                }
+            });
+
+            if (q.courseMaintenance) {
+                html += `<div class="quote-item info-line"><span>Course Maintenance</span><span>${esc(q.courseMaintenanceText || 'May be taking place')}</span></div>`;
+            }
+
+            html += `<div class="quote-item total"><span>TOTAL (inc. VAT)</span><span>${money(q.total)}</span></div>`;
+            html += `<div class="quote-item deposit-line"><span>Deposit required (within ${q.depositWeeks} week${q.depositWeeks === 1 ? '' : 's'})</span><span>${money(q.deposit)}</span></div>`;
+            if (q.depositPaid > 0) {
+                html += `<div class="quote-item deposit-line"><span>Deposit already paid</span><span>-${money(q.depositPaid)}</span></div>`;
+                html += `<div class="quote-item deposit-line"><span>Balance outstanding</span><span>${money(q.balance)}</span></div>`;
+            }
+
+            div.innerHTML = html;
+        }
+
+        /* ===================== EMAIL TEMPLATE ===================== */
+        function stripTags(s) { return String(s).replace(/&amp;/g, '&').replace(/&ndash;/g, '-').replace(/&mdash;/g, '-').replace(/&pound;/g, '£').replace(/<[^>]*>/g, ''); }
+
+        function renderEmail(q) {
+            const box = document.getElementById('emailTemplate');
+            if (emailTouched) return;
+            box.value = buildEmailText(q);
+        }
+
+        function buildEmailText(q) {
+            const kind = q.mode === 'day' ? 'golf day' : 'golf break';
+            const dateSentence = q.mode === 'break' && q.departure
+                ? `${formatDate(q.arrival)} to ${formatDate(q.departure)}`
+                : formatDate(q.arrival);
+
+            const bullets = [];
+            if (q.bookingId) bullets.push(`Booking reference: ${q.bookingId}`);
+            if (q.mode === 'day') {
+                bullets.push(`${q.golfers} golfer${q.golfers === 1 ? '' : 's'} on ${formatDate(q.arrival)}`);
+                bullets.push(`Arrival and registration: tea/coffee and bacon rolls${q.arrivalTime ? ' at ' + q.arrivalTime : ''}`);
+                bullets.push(`18 holes Championship golf on the ${q.course}${q.teeTimesText ? ' - tee times ' + q.teeTimesText : ''}`);
+                bullets.push(`${q.mealCourses} course society ${q.mealOption.toLowerCase()} served at the Golf Club${q.mealTime ? ' at ' + q.mealTime : ''}`);
+            } else {
+                bullets.push(`${q.golfers} golfer${q.golfers === 1 ? '' : 's'}${q.nonGolfers ? ` and ${q.nonGolfers} non-golfer${q.nonGolfers === 1 ? '' : 's'}` : ''} for ${q.nights} night${q.nights === 1 ? '' : 's'}`);
+                (q.packageIncludes || []).forEach(p => bullets.push(stripTags(p)));
+            }
+            if (q.buggies > 0) bullets.push(`${q.buggies} ${q.buggies === 1 ? 'buggy' : 'buggies'} pre-booked`);
+            if (q.bedrooms.length) bullets.push(`Bedrooms: ${bedroomsSentence(q.bedrooms)}`);
+            if (q.mode === 'break' && q.teeTimes && q.teeTimes.length) {
+                q.teeTimes.forEach(t => {
+                    const bits = [];
+                    if (t.lake) bits.push(`Lake Course ${t.lake}`);
+                    if (t.wn) bits.push(`Wales National ${t.wn}`);
+                    if (t.dinner) bits.push(`dinner ${t.dinner}`);
+                    if (bits.length) bullets.push(`${t.dateLabel || t.dayLabel}: ${bits.join(', ')}`);
+                });
+            }
+            if (q.courseMaintenance) bullets.push(`Course maintenance: ${q.courseMaintenanceText || 'may be taking place'}`);
+            bullets.push(`Total (inc. VAT): ${money(q.total)}`);
+
+            const signOff = q.preparedBy
+                ? `${q.preparedBy}\nThe Vale Resort\n${q.preparedByEmail}\n01443 665803`
+                : `The Vale Resort\nsales@valeresort.com\n01443 665803`;
+
+            return `Dear ${firstName(q.bookingContact)},
+
+Thank you for booking your ${kind} with the Vale Resort. This is an email confirming your booking for ${dateSentence}.
+
+Here is a summary of your booking:
+
+${bullets.map(b => '  - ' + b).join('\n')}
+
+Please see the attached booking letter, which includes your Pro Forma Invoice and our terms and conditions. Please return the deposit of ${money(q.deposit)} within ${q.depositWeeks} week${q.depositWeeks === 1 ? '' : 's'} to secure your booking.
+
+We look forward to welcoming you.
+
+Best wishes,
+${signOff}`;
+        }
+
+        function copyEmail() {
+            const box = document.getElementById('emailTemplate');
+            box.select();
+            box.setSelectionRange(0, box.value.length);
+            let ok = false;
+            try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+            const btn = document.getElementById('copyEmailBtn');
+            const original = btn.textContent;
+            if (ok || !navigator.clipboard) {
+                btn.textContent = ok ? 'Copied!' : 'Press Ctrl+C';
+                setTimeout(() => { btn.textContent = original; }, 1800);
+            } else {
+                navigator.clipboard.writeText(box.value).then(() => {
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => { btn.textContent = original; }, 1800);
+                });
+            }
+        }
+
+        document.getElementById('emailTemplate').addEventListener('input', () => { emailTouched = true; });
+
+        /* ===================== PDF DOCUMENT ===================== */
+        function pdfStyles() {
+            return `
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body { font-family: 'Georgia', serif; font-size: 12px; color: #2a2e3a; background: #fff; padding: 32px 40px; max-width: 820px; margin: 0 auto; }
+                .logo-area { text-align: center; border-bottom: 2px solid #8b3a4a; padding-bottom: 12px; margin-bottom: 16px; }
+                .logo-area img { max-width: 140px; height: auto; margin-bottom: 8px; }
+                .logo-area h1 { font-size: 22px; letter-spacing: 4px; color: #2a2e3a; text-transform: uppercase; font-weight: normal; }
+                .logo-area .tagline { font-size: 10px; letter-spacing: 2px; color: #6d8062; text-transform: uppercase; margin-top: 3px; }
+                .doc-title { text-align: center; font-size: 14px; letter-spacing: 3px; color: #8b3a4a; text-transform: uppercase; margin-bottom: 18px; font-weight: normal; }
+                .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid #c9c1ad; margin-bottom: 14px; }
+                .meta-col { padding: 10px 14px; }
+                .meta-col:first-child { border-right: 1px solid #c9c1ad; }
+                .meta-row { margin-bottom: 4px; line-height: 1.4; }
+                .meta-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #6d8062; display: block; margin-bottom: 1px; }
+                .meta-value { font-size: 12px; color: #2a2e3a; }
+                table { width: 100%; border-collapse: collapse; }
+                thead tr { background: #2a2e3a; color: #fff; }
+                thead th { padding: 8px 10px; font-weight: normal; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+                tbody td { padding: 7px 10px; border-bottom: 1px solid #dcd6c7; font-size: 12px; }
+                tbody tr:nth-child(even) { background: #f7f4eb; }
+                .totals-table { width: 100%; border-collapse: collapse; border: 1px solid #c9c1ad; border-top: none; page-break-inside: avoid; }
+                .totals-table td { padding: 7px 10px; font-size: 12px; border-bottom: none; }
+                .totals-table .tot-label { color: #5a5a5a; }
+                .totals-table .tot-value { text-align: right; }
+                .totals-table tr.grand-total td { background: #2a2e3a; color: #fff; font-size: 13px; font-weight: bold; }
+                .totals-table tr.sub-row td { border-bottom: 1px solid #dcd6c7; }
+                .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #c9c1ad; text-align: center; font-size: 10px; color: #6d8062; line-height: 1.8; letter-spacing: 0.5px; }
+                .section-title { font-size: 16px; letter-spacing: 3px; color: #8b3a4a; text-transform: uppercase; margin: 28px 0 16px 0; font-weight: normal; text-align: center; }
+                .info-block { margin-bottom: 18px; line-height: 1.8; font-size: 12px; }
+                .info-block h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #6d8062; margin-bottom: 6px; }
+                .info-block ul { margin-left: 18px; }
+                .letter p { line-height: 1.85; margin-bottom: 12px; font-size: 12.5px; }
+                .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 34px; page-break-inside: avoid; }
+                .sig-line { border-top: 1px solid #2a2e3a; padding-top: 6px; font-size: 10px; color: #5a5a5a; letter-spacing: 0.5px; }
+                .bank-box { border: 1px solid #c9c1ad; padding: 12px 14px; margin-top: 18px; font-size: 11px; line-height: 1.7; page-break-inside: avoid; }
+                .bank-box h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #6d8062; margin-bottom: 6px; }
+                @media print { body { padding: 20px 28px; } }
+            `;
+        }
+
+        function pdfLogo() {
+            return `<div class="logo-area">
+                <img src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1777282806/ValeResortLogoBlackwriting_vdwqoc.png" alt="Vale Resort Logo">
+                <h1>The Vale Resort</h1>
+                <div class="tagline">Hensol &bull; Vale of Glamorgan</div>
+            </div>`;
+        }
+
+        function pdfFooter(contactEmail) {
+            const email = contactEmail || 'sales@valeresort.com';
+            return `<div class="footer">
+                The Vale Resort, Hensol, Vale of Glamorgan, CF72 8JY<br>
+                ${esc(email)} &nbsp;|&nbsp; 01443 665803 &nbsp;|&nbsp; valeresort.com/vale-golf
+            </div>`;
+        }
+
+        function pdfTermsAndConditions(contactEmail) {
+            return `
+            <div style="page-break-before: always; padding-top: 32px;">
+                <div class="doc-title" style="margin-bottom:8px;">The Vale Resort Group</div>
+                <div style="text-align:center; font-size:18px; letter-spacing:2px; color:#2a2e3a; text-transform:uppercase; margin-bottom:22px; font-weight:normal;">Terms &amp; Conditions</div>
+
+                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                    <p>At the Vale Resort we want to make our terms of business as straight forward as possible. If, however, you have any questions, please speak to us before you sign.</p>
+                    <p style="margin-top:8px;">All deposits paid towards your booking are non-refundable and non-transferable. By confirming your booking with us and paying your deposit you are agreeing to our booking terms and conditions below.</p>
+                </div>
+
+                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                    <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:8px; font-weight:bold;">1. What happens if I cancel?</h3>
+                    <table style="width:100%; border-collapse:collapse; border:1px solid #c9c1ad; margin-bottom:8px;">
+                        <thead><tr style="background:#2a2e3a; color:#fff;">
+                            <th style="padding:7px 10px; font-size:10px; text-align:left; font-weight:normal; text-transform:uppercase; letter-spacing:1px;">Date of Cancellation</th>
+                            <th style="padding:7px 10px; font-size:10px; text-align:left; font-weight:normal; text-transform:uppercase; letter-spacing:1px;">Cancellation Charges</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr><td style="padding:7px 10px; font-size:11px; border-bottom:1px solid #dcd6c7;">Between 24 and 8 weeks before the event is scheduled to take place</td><td style="padding:7px 10px; font-size:11px; border-bottom:1px solid #dcd6c7;">25% of the total booking value</td></tr>
+                            <tr style="background:#f7f4eb;"><td style="padding:7px 10px; font-size:11px; border-bottom:1px solid #dcd6c7;">Between 8 and 4 weeks before the event is scheduled to take place</td><td style="padding:7px 10px; font-size:11px; border-bottom:1px solid #dcd6c7;">50% of the total booking value</td></tr>
+                            <tr><td style="padding:7px 10px; font-size:11px;">Less than 4 weeks before the event is scheduled to take place</td><td style="padding:7px 10px; font-size:11px;">100% of the total booking value</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                    <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">1.1 Could the Vale Resort cancel my booking?</h3>
+                    <p>In the unlikely event that the Vale Resort has to cancel your booking, you'll receive all your advance payments, although the Vale will not have any liability. However the Vale may cancel if:</p>
+                    <ul style="margin-left:18px; margin-top:4px;">
+                        <li>You, or we, become insolvent, or in the case of an individual, becomes subject to a bankruptcy petition.</li>
+                        <li>Any part of the hotel is closed or unavailable due to events beyond our control</li>
+                        <li>The booking, the persons associated with the booking and/or the purpose of the meeting might damage the reputation of the hotel or the company.</li>
+                    </ul>
+                </div>
+
+                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                    <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">2. Can I change my guest, delegate numbers and group accommodation?</h3>
+                    <p>Of course, you can. However, if the numbers decrease significantly, cancellation charges will be applied. If you give us more than 4 weeks' notice, for events of 30 people plus, you can reduce your numbers by anything up to 10% without charge.</p>
+                    <p style="margin-top:4px;">If you provide less than 4 weeks' notice, the contracted numbers will be charged. If numbers are reduced, the Vale Resort reserves the right to re-allocate the room to one more relevant to the size of the event.</p>
+                    <p style="margin-top:4px;">Final numbers for meetings for 2 &ndash; 30 delegates are to be confirmed no later than 5 days prior to the event. Should numbers fall after this, full charges will apply.</p>
+                </div>
+
+                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                    <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">3. If I don't have a credit agreement, when do I have to pay?</h3>
+                    <p>Upon confirmation of your booking, you will need to provide a credit card to secure and confirm your final payment. In the unlikely event that payment is not received upon departure the credit card may be used for full payment. The only exception to this is if you have booked a wedding with us, then the minimum non-refundable deposit is &pound;500.00. Full payment of the balance is due 14 days before the event. Credit is not available for wedding parties.</p>
+                </div>
+
+                ${pdfFooter(contactEmail)}
+            </div>
+
+            <div style="page-break-before: always; padding-top: 32px;">
+                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                    <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">4. How do I get credit?</h3>
+                    <p>A 'Credit Application Form' is available on request if you are not recognized as a credit customer. Separate terms and conditions apply which can be found on the Resort's credit application form. This should be completed and returned no later than 4 weeks prior to the event date. Credit is not automatic; confirmation must be sought after completion of the 'Credit Application Form'. Full payment of the balance is due 14 days post event.</p>
+                </div>
+
+                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                    <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">5. I've got lots of things to bring to the Resort</h3>
+                    <p>We can provide most equipment. However, should you wish to bring your own equipment into the Resort, you must ensure it has been tested and is safe to use. The Vale Resort accepts no liability for any equipment you bring to the property, and we ask you to comply with the rules set out in the Health &amp; Safety at work act. For any 3rd party contractors visiting the hotel (such as entertainment, bands etc) under your instruction, you must ensure current and adequate 'Public Liability Insurance' is in place. Copies of electrical testing certificates and insurance policies must be made available on request. Should you have any queries, our team will be happy to help.</p>
+                </div>
+
+                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                    <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">6. Guest Property</h3>
+                    <p>The Resort shall not be liable for any loss or damage to property owned by, or in the custody of, the Client or its guests, employees, agents or others. The client is advised to arrange adequate insurance cover. Safe deposit boxes may be available for the Client's use. The Resort will not be liable for failure to comply with any terms or condition of this contract to the extent that such compliance is prevented, hindered or delayed by any cause beyond its control, including but not limited to fire, storm, explosion, flood, act of God, action of any government or governmental agency, shortage of materials of goods, strike or lock-out.</p>
+                </div>
+
+                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                    <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">7. Anything else?</h3>
+                    <p>Just a few points:</p>
+                    <ul style="margin-left:18px; margin-top:4px;">
+                        <li>For certain events the Resort may charge a bond of &pound;500.00 against the cost of possible damage to the Resort or Resort property, which would occur during the course of the event. Should any damage occur to the Resort or Resort property during your event then this deposit, or an appropriate part thereof, will be retained by the Resort on account of the cost of such damage. The Client shall be liable for any damage or loss (and costs or expenses arising thereby) suffered by the Resort and caused by him or any guest, employee or agent of his wheresoever or howsoever arising.</li>
+                        <li style="margin-top:4px;">If you ask us to obtain a supplier to provide you with anything, the bill must be settled by you and not the Resort.</li>
+                        <li style="margin-top:4px;">It is your responsibility to ensure a supplier fully complies with all regulations, and in the case of bands, singers, discos and entertainment, the required 'Public Liability Insurance' is in place.</li>
+                        <li style="margin-top:4px;">Under no circumstances do we allow any food or beverage to be brought onto the resort.</li>
+                        <li style="margin-top:4px;">Please check the details and amend accordingly if necessary. To confirm the above details are correct and that you agree with the terms and conditions please sign below and return a copy to us within 14 days.</li>
+                    </ul>
+                </div>
+
+                ${pdfFooter(contactEmail)}
+            </div>
+            `;
+        }
+
+        function invoiceRow(l) {
+            const qty = (l.qty === null || l.qty === undefined) ? '—' : l.qty;
+            if (l.tbc) {
+                return `<tr style="font-style:italic; color:#6d8062;">
+                    <td>${l.desc}</td><td style="text-align:center;">${qty}</td>
+                    <td style="text-align:right;">—</td><td style="text-align:right;">—</td><td style="text-align:right;">Price TBC</td></tr>`;
+            }
+            const style = l.discount ? ' style="color:#6d8062; font-weight:600;"' : '';
+            const unitEx = (l.unit === null || l.unit === undefined) ? '—' : (l.unit < 0 ? '-' : '') + money(Math.abs(l.unit) / 1.2);
+            const totEx = (l.total < 0 ? '-' : '') + money(Math.abs(l.total) / 1.2);
+            const totInc = (l.total < 0 ? '-' : '') + money(Math.abs(l.total));
+            return `<tr${style}>
+                <td>${l.desc}</td>
+                <td style="text-align:center;">${qty}</td>
+                <td style="text-align:right;">${unitEx}</td>
+                <td style="text-align:right;">${totEx}</td>
+                <td style="text-align:right;">${totInc}</td>
+            </tr>`;
+        }
+
+        function bedroomsTable(q) {
+            if (!q.bedrooms.length) return '';
+            return `<div style="margin:16px 0 18px 0;">
+                <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:#6d8062; margin-bottom:6px; font-weight:600;">Bedrooms Booked</div>
+                <table style="border:1px solid #c9c1ad;">
+                    <thead><tr>
+                        <th style="text-align:left;">Date</th>
+                        <th style="text-align:left;">Room Type</th>
+                        <th style="text-align:center;">Quantity</th>
+                    </tr></thead>
+                    <tbody>
+                        ${q.bedrooms.map(b => `<tr>
+                            <td>${b.date ? shortDate(b.date) : 'TBC'}</td>
+                            <td>${esc(b.item)}</td>
+                            <td style="text-align:center;">${b.qty}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>`;
+        }
+
+        function teeTimesTable(q) {
+            if (q.mode !== 'break' || !q.teeTimes || !q.teeTimes.length) return '';
+            return `<div style="margin:16px 0 18px 0;">
+                <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:#6d8062; margin-bottom:6px; font-weight:600;">Tee &amp; Dinner Times</div>
+                <table style="border:1px solid #c9c1ad;">
+                    <thead><tr>
+                        <th style="text-align:left;">Day</th>
+                        <th style="text-align:left;">Date</th>
+                        <th style="text-align:center;">Lake Course</th>
+                        <th style="text-align:center;">Wales National</th>
+                        <th style="text-align:center;">Dinner</th>
+                    </tr></thead>
+                    <tbody>
+                        ${q.teeTimes.map(t => `<tr>
+                            <td>${t.dayLabel}</td>
+                            <td>${t.dateLabel || '—'}</td>
+                            <td style="text-align:center;">${esc(t.lake) || '—'}</td>
+                            <td style="text-align:center;">${esc(t.wn) || '—'}</td>
+                            <td style="text-align:center;">${esc(t.dinner) || '—'}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>`;
+        }
+
+        function generateBookingLetter() {
+            const q = recalculate();
+            if (!q.arrival) { alert('Please enter (or upload) the booking dates first.'); return; }
+            if (!q.lines.length) { alert('Please enter the package details before generating the booking letter.'); return; }
+
+            const kindTitle = q.mode === 'day' ? 'Golf Day' : 'Golf Break';
+            const kindLower = q.mode === 'day' ? 'golf day' : 'golf break';
+            const letterDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            const contactEmail = q.preparedByEmail;
+            const dateSentence = q.mode === 'break' && q.departure
+                ? `${formatDate(q.arrival)} to ${formatDate(q.departure)}`
+                : formatDate(q.arrival);
+
+            const includesRows = (q.packageIncludes || []).map((text, idx) => `<tr style="${idx % 2 === 1 ? 'background:#f7f4eb;' : ''}">
+                <td style="padding:14px 20px; border-bottom:1px solid #dcd6c7; font-size:13px; vertical-align:middle;">
+                    <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
+                    ${text}
+                </td></tr>`).join('');
+
+            const detailRows = q.mode === 'day'
+                ? `
+                    <div class="meta-row"><span class="meta-label">Event Date</span><span class="meta-value">${formatDate(q.arrival)}</span></div>
+                    <div class="meta-row"><span class="meta-label">Golf Numbers</span><span class="meta-value">${q.golfers}</span></div>
+                    <div class="meta-row"><span class="meta-label">Course</span><span class="meta-value">${esc(q.course)}</span></div>
+                    <div class="meta-row"><span class="meta-label">Buggies</span><span class="meta-value">${q.buggies}</span></div>
+                    ${q.arrivalTime ? `<div class="meta-row"><span class="meta-label">Tea/Coffee &amp; Bacon Rolls</span><span class="meta-value">${esc(q.arrivalTime)}</span></div>` : ''}
+                    ${q.teeTimesText ? `<div class="meta-row"><span class="meta-label">Tee Times</span><span class="meta-value">${esc(q.teeTimesText)}</span></div>` : ''}
+                    <div class="meta-row"><span class="meta-label">Meal</span><span class="meta-value">${esc(q.mealOption)} (${q.mealCourses} course${q.mealCourses > 1 ? 's' : ''})${q.mealTime ? ' &mdash; ' + esc(q.mealTime) : ''}</span></div>`
+                : `
+                    <div class="meta-row"><span class="meta-label">Arrival Date</span><span class="meta-value">${formatDate(q.arrival)}</span></div>
+                    <div class="meta-row"><span class="meta-label">Departure Date</span><span class="meta-value">${formatDate(q.departure)}</span></div>
+                    <div class="meta-row"><span class="meta-label">Nights</span><span class="meta-value">${q.nights}</span></div>
+                    <div class="meta-row"><span class="meta-label">Golfers</span><span class="meta-value">${q.golfers}</span></div>
+                    <div class="meta-row"><span class="meta-label">Non-Golfers</span><span class="meta-value">${q.nonGolfers}${q.nonGolferPackages && q.nonGolferPackages.length ? ' &mdash; ' + q.nonGolferPackages.map(p => `${p.count} &times; ${p.package}`).join(', ') : ''}</span></div>
+                    <div class="meta-row"><span class="meta-label">Total Guests</span><span class="meta-value">${q.totalGuests}</span></div>
+                    <div class="meta-row"><span class="meta-label">Rounds</span><span class="meta-value">${q.rounds}</span></div>
+                    <div class="meta-row"><span class="meta-label">Buggies</span><span class="meta-value">${q.buggies}</span></div>`;
+
+            const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Vale Resort ${kindTitle} Booking Confirmation${q.bookingId ? ' ' + esc(q.bookingId) : ''}</title><style>${pdfStyles()}</style></head><body>
+
+            <!-- PAGE 1: BOOKING CONFIRMATION LETTER -->
+            ${pdfLogo()}
+            <div class="doc-title">${kindTitle} Booking Confirmation</div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:20px; font-size:11.5px; line-height:1.6;">
+                <div>
+                    <strong>${esc(q.bookingContact || q.groupName || 'Booking Contact')}</strong><br>
+                    ${q.companyName ? esc(q.companyName) + '<br>' : ''}
+                    ${q.companyAddress ? esc(q.companyAddress) + '<br>' : ''}
+                    ${q.contactEmail ? esc(q.contactEmail) + '<br>' : ''}
+                    ${q.contactPhone ? esc(q.contactPhone) : ''}
+                </div>
+                <div style="text-align:right;">
+                    ${letterDate}<br>
+                    ${q.bookingId ? 'Booking ID: <strong>' + esc(q.bookingId) + '</strong><br>' : ''}
+                    ${q.groupName ? esc(q.groupName) : ''}
+                </div>
+            </div>
+
+            <div class="letter">
+                <p>Dear ${esc(firstName(q.bookingContact))},</p>
+                <p>Thank you for booking your ${kindLower} with the Vale Resort. We are delighted to confirm your booking for <strong>${dateSentence}</strong>${q.groupName ? ' for <strong>' + esc(q.groupName) + '</strong>' : ''}.</p>
+                <p>Please find your booking details, Pro Forma Invoice and our terms and conditions set out in this letter. We kindly ask that you check everything carefully and let us know straight away if anything needs amending.</p>
+                <p>To secure your booking we require a non-refundable deposit of <strong>${money(q.deposit)}</strong> within <strong>${q.depositWeeks} week${q.depositWeeks === 1 ? '' : 's'}</strong>. Your final numbers, rooming list and balance are required 4 weeks prior to your arrival date.</p>
+                <p>We look forward to welcoming you to the Vale Resort.</p>
+                <p style="margin-top:20px;">Best wishes,</p>
+                <p><strong>${esc(q.preparedBy || 'The Vale Resort Sales Team')}</strong><br>
+                The Vale Resort<br>
+                ${esc(contactEmail)} &nbsp;|&nbsp; 01443 665803</p>
+            </div>
+
+            <div class="meta-grid" style="margin-top:24px;">
+                <div class="meta-col">
+                    ${detailRows}
+                </div>
+                <div class="meta-col">
+                    <div class="meta-row"><span class="meta-label">Booking ID</span><span class="meta-value">${esc(q.bookingId) || '—'}</span></div>
+                    <div class="meta-row"><span class="meta-label">Group</span><span class="meta-value">${esc(q.groupName) || '—'}</span></div>
+                    <div class="meta-row"><span class="meta-label">Prepared By</span><span class="meta-value">${esc(q.preparedBy) || '—'}</span></div>
+                    <div class="meta-row"><span class="meta-label">Contact</span><span class="meta-value">${esc(contactEmail)}</span></div>
+                    <div class="meta-row"><span class="meta-label">Telephone</span><span class="meta-value">01443 665803</span></div>
+                    <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Course Maintenance</span><span class="meta-value">${q.courseMaintenance ? esc(q.courseMaintenanceText || 'May be taking place') : 'No course maintenance is planned'}</span></div>
+                </div>
+            </div>
+
+            ${pdfFooter(contactEmail)}
+
+            <!-- PAGE 2: BOOKING SUMMARY -->
+            <div style="page-break-before: always; padding-top: 40px;">
+                <div style="text-align:center; font-size:20px; letter-spacing:3px; color:#8b3a4a; text-transform:uppercase; margin-bottom:28px; font-weight:normal;">Your ${kindTitle} Booking Includes</div>
+                <table style="margin-bottom:22px;"><tbody>${includesRows}</tbody></table>
+
+                ${bedroomsTable(q)}
+                ${teeTimesTable(q)}
+
+                <div class="section-title">Payments &amp; Final Numbers</div>
+                <div class="info-block">
+                    <p>We require a non-refundable deposit of <strong>${money(q.deposit)}</strong> within ${q.depositWeeks} week${q.depositWeeks === 1 ? '' : 's'} of making your booking to secure it.</p>
+                    <p style="margin-top:6px;">Your final details, rooming list and payment are required 4 weeks prior to your arrival date.</p>
+                </div>
+
+                <div class="section-title">Helpful Information</div>
+                <div class="info-block">
+                    <p>Buggies are charged at &pound;50 per round. To book these, please call or email the Pro Shop on 01443 665899 or golfclub@valeresort.com.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Check-In</h3>
+                    <p>Check-in is from 3pm on the day of arrival.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Course Competitions</h3>
+                    <p>Nearest the pin &mdash; we advise the 14th<br>
+                    Nearest the pin in two &mdash; we advise the 6th<br>
+                    Longest Drive &mdash; we advise the 4th</p>
+                </div>
+                <div class="info-block">
+                    <h3>Refreshments on the Golf Course</h3>
+                    <p>We have a drinks buggy selling sweet and savoury snacks and both alcoholic and soft drinks which will be out on the course throughout the day. There is a half way house on the course with vending machines and toilet facilities.</p>
+                </div>
+
+                ${pdfFooter(contactEmail)}
+            </div>
+
+            <!-- PAGE 3: PRO FORMA INVOICE -->
+            <div style="page-break-before: always; padding-top: 32px;">
+                <div style="text-align:center; font-size:13px; letter-spacing:2px; color:#8b3a4a; text-transform:uppercase; font-weight:bold; margin-bottom:6px;">This is not a VAT receipt</div>
+                <div style="text-align:center; font-size:18px; letter-spacing:2px; color:#2a2e3a; text-transform:uppercase; margin-bottom:4px;">Pro Forma Invoice</div>
+                <div style="text-align:center; font-size:12px; color:#6d8062; margin-bottom:18px;">${esc(q.groupName) || esc(q.companyName) || ''}${q.arrival ? ' &mdash; ' + dateSentence : ''}</div>
+
+                <div class="meta-grid">
+                    <div class="meta-col">
+                        <div class="meta-row"><span class="meta-label">Date</span><span class="meta-value">${letterDate}</span></div>
+                        <div class="meta-row"><span class="meta-label">Company Name</span><span class="meta-value">${esc(q.companyName) || '—'}</span></div>
+                        <div class="meta-row"><span class="meta-label">Company Address</span><span class="meta-value">${esc(q.companyAddress) || '—'}</span></div>
+                        <div class="meta-row"><span class="meta-label">Booking Contact</span><span class="meta-value">${esc(q.bookingContact) || '—'}</span></div>
+                        <div class="meta-row"><span class="meta-label">Email</span><span class="meta-value">${esc(q.contactEmail) || '—'}</span></div>
+                        <div class="meta-row"><span class="meta-label">Phone Number</span><span class="meta-value">${esc(q.contactPhone) || '—'}</span></div>
+                    </div>
+                    <div class="meta-col">
+                        <div class="meta-row"><span class="meta-label">Booking ID</span><span class="meta-value">${esc(q.bookingId) || '—'}</span></div>
+                        <div class="meta-row"><span class="meta-label">Hotel Contact</span><span class="meta-value">${esc(q.preparedBy) || '—'}</span></div>
+                        <div class="meta-row"><span class="meta-label">Email</span><span class="meta-value">${esc(contactEmail)}</span></div>
+                        <div class="meta-row"><span class="meta-label">Phone Number</span><span class="meta-value">01443 665803</span></div>
+                        <div class="meta-row"><span class="meta-label">Business Address</span><span class="meta-value">Vale of Glamorgan Hotel Ltd, Hensol, Hensol Park, Vale of Glamorgan, CF72 8JY</span></div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead><tr>
+                        <th style="text-align:left; width:38%;">Item</th>
+                        <th style="text-align:center; width:10%;">Quantity</th>
+                        <th style="text-align:right; width:17%;">Item Price Ex VAT</th>
+                        <th style="text-align:right; width:17%;">Total Price Ex VAT</th>
+                        <th style="text-align:right; width:18%;">Total Inc VAT</th>
+                    </tr></thead>
+                    <tbody>${q.lines.map(invoiceRow).join('')}</tbody>
+                </table>
+
+                <table class="totals-table">
+                    <tr class="sub-row"><td class="tot-label">Item Total (ex. VAT)</td><td class="tot-value">${money(q.exVat)}</td></tr>
+                    <tr class="sub-row"><td class="tot-label">VAT (20%)</td><td class="tot-value">${money(q.vat)}</td></tr>
+                    <tr class="grand-total"><td>Item Total (inc. VAT)</td><td style="text-align:right;">${money(q.total)}</td></tr>
+                    ${q.depositPaid > 0 ? `<tr class="sub-row"><td class="tot-label">Deposit(s) Paid</td><td class="tot-value">-${money(q.depositPaid)}</td></tr>` : ''}
+                    <tr class="sub-row"><td class="tot-label" style="font-style:italic; color:#6d8062;">Deposit Required (due within ${q.depositWeeks} week${q.depositWeeks === 1 ? '' : 's'}, non-refundable)</td><td class="tot-value" style="font-weight:bold; color:#6d8062;">${money(q.deposit)}</td></tr>
+                    <tr class="grand-total"><td>Balance</td><td style="text-align:right;">${money(q.balance)}</td></tr>
+                </table>
+
+                <div class="sig-grid">
+                    <div><div style="height:34px;"></div><div class="sig-line">Client Authorised Signature</div></div>
+                    <div><div style="height:34px;"></div><div class="sig-line">Date</div></div>
+                    <div><div style="height:34px;"></div><div class="sig-line">Vale of Glamorgan Hotel Ltd Representative</div></div>
+                    <div><div style="height:34px;"></div><div class="sig-line">Date</div></div>
+                </div>
+
+                <div class="bank-box">
+                    <h3>Bank Details</h3>
+                    ${BANK_DETAILS.bank}<br>
+                    Sort Code: ${BANK_DETAILS.sortCode}<br>
+                    Account Number: ${BANK_DETAILS.accountNumber}<br>
+                    IBAN No: ${BANK_DETAILS.iban}<br>
+                    SWIFT No: ${BANK_DETAILS.swift}<br>
+                    VAT number: ${BANK_DETAILS.vatNumber}<br>
+                    Company registration: ${BANK_DETAILS.companyRegistration}<br>
+                    <span style="color:#6d8062;">Please quote your Booking ID${q.bookingId ? ' (' + esc(q.bookingId) + ')' : ''} as the payment reference.</span>
+                </div>
+
+                ${pdfFooter(contactEmail)}
+            </div>
+
+            ${pdfTermsAndConditions(contactEmail)}
+            </body></html>`;
+
+            openPDFWindow(html);
+        }
+
+        function openPDFWindow(html) {
+            const printWindow = window.open('', '_blank', 'width=850,height=1100');
+            if (!printWindow) { alert('Please allow popups for this site to download the PDF.'); return; }
+            printWindow.document.write(html);
+            printWindow.document.close();
+            setTimeout(() => { printWindow.print(); }, 600);
+        }
+
+        /* ===================== RESET ===================== */
+        function resetForm() {
+            if (!confirm('Clear all booking details and start again?')) return;
+            ['bookingId', 'groupName', 'arrivalDate', 'departureDate', 'bookingContact', 'companyName',
+             'contactEmail', 'contactPhone', 'companyAddress', 'dayArrivalTime', 'dayTeeTimes', 'dayMealTime',
+             'dayCourseMaintenanceText', 'breakCourseMaintenanceText'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            document.getElementById('preparedBy').value = '';
+            ['dayBuggies', 'dayPricePerPerson', 'dayAdditionalBaconRolls', 'dayAdditionalMeals',
+             'dayDiscountedBuggies', 'dayDiscountedBuggyPrice', 'dayGreenFeeDiscount', 'dayFreeGreenFees',
+             'breakBuggies', 'breakGolferPrice', 'breakValeTwinRooms', 'breakValeSingleRooms',
+             'breakHensolTwinRooms', 'breakHensolSingleRooms', 'depositPaid'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = 0;
+            });
+            document.getElementById('dayGolfNumbers').value = 20;
+            document.getElementById('dayFreeRatio').value = 12;
+            document.getElementById('breakGolfers').value = 12;
+            document.getElementById('breakFreeRatio').value = 16;
+            document.getElementById('breakNights').value = 1;
+            document.getElementById('breakRounds').value = 1;
+            delete document.getElementById('breakRounds').dataset.touched;
+            document.getElementById('depositWeeks').value = 4;
+            document.getElementById('depositRequired').value = 0;
+            ['dayCourseMaintenance', 'breakCourseMaintenance', 'breakDrinksVoucher', 'breakPrivateDining', 'breakLunch', 'breakEarlyBird'].forEach(id => {
+                document.getElementById(id).checked = false;
+            });
+            document.getElementById('breakOrganiserUpgrade').checked = true;
+            toggleDayCourseMaintenance();
+            toggleBreakCourseMaintenance();
+            document.getElementById('bedroomsContainer').innerHTML = '';
+            bedroomCounter = 0;
+            renderBedroomsEmptyNote();
+            document.getElementById('customItemsContainer').innerHTML = '';
+            document.getElementById('customDiscountsContainer').innerHTML = '';
+            document.getElementById('parseStatus').className = 'parse-status';
+            document.getElementById('fileInput').value = '';
+            depositTouched = false;
+            emailTouched = false;
+            buildNonGolferPackages();
+            buildBreakTeeTimes();
+            recalculate();
+        }
+
+        /* ===================== INIT ===================== */
+        buildNonGolferPackages();
+        buildBreakTeeTimes();
+        renderBedroomsEmptyNote();
+        updateBreakDefaults();
+        recalculate();
+    </script>
+</body>
+</html>

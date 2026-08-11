@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vale Resort &amp; Hensol Castle — Booking Letter Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #2a2e3a;
+            --primary-burgundy: #8b3a4a;
+            --primary-green: #8fa17e;
+            --primary-cream: #f5f1e8;
+            --accent-light: #e8e4d8;
+            --bg-light: #faf8f3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); color: var(--primary-dark); min-height: 100vh; }
+
+        .header { background: var(--primary-dark); padding: 28px 40px; text-align: center; }
+        .header-logo { max-height: 70px; width: auto; margin-bottom: 16px; }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 600; color: var(--primary-cream); letter-spacing: 0.04em; margin-bottom: 6px; }
+        .header p { font-size: 0.85rem; font-weight: 300; color: var(--accent-light); letter-spacing: 0.08em; text-transform: uppercase; }
+
+        .back-link { display: inline-block; margin: 18px 0 0 40px; font-size: 0.82em; color: var(--primary-burgundy); text-decoration: none; font-weight: 600; letter-spacing: 0.5px; }
+        .back-link:hover { text-decoration: underline; }
+
+        .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+        .section-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 500; text-align: center; margin-bottom: 8px; }
+        .section-subtitle { font-size: 0.82rem; color: #666; text-align: center; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 48px; }
+
+        .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
+
+        .card {
+            background: #fff; border-radius: 8px; border: 1px solid var(--accent-light);
+            overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column;
+            transition: transform 0.18s ease, box-shadow 0.18s ease; box-shadow: 0 2px 8px rgba(42,46,58,0.06);
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(42,46,58,0.13); }
+        .card-accent { height: 5px; background: var(--primary-green); }
+        .card-body { padding: 28px 28px 24px; flex: 1; display: flex; flex-direction: column; }
+        .card-icon { font-size: 2rem; margin-bottom: 14px; line-height: 1; }
+        .card-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; }
+        .card-desc { font-size: 0.82rem; color: #555; line-height: 1.65; flex: 1; }
+        .card-footer {
+            padding: 14px 28px; border-top: 1px solid var(--accent-light); background: var(--bg-light);
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 0.78rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+        }
+        .card-footer .venue-tag { color: #888; }
+        .card-footer .arrow { color: var(--primary-burgundy); font-size: 1rem; }
+
+        .page-footer { background: var(--primary-dark); text-align: center; padding: 24px; font-size: 0.75rem; color: #888; letter-spacing: 0.04em; }
+
+        @media (max-width: 600px) {
+            .header { padding: 20px 16px; }
+            .header h1 { font-size: 1.4rem; }
+            .main { padding: 30px 16px 60px; }
+            .cards { grid-template-columns: 1fr; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <img class="header-logo"
+         src="https://res.cloudinary.com/dnpcsbkz4/image/upload/v1776162028/vale_logo_April_2026_p4grbk.jpg"
+         alt="Vale Resort logo">
+    <h1>Booking Letter Tools</h1>
+    <p>Vale Resort &amp; Hensol Castle — Sales &amp; Events Team</p>
+</header>
+
+<a class="back-link" href="../">&larr; Back to all tools</a>
+
+<main class="main">
+    <h2 class="section-title">Select a Tool</h2>
+    <p class="section-subtitle">Turn a Pro Forma Invoice into a booking confirmation</p>
+
+    <div class="cards">
+        <a class="card" href="Golf%20Booking%20Letter%20Tool/">
+            <div class="card-accent"></div>
+            <div class="card-body">
+                <div class="card-icon">⛳</div>
+                <div class="card-title">Golf Booking Letter Tool</div>
+                <div class="card-desc">Drag &amp; drop a Pro Forma Invoice to pull through the bedrooms and booking details, add the golf day or golf break package, then generate a booking confirmation letter with a Pro Forma Invoice, terms &amp; conditions and a copy-and-paste email for Outlook.</div>
+            </div>
+            <div class="card-footer">
+                <span class="venue-tag">Vale Resort</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+    </div>
+</main>
+
+<footer class="page-footer">
+    Vale Resort &amp; Hensol Castle &mdash; Internal Use Only
+</footer>
+
+</body>
+</html>

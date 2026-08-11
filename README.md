@@ -2,7 +2,7 @@
 
 A browser-based quoting suite for the Vale Resort and Hensol Castle sales and events team. It turns event details, guest numbers, tariffs and optional extras into consistent, itemised customer quotations without requiring a spreadsheet or a back-end service.
 
-The repository started with the Hensol Castle wedding quoting engine and now also includes tools for private events, meetings and conferences, golf packages and sports teams.
+The repository started with the Hensol Castle wedding quoting engine and now also includes tools for private events, meetings and conferences, golf packages and sports teams, plus a booking letter tool that turns a confirmed golf booking into a customer confirmation letter, Pro Forma Invoice and email.
 
 ## Problem
 
@@ -86,8 +86,24 @@ Allow pop-ups when generating a PDF quote: the tools open a print-friendly windo
 |-- meetings-conferences/            # meeting and conference quotations
 |-- golf-packages/                   # golf day and golf break quotations
 |-- sports-teams/                    # sports-team quotations
-`-- vale-resort-dinner-dance/        # standalone dinner-dance tool
+|-- vale-resort-dinner-dance/        # standalone dinner-dance tool
+`-- Booking Letter Tool/             # post-confirmation booking letters
+    `-- Golf Booking Letter Tool/    # golf day and golf break booking letters
 ```
+
+## Booking Letter Tool
+
+The quoting tools cover the pre-sale stage. The Booking Letter Tool covers what happens after the customer confirms.
+
+`Booking Letter Tool/Golf Booking Letter Tool/` takes the Pro Forma Invoice produced by the property management system and turns it into a customer booking confirmation:
+
+1. Choose **Golf Day** or **Golf Break**.
+2. Drag and drop the Pro Forma Invoice PDF. It is read in the browser with [PDF.js](https://mozilla.github.io/pdf.js/); the booking ID, stay dates, group name, company, booking contact, email, phone, hotel contact and the bedroom lines (date, room type, quantity) are pulled through. Prices on the Pro Forma are deliberately ignored, and every parsed field stays editable.
+3. Enter the package details, using the same fields as the golf quoting tool, plus the deposit required, the number of weeks it is due within and any deposit already paid.
+4. Generate a print-ready booking letter containing the confirmation letter, the booking summary and bedrooms, a Pro Forma Invoice with bank details and signature block, and the Resort terms and conditions.
+5. Copy the generated email template straight into Outlook.
+
+Nothing is uploaded anywhere: the PDF is parsed locally in the browser.
 
 ## What I would improve next
 
