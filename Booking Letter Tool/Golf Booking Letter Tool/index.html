@@ -1683,19 +1683,26 @@
                 ? `${q.preparedBy}\nThe Vale Resort\n${q.preparedByEmail}\n01443 665803`
                 : `The Vale Resort\nsales@valeresort.com\n01443 665803`;
 
+            const visit = q.mode === 'day' ? 'day with us' : 'stay with us';
+            // Write in the first person when a team member has been selected, otherwise on behalf of the team
+            const attached = q.preparedBy ? 'I have attached' : 'We have attached';
+            const tellMe = q.preparedBy ? 'let me know — I am always happy to help' : 'let us know — we are always happy to help';
+
             return `Dear ${firstName(q.bookingContact)},
 
-Thank you for booking your ${kind} with the Vale Resort. This is an email confirming your booking for ${dateSentence}.
+Thank you for choosing the Vale Resort for your ${kind} — we are delighted to confirm your booking for ${dateSentence}.
 
-Here is a summary of your booking:
+Here is a summary of everything we have arranged for you:
 
 ${bullets.map(b => '  - ' + b).join('\n')}
 
-Please see the attached booking letter, which includes our terms and conditions, along with your Pro Forma Invoice. Please return the deposit of ${money(q.deposit)} within ${q.depositWeeks} week${q.depositWeeks === 1 ? '' : 's'} to secure your booking.
+${attached} your booking letter, which includes our terms and conditions, along with your Pro Forma Invoice. To secure your booking, we kindly ask for a deposit of ${money(q.deposit)} within the next ${q.depositWeeks} week${q.depositWeeks === 1 ? '' : 's'}.
 
-We look forward to welcoming you.
+If you have any questions, or if there is anything we can do to make your ${visit} extra special, please do just ${tellMe}.
 
-Best wishes,
+We are very much looking forward to welcoming you to the Vale Resort.
+
+Warmest wishes,
 ${signOff}`;
         }
 
