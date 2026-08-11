@@ -770,7 +770,11 @@
                 </div>
 
                 <div class="btn-group">
-                    <button class="btn btn-primary" onclick="generateBookingLetter()">Generate Booking Letter PDF</button>
+                    <button class="btn btn-primary" onclick="downloadBookingLetter()">1. Booking Letter PDF</button>
+                    <button class="btn btn-primary" onclick="downloadProFormaInvoice()">2. Pro Forma Invoice PDF</button>
+                </div>
+                <div class="helper-text" style="margin-top:10px;">Two separate documents &mdash; the booking letter (confirmation, booking summary and terms &amp; conditions) and the Pro Forma Invoice. Generate them one at a time and attach both to your email.</div>
+                <div class="btn-group">
                     <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
                 </div>
             </div>
@@ -1687,7 +1691,7 @@ Here is a summary of your booking:
 
 ${bullets.map(b => '  - ' + b).join('\n')}
 
-Please see the attached booking letter, which includes your Pro Forma Invoice and our terms and conditions. Please return the deposit of ${money(q.deposit)} within ${q.depositWeeks} week${q.depositWeeks === 1 ? '' : 's'} to secure your booking.
+Please see the attached booking letter, which includes our terms and conditions, along with your Pro Forma Invoice. Please return the deposit of ${money(q.deposit)} within ${q.depositWeeks} week${q.depositWeeks === 1 ? '' : 's'} to secure your booking.
 
 We look forward to welcoming you.
 
@@ -1852,6 +1856,13 @@ ${signOff}`;
                     </ul>
                 </div>
 
+                <div class="sig-grid" style="margin-top:26px;">
+                    <div><div style="height:34px;"></div><div class="sig-line">Client Authorised Signature</div></div>
+                    <div><div style="height:34px;"></div><div class="sig-line">Date</div></div>
+                    <div><div style="height:34px;"></div><div class="sig-line">Vale of Glamorgan Hotel Ltd Representative</div></div>
+                    <div><div style="height:34px;"></div><div class="sig-line">Date</div></div>
+                </div>
+
                 ${pdfFooter(contactEmail)}
             </div>
             `;
@@ -1923,18 +1934,34 @@ ${signOff}`;
             </div>`;
         }
 
-        function generateBookingLetter() {
+        /* Shared context for both documents. Returns null (and warns) if the booking is not ready. */
+        function docContext(docName) {
             const q = recalculate();
-            if (!q.arrival) { alert('Please enter (or upload) the booking dates first.'); return; }
-            if (!q.lines.length) { alert('Please enter the package details before generating the booking letter.'); return; }
+            if (!q.arrival) { alert('Please enter (or upload) the booking dates first.'); return null; }
+            if (!q.lines.length) { alert(`Please enter the package details before generating the ${docName}.`); return null; }
+            return {
+                q,
+                kindTitle: q.mode === 'day' ? 'Golf Day' : 'Golf Break',
+                kindLower: q.mode === 'day' ? 'golf day' : 'golf break',
+                letterDate: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+                contactEmail: q.preparedByEmail,
+                dateSentence: q.mode === 'break' && q.departure
+                    ? `${formatDate(q.arrival)} to ${formatDate(q.departure)}`
+                    : formatDate(q.arrival)
+            };
+        }
 
-            const kindTitle = q.mode === 'day' ? 'Golf Day' : 'Golf Break';
-            const kindLower = q.mode === 'day' ? 'golf day' : 'golf break';
-            const letterDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-            const contactEmail = q.preparedByEmail;
-            const dateSentence = q.mode === 'break' && q.departure
-                ? `${formatDate(q.arrival)} to ${formatDate(q.departure)}`
-                : formatDate(q.arrival);
+        function docShell(title, body) {
+            return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>${pdfStyles()}</style></head><body>
+            ${body}
+            </body></html>`;
+        }
+
+        /* ---------- DOCUMENT 1: BOOKING LETTER ---------- */
+        function downloadBookingLetter() {
+            const ctx = docContext('booking letter');
+            if (!ctx) return;
+            const { q, kindTitle, kindLower, letterDate, contactEmail, dateSentence } = ctx;
 
             const includesRows = (q.packageIncludes || []).map((text, idx) => `<tr style="${idx % 2 === 1 ? 'background:#f7f4eb;' : ''}">
                 <td style="padding:14px 20px; border-bottom:1px solid #dcd6c7; font-size:13px; vertical-align:middle;">
@@ -1961,8 +1988,7 @@ ${signOff}`;
                     <div class="meta-row"><span class="meta-label">Rounds</span><span class="meta-value">${q.rounds}</span></div>
                     <div class="meta-row"><span class="meta-label">Buggies</span><span class="meta-value">${q.buggies}</span></div>`;
 
-            const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Vale Resort ${kindTitle} Booking Confirmation${q.bookingId ? ' ' + esc(q.bookingId) : ''}</title><style>${pdfStyles()}</style></head><body>
-
+            const body = `
             <!-- PAGE 1: BOOKING CONFIRMATION LETTER -->
             ${pdfLogo()}
             <div class="doc-title">${kindTitle} Booking Confirmation</div>
@@ -1985,7 +2011,7 @@ ${signOff}`;
             <div class="letter">
                 <p>Dear ${esc(firstName(q.bookingContact))},</p>
                 <p>Thank you for booking your ${kindLower} with the Vale Resort. We are delighted to confirm your booking for <strong>${dateSentence}</strong>${q.groupName ? ' for <strong>' + esc(q.groupName) + '</strong>' : ''}.</p>
-                <p>Please find your booking details, Pro Forma Invoice and our terms and conditions set out in this letter. We kindly ask that you check everything carefully and let us know straight away if anything needs amending.</p>
+                <p>Please find your booking details and our terms and conditions set out in this letter, along with your Pro Forma Invoice, which is enclosed separately. We kindly ask that you check everything carefully and let us know straight away if anything needs amending.</p>
                 <p>To secure your booking we require a non-refundable deposit of <strong>${money(q.deposit)}</strong> within <strong>${q.depositWeeks} week${q.depositWeeks === 1 ? '' : 's'}</strong>. Your final numbers, rooming list and balance are required 4 weeks prior to your arrival date.</p>
                 <p>We look forward to welcoming you to the Vale Resort.</p>
                 <p style="margin-top:20px;">Best wishes,</p>
@@ -2046,8 +2072,20 @@ ${signOff}`;
                 ${pdfFooter(contactEmail)}
             </div>
 
-            <!-- PAGE 3: PRO FORMA INVOICE -->
-            <div style="page-break-before: always; padding-top: 32px;">
+            ${pdfTermsAndConditions(contactEmail)}`;
+
+            openPDFWindow(docShell(`Vale Resort ${kindTitle} Booking Confirmation${q.bookingId ? ' ' + esc(q.bookingId) : ''}`, body));
+        }
+
+        /* ---------- DOCUMENT 2: PRO FORMA INVOICE ---------- */
+        function downloadProFormaInvoice() {
+            const ctx = docContext('Pro Forma Invoice');
+            if (!ctx) return;
+            const { q, kindTitle, letterDate, contactEmail, dateSentence } = ctx;
+
+            const body = `
+            ${pdfLogo()}
+            <div>
                 <div style="text-align:center; font-size:13px; letter-spacing:2px; color:#8b3a4a; text-transform:uppercase; font-weight:bold; margin-bottom:6px;">This is not a VAT receipt</div>
                 <div style="text-align:center; font-size:18px; letter-spacing:2px; color:#2a2e3a; text-transform:uppercase; margin-bottom:4px;">Pro Forma Invoice</div>
                 <div style="text-align:center; font-size:12px; color:#6d8062; margin-bottom:18px;">${esc(q.groupName) || esc(q.companyName) || ''}${q.arrival ? ' &mdash; ' + dateSentence : ''}</div>
@@ -2069,6 +2107,8 @@ ${signOff}`;
                         <div class="meta-row"><span class="meta-label">Business Address</span><span class="meta-value">Vale of Glamorgan Hotel Ltd, Hensol, Hensol Park, Vale of Glamorgan, CF72 8JY</span></div>
                     </div>
                 </div>
+
+                ${q.bedrooms.some(b => b.rate > 0) ? '' : bedroomsTable(q)}
 
                 <table>
                     <thead><tr>
@@ -2110,12 +2150,9 @@ ${signOff}`;
                 </div>
 
                 ${pdfFooter(contactEmail)}
-            </div>
+            </div>`;
 
-            ${pdfTermsAndConditions(contactEmail)}
-            </body></html>`;
-
-            openPDFWindow(html);
+            openPDFWindow(docShell(`Vale Resort Pro Forma Invoice${q.bookingId ? ' ' + esc(q.bookingId) : ' ' + kindTitle}`, body));
         }
 
         function openPDFWindow(html) {

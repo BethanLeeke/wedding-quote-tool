@@ -100,8 +100,8 @@ The quoting tools cover the pre-sale stage. The Booking Letter Tool covers what 
 1. Choose **Golf Day** or **Golf Break**.
 2. Drag and drop the Pro Forma Invoice PDF. It is read in the browser with [PDF.js](https://mozilla.github.io/pdf.js/); the booking ID, stay dates, group name, company, booking contact, email, phone, hotel contact and the bedroom lines (date, room type, quantity) are pulled through. Prices on the Pro Forma are deliberately ignored, and every parsed field stays editable.
 3. Enter the package details, using the same fields as the golf quoting tool, plus the deposit required, the number of weeks it is due within and any deposit already paid.
-4. Generate a print-ready booking letter containing the confirmation letter, the booking summary and bedrooms, a Pro Forma Invoice with bank details and signature block, and the Resort terms and conditions.
-5. Copy the generated email template straight into Outlook.
+4. Generate two separate print-ready PDFs: the **booking letter** (confirmation letter, booking summary with bedrooms and tee times, and the Resort terms and conditions with a signature block) and the **Pro Forma Invoice** (itemised charges ex VAT, VAT and inc VAT, deposit required, balance, signature block and bank details).
+5. Copy the generated email template straight into Outlook and attach both PDFs.
 
 Nothing is uploaded anywhere: the PDF is parsed locally in the browser.
 
