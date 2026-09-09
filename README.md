@@ -32,8 +32,9 @@ The application uses plain HTML, CSS and JavaScript. Each quote type is a self-c
 1. The user enters the booking details and selects packages or extras.
 2. JavaScript filters the available tariff data and applies per-person, per-item, per-room or package rules.
 3. The quote recalculates in the browser and builds an itemised summary.
-4. VAT is derived from VAT-inclusive totals using the current 20% rate encoded in the tools.
-5. The completed quote is opened in a print-friendly window so the browser can print it or save it as a PDF.
+4. The lines in that summary can be reordered so the quote reads the way the customer needs it to.
+5. VAT is derived from VAT-inclusive totals using the current 20% rate encoded in the tools.
+6. The completed quote is opened in a print-friendly window so the browser can print it or save it as a PDF.
 
 This zero-build approach keeps deployment simple: the repository can be served by any static web server. It also means tariff data and calculation logic currently live together in the page source.
 
@@ -50,6 +51,22 @@ The repository provides a central launcher and five linked quoting workflows:
 The generated quotes show customer and event details, selected items, quantities, unit prices, totals excluding VAT, VAT and the final VAT-inclusive total. The tools also support custom line items where a standard tariff does not cover the request, and the quote can be printed or saved as a PDF.
 
 The result is a working internal sales aid rather than a measured research experiment. No accuracy benchmark, time-saving study or production usage metric is currently stored in this repository.
+
+## Reordering quote lines
+
+Every tool builds its summary in a fixed order, which is not always the order a customer should read it in. The headline package may need to sit above the room hire, an extra may belong next to the item it relates to, or a discount may read better immediately after the line it applies to.
+
+Each line in the Quote Summary panel therefore carries its own reorder controls:
+
+- **&#9650; / &#9660;** move the line one position up or down.
+- **&#10303;** drags the line to any position; drop it on the top or bottom half of another line to place it above or below.
+- **Reset order** returns the quote to the tool's natural order. It appears above the lines once an order has been set.
+
+The chosen order applies to the printed quote, PDF and email template as well as the on-screen summary, because the summary array itself is reordered rather than just the display.
+
+The order is held against each line rather than against its position, so it survives the full recalculation that runs on every keystroke: changing a guest count or a price keeps the line where it was put. A newly added line appears next to the line it would naturally follow rather than jumping to the bottom, and removing a line leaves the rest undisturbed. Resetting the form clears the order along with everything else.
+
+This is implemented once as a `QuoteLineOrder` module inlined into each tool, alongside the existing per-tool code. Totals, deposits and VAT are unaffected: reordering changes presentation only.
 
 ## Installation and use
 

@@ -384,6 +384,101 @@
             .header h1 { font-size: 2em; }
             .output-section { position: static; max-height: none; }
         }
+        /* ===================== QUOTE LINE REORDERING ===================== */
+        /* Every row reserves the same gutter for the controls, so the price
+           column stays aligned with the rows that have none - and the dividers
+           still run the full width of the panel. */
+        #quoteSummary .quote-item,
+        #quoteSummary .line-order-bar { padding-right: 68px; }
+
+        .quote-item[data-line-index] { position: relative; }
+        .quote-item[data-line-index] > span:first-child { flex: 1 1 auto; }
+        .quote-item[data-line-index] > span:nth-child(2) { flex: 0 0 auto; text-align: right; }
+
+        .line-order-controls {
+            position: absolute;
+            right: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            opacity: 0.4;
+            transition: opacity 0.15s ease;
+        }
+
+        .quote-item[data-line-index]:hover .line-order-controls,
+        .line-order-controls:focus-within { opacity: 1; }
+
+        .line-order-grip {
+            cursor: grab;
+            color: var(--text-light);
+            font-size: 0.9em;
+            line-height: 1;
+            padding: 0 1px;
+            user-select: none;
+        }
+
+        .line-order-btn {
+            width: 20px;
+            height: 18px;
+            padding: 0;
+            border: 1px solid var(--accent-light);
+            border-radius: 3px;
+            background: #ffffff;
+            color: var(--text-light);
+            font-size: 0.62em;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .line-order-btn:hover:not(:disabled) {
+            background: var(--primary-green, var(--primary-gold, #8fa17e));
+            border-color: var(--primary-green, var(--primary-gold, #8fa17e));
+            color: #ffffff;
+        }
+
+        .line-order-btn:disabled { opacity: 0.25; cursor: default; }
+
+        .quote-item.line-drag-source { opacity: 0.4; }
+        .quote-item.line-drop-before { box-shadow: inset 0 2px 0 var(--primary-green, var(--primary-gold, #8fa17e)); }
+        .quote-item.line-drop-after { box-shadow: inset 0 -2px 0 var(--primary-green, var(--primary-gold, #8fa17e)); }
+
+        .line-order-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 6px 0 8px;
+            font-size: 0.75em;
+            color: var(--text-light);
+            letter-spacing: 0.3px;
+        }
+
+        .line-order-reset {
+            border: 1px solid var(--accent-light);
+            background: #ffffff;
+            color: var(--text-light);
+            border-radius: 3px;
+            padding: 4px 9px;
+            font-family: inherit;
+            font-size: 0.95em;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .line-order-reset:hover {
+            background: var(--primary-green, var(--primary-gold, #8fa17e));
+            border-color: var(--primary-green, var(--primary-gold, #8fa17e));
+            color: #ffffff;
+        }
+
+        @media print {
+            .line-order-controls, .line-order-bar { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -798,6 +893,224 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
+        /* ===================== QUOTE LINE REORDERING =====================
+           Lets the user move quote lines up/down (or drag them) so the quote
+           reads in whatever order suits the customer. The chosen order is held
+           against each line so it survives the recalculation that runs on every
+           input change, and it carries through to the PDF/email output because
+           the summary array itself is reordered.
+        ------------------------------------------------------------------- */
+        const QuoteLineOrder = (function () {
+            let preferred = [];      // keys, in the order the user has chosen
+            let current = [];        // keys, in the order currently on screen
+            let recalcFn = null;     // the tool's recalculate(), to re-render
+            let containerId = 'quoteSummary';
+            let dragBound = false;
+            let dragFrom = -1;
+
+            function init(fn, id) {
+                if (typeof fn === 'function') recalcFn = fn;
+                if (id) containerId = id;
+            }
+
+            function container() { return document.getElementById(containerId); }
+
+            function notify() {
+                if (typeof recalcFn === 'function') recalcFn();
+                else if (typeof window.recalculate === 'function') window.recalculate();
+            }
+
+            /* A key that identifies a line across recalculations. Numbers,
+               currency and bracketed detail are stripped so that "Buggies
+               (4 x GBP50.00)" keeps its position when the quantity changes. */
+            function keyFor(item, seen) {
+                let base = String(item.orderKey || item.label || item.desc || '')
+                    .replace(/<[^>]*>/g, ' ')
+                    .replace(/&[a-z]+;/gi, ' ')
+                    .replace(/\([^)]*\)/g, ' ')
+                    .replace(/\b[xX]\b/g, ' ')
+                    .replace(/[0-9£$%.,:\/×-]+/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .toLowerCase();
+                if (!base) base = 'line';
+                const kind = item.type || (item.discount ? 'discount' : (item.tbc ? 'tbc' : 'line'));
+                const key = kind + '|' + base;
+                const n = (seen[key] = (seen[key] || 0) + 1);
+                return n > 1 ? key + '#' + n : key;
+            }
+
+            /* Reorders `items` in place to follow the user's chosen order.
+               Lines with no saved position stay beside the line they were
+               generated after, so newly added items appear where expected. */
+            function apply(items) {
+                if (!Array.isArray(items)) return items;
+                if (items.length === 0) { current = []; return items; }
+
+                const seen = {};
+                const entries = items.map((item, i) => ({ item: item, key: keyFor(item, seen), i: i, rank: -1, sub: 1 }));
+
+                let lastRank = -1;
+                entries.forEach(e => {
+                    const idx = preferred.indexOf(e.key);
+                    if (idx >= 0) { e.rank = idx; e.sub = 0; lastRank = idx; }
+                    else { e.rank = lastRank; e.sub = 1; }
+                });
+                entries.sort((a, b) => (a.rank - b.rank) || (a.sub - b.sub) || (a.i - b.i));
+
+                current = entries.map(e => e.key);
+                const sorted = entries.map(e => e.item);
+                items.splice.apply(items, [0, items.length].concat(sorted));
+
+                bindDrag();
+                return items;
+            }
+
+            /* Attributes for the line's wrapper element. */
+            function rowAttrs(index) {
+                return 'data-line-index="' + index + '"';
+            }
+
+            /* Up/down buttons plus a drag grip for the line at `index`. */
+            function controls(index) {
+                const last = current.length - 1;
+                const up = index <= 0 ? ' disabled' : '';
+                const down = index >= last ? ' disabled' : '';
+                return '<span class="line-order-controls">'
+                    + '<span class="line-order-grip" draggable="true" title="Drag to reorder">&#10303;</span>'
+                    + '<button type="button" class="line-order-btn" data-dir="-1" onclick="QuoteLineOrder.move(' + index + ', -1)" title="Move up"' + up + '>&#9650;</button>'
+                    + '<button type="button" class="line-order-btn" data-dir="1" onclick="QuoteLineOrder.move(' + index + ', 1)" title="Move down"' + down + '>&#9660;</button>'
+                    + '</span>';
+            }
+
+            /* Hint / reset strip shown above the lines. */
+            function bar() {
+                if (current.length < 2) return '';
+                const reset = isCustomised()
+                    ? '<button type="button" class="line-order-reset" onclick="QuoteLineOrder.reset()">Reset order</button>'
+                    : '';
+                return '<div class="line-order-bar"><span>Drag a line or use &#9650;&#9660; to reorder</span>' + reset + '</div>';
+            }
+
+            function move(index, direction) {
+                moveTo(index, index + (direction > 0 ? 2 : -1), direction);
+            }
+
+            /* Moves the line at `from` so it sits before position `insertBefore`
+               (an index in the list as it stands before the move). */
+            function moveTo(from, insertBefore, focusDir) {
+                const keys = current.slice();
+                if (from < 0 || from >= keys.length) return;
+                if (insertBefore < 0 || insertBefore > keys.length) return;
+                const key = keys.splice(from, 1)[0];
+                let target = insertBefore > from ? insertBefore - 1 : insertBefore;
+                target = Math.max(0, Math.min(keys.length, target));
+                if (target === from) return;
+                keys.splice(target, 0, key);
+                preferred = keys;
+                notify();
+                refocus(key, focusDir);
+            }
+
+            /* Keeps the keyboard on the line that just moved. */
+            function refocus(key, focusDir) {
+                const idx = current.indexOf(key);
+                if (idx < 0) return;
+                requestAnimationFrame(function () {
+                    const div = container();
+                    if (!div) return;
+                    const row = div.querySelector('.quote-item[data-line-index="' + idx + '"]');
+                    if (!row) return;
+                    let btn = focusDir ? row.querySelector('.line-order-btn[data-dir="' + focusDir + '"]') : null;
+                    if (!btn || btn.disabled) btn = row.querySelector('.line-order-btn:not(:disabled)');
+                    if (btn) btn.focus();
+                });
+            }
+
+            function isCustomised() { return preferred.length > 0; }
+
+            /* Back to the tool's natural order. */
+            function reset() {
+                preferred = [];
+                notify();
+            }
+
+            /* Same as reset() but without re-running the calculation - for
+               resetForm(), which rebuilds everything itself. */
+            function clear() {
+                preferred = [];
+                current = [];
+            }
+
+            /* ---------- drag & drop (delegated, bound once) ---------- */
+            function bindDrag() {
+                if (dragBound) return;
+                const div = container();
+                if (!div) return;
+                dragBound = true;
+
+                div.addEventListener('dragstart', function (e) {
+                    const row = e.target.closest ? e.target.closest('.quote-item[data-line-index]') : null;
+                    if (!row) return;
+                    dragFrom = parseInt(row.getAttribute('data-line-index'), 10);
+                    row.classList.add('line-drag-source');
+                    if (e.dataTransfer) {
+                        e.dataTransfer.effectAllowed = 'move';
+                        try { e.dataTransfer.setData('text/plain', String(dragFrom)); } catch (err) { /* ignore */ }
+                        if (e.dataTransfer.setDragImage) e.dataTransfer.setDragImage(row, 12, 12);
+                    }
+                });
+
+                div.addEventListener('dragover', function (e) {
+                    if (dragFrom < 0) return;
+                    e.preventDefault();
+                    if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+                    const row = e.target.closest ? e.target.closest('.quote-item[data-line-index]') : null;
+                    clearMarkers(false);
+                    if (!row) return;
+                    const box = row.getBoundingClientRect();
+                    row.classList.add(e.clientY < box.top + box.height / 2 ? 'line-drop-before' : 'line-drop-after');
+                });
+
+                div.addEventListener('drop', function (e) {
+                    if (dragFrom < 0) return;
+                    e.preventDefault();
+                    const row = e.target.closest ? e.target.closest('.quote-item[data-line-index]') : null;
+                    const from = dragFrom;
+                    dragFrom = -1;
+                    clearMarkers(true);
+                    if (!row) return;
+                    const over = parseInt(row.getAttribute('data-line-index'), 10);
+                    const box = row.getBoundingClientRect();
+                    const after = e.clientY >= box.top + box.height / 2;
+                    moveTo(from, after ? over + 1 : over);
+                });
+
+                div.addEventListener('dragend', function () {
+                    dragFrom = -1;
+                    clearMarkers(true);
+                });
+            }
+
+            function clearMarkers(includeSource) {
+                const div = container();
+                if (!div) return;
+                div.querySelectorAll('.line-drop-before, .line-drop-after').forEach(function (el) {
+                    el.classList.remove('line-drop-before', 'line-drop-after');
+                });
+                if (includeSource) {
+                    div.querySelectorAll('.line-drag-source').forEach(function (el) {
+                        el.classList.remove('line-drag-source');
+                    });
+                }
+            }
+
+            return {
+                init: init, apply: apply, rowAttrs: rowAttrs, controls: controls, bar: bar,
+                move: move, moveTo: moveTo, reset: reset, clear: clear, isCustomised: isCustomised
+            };
+        })();
+
         if (window.pdfjsLib) {
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         }
@@ -1450,6 +1763,10 @@
             q.customDiscounts = readCustomDiscounts();
             q.customDiscounts.forEach(cd => q.lines.push(line(esc(cd.desc), null, null, -cd.amount, { discount: true })));
 
+            // Honour any line order the user has set - the summary panel, the
+            // email template and the booking letter all read q.lines.
+            QuoteLineOrder.apply(q.lines);
+
             q.total = q.lines.reduce((sum, l) => sum + (l.total || 0), 0);
             q.exVat = q.total / 1.2;
             q.vat = q.total - q.exVat;
@@ -1614,14 +1931,18 @@
                 return;
             }
 
-            q.lines.forEach(l => {
+            html += QuoteLineOrder.bar();
+
+            q.lines.forEach((l, i) => {
+                const attrs = QuoteLineOrder.rowAttrs(i);
+                const ctrl = QuoteLineOrder.controls(i);
                 if (l.tbc) {
-                    html += `<div class="quote-item info-line"><span>${l.desc}</span><span>${l.qty} guest${l.qty === 1 ? '' : 's'} (price TBC)</span></div>`;
+                    html += `<div class="quote-item info-line" ${attrs}><span>${l.desc}</span><span>${l.qty} guest${l.qty === 1 ? '' : 's'} (price TBC)</span>${ctrl}</div>`;
                 } else if (l.discount) {
-                    html += `<div class="quote-item discount"><span>${l.desc}</span><span>-${money(Math.abs(l.total))}</span></div>`;
+                    html += `<div class="quote-item discount" ${attrs}><span>${l.desc}</span><span>-${money(Math.abs(l.total))}</span>${ctrl}</div>`;
                 } else {
                     const q1 = l.qty && l.unit ? ` (${l.qty} x ${money(l.unit)})` : '';
-                    html += `<div class="quote-item"><span>${l.desc}${q1}</span><span>${money(l.total)}</span></div>`;
+                    html += `<div class="quote-item" ${attrs}><span>${l.desc}${q1}</span><span>${money(l.total)}</span>${ctrl}</div>`;
                 }
             });
 
@@ -2173,6 +2494,7 @@ ${signOff}`;
 
         /* ===================== RESET ===================== */
         function resetForm() {
+            QuoteLineOrder.clear();
             if (!confirm('Clear all booking details and start again?')) return;
             ['bookingId', 'groupName', 'arrivalDate', 'departureDate', 'bookingContact', 'companyName',
              'contactEmail', 'contactPhone', 'companyAddress', 'dayArrivalTime', 'dayTeeTimes', 'dayMealTime',
