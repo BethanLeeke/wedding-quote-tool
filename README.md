@@ -68,6 +68,22 @@ The order is held against each line rather than against its position, so it surv
 
 This is implemented once as a `QuoteLineOrder` module inlined into each tool, alongside the existing per-tool code. Totals, deposits and VAT are unaffected: reordering changes presentation only.
 
+## Managing the Prepared By list
+
+Every tool asks who a quote was prepared by, and prints that name and their email address on the quote, the PDF and the email template. That list used to be fixed in the page source, so a new starter or a leaver meant an edit to the HTML.
+
+Under the Prepared By field each tool now has a **Manage team members** section:
+
+- the current names, each with the email address used as the contact on the quote, and a **&times;** to remove one
+- a **Full name** and **Email (optional)** pair with an **Add** button
+- **Restore default list**, which puts back the names the tool shipped with
+
+The list is saved in the browser and reloaded the next time the tool is opened, so changes stick. It is saved per tool, which keeps Hensol Castle Weddings on its own shorter list of wedding coordinators rather than the full sales team, so a new starter needs adding in each tool they quote from. It is also per browser and per machine: it is a convenience for whoever uses that computer, not a shared staff directory.
+
+An email address is optional. Without one, a quote prepared by that person falls back to the tool's team inbox, as it already did for anyone not in the original list. Removing whoever is currently selected clears the Prepared By field so a quote cannot go out attributed to someone no longer on the list.
+
+If a browser blocks local storage the section still works for the session; it just warns that the change will not outlive the tab.
+
 ## Installation and use
 
 No package manager, build step or application server is required.
@@ -124,7 +140,7 @@ Nothing is uploaded anywhere: the PDF is parsed locally in the browser.
 
 ## What I would improve next
 
-1. Move tariffs into versioned JSON files so pricing can be reviewed and updated without editing calculation code.
+1. Move tariffs into versioned JSON files so pricing can be reviewed and updated without editing calculation code. The same applies to the Prepared By list, which is currently per browser rather than shared by the team.
 2. Add automated tests for date bands, guest categories, discounts, room-night calculations, VAT and quote totals.
 3. Consolidate repeated form, calculation and PDF code into shared modules to reduce drift between tools.
 4. Add stronger validation and clear warnings for missing dates, unsupported tariff years and impossible guest combinations.

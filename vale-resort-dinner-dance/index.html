@@ -668,6 +668,148 @@
         @media print {
             .line-order-controls, .line-order-bar { display: none !important; }
         }
+        /* ===================== PREPARED BY TEAM LIST ===================== */
+        .prepared-by-manage { margin: -12px 0 22px; }
+
+        .pb-toggle {
+            border: none;
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: 0.78em;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: var(--primary-green-dark, var(--primary-gold, #6d8062));
+            cursor: pointer;
+        }
+
+        .pb-toggle:hover { text-decoration: underline; }
+
+        .pb-panel {
+            margin-top: 10px;
+            padding: 14px 16px;
+            background: var(--primary-cream, #f5f1e8);
+            border: 1px solid var(--accent-light, #e8e4d8);
+            border-radius: 4px;
+        }
+
+        .pb-list {
+            list-style: none;
+            margin: 0 0 12px;
+            padding: 0;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .pb-person {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--accent-light, #e8e4d8);
+            font-size: 0.85em;
+        }
+
+        .pb-person:last-child { border-bottom: none; }
+
+        .pb-name { flex: 0 0 auto; font-weight: 600; color: var(--text-dark, #2a2e3a); }
+
+        .pb-email {
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: right;
+            font-size: 0.92em;
+            color: var(--text-light, #6b6b6b);
+        }
+
+        .pb-empty {
+            padding: 6px 0;
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--text-light, #6b6b6b);
+        }
+
+        .pb-remove {
+            flex: 0 0 auto;
+            width: 22px;
+            height: 22px;
+            padding: 0;
+            border: 1px solid var(--accent-light, #e8e4d8);
+            border-radius: 3px;
+            background: #ffffff;
+            color: var(--text-light, #6b6b6b);
+            font-size: 1.05em;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .pb-remove:hover { background: #c75366; border-color: #c75366; color: #ffffff; }
+
+        .pb-add { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; }
+
+        .pb-add input {
+            width: 100%;
+            padding: 9px 10px;
+            border: 1px solid var(--accent-light, #e8e4d8);
+            border-radius: 4px;
+            background: #ffffff;
+            font-family: inherit;
+            font-size: 0.85em;
+            color: var(--text-dark, #2a2e3a);
+        }
+
+        .pb-add-btn {
+            padding: 9px 16px;
+            border: none;
+            border-radius: 4px;
+            background: var(--primary-green, var(--primary-gold, #8fa17e));
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .pb-add-btn:hover { background: var(--primary-green-dark, var(--primary-burgundy, #6d8062)); }
+
+        .pb-notice {
+            margin-top: 10px;
+            font-size: 0.82em;
+            color: var(--primary-green-dark, var(--primary-burgundy, #6d8062));
+        }
+
+        .pb-restore {
+            margin-top: 12px;
+            border: none;
+            background: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: 0.8em;
+            color: var(--text-light, #6b6b6b);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .pb-restore:hover { color: var(--primary-burgundy, #8b3a4a); }
+
+        .pb-hint {
+            margin: 8px 0 0;
+            font-size: 0.75em;
+            line-height: 1.5;
+            color: var(--text-light, #6b6b6b);
+        }
+
+        @media (max-width: 600px) {
+            .pb-add { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            .prepared-by-manage { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -880,6 +1022,263 @@
     </div>
 
     <script>
+        /* ===================== PREPARED BY TEAM LIST =====================
+           Lets the team add and remove the names in the Prepared By list
+           without editing the page. The list is saved in this browser under a
+           key of this tool's own, so it survives a reload and each tool keeps
+           its own team. Names added here can carry an email address, which is
+           the one printed as the contact on the quote and used in the email.
+        ------------------------------------------------------------------ */
+        const PreparedByStore = (function () {
+            const VERSION = 1;
+
+            /* The addresses the tools shipped with. A name added through the
+               panel carries whatever address is entered for it instead. */
+            const DEFAULT_EMAILS = {
+                'Natalie Williams': 'nwilliams@valeresort.com',
+                'Liam Williams': 'liam.williams@valeresort.com',
+                'Cally Birt': 'cally.birt@valeresort.com',
+                'Ed Williams': 'edward.williams@valeresort.com',
+                'Linda Taylor': 'ltaylor@valeresort.com',
+                'Naomi Jones': 'naomi.jones@valeresort.com',
+                'Laura Williams': 'laura.williams@valeresort.com',
+                'Hollie Crowe': 'hollie.crowe@valeresort.com',
+                'Katie Thomas': 'katie.thomas@valeresort.com',
+                'Richard Williams': 'Richard.Williams@valeresort.com'
+            };
+
+            let storageKey = 'valeQuoting.preparedBy';
+            let defaultEmails = DEFAULT_EMAILS;   // addresses shipped with the tool
+            let defaults = [];           // the names shipped with the tool
+            let people = [];             // the list in force now
+            let fallbackEmail = 'sales@valeresort.com';
+            let selects = [];
+            let panels = [];
+            let open = false;
+            let notice = '';
+
+            function esc(s) {
+                return String(s == null ? '' : s)
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            }
+
+            /* localStorage is unavailable in some browsers when the page is
+               opened straight off disk, so never let it break the tool: the
+               list still works, it just will not outlive the tab. */
+            function read() {
+                try {
+                    const raw = window.localStorage.getItem(storageKey);
+                    if (!raw) return null;
+                    const data = JSON.parse(raw);
+                    if (!data || !Array.isArray(data.people)) return null;
+                    return data.people
+                        .filter(p => p && typeof p.name === 'string' && p.name.trim())
+                        .map(p => ({ name: p.name.trim(), email: (p.email || '').trim() }));
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            function write() {
+                try {
+                    window.localStorage.setItem(storageKey, JSON.stringify({ v: VERSION, people: people }));
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            function init(cfg) {
+                cfg = cfg || {};
+                if (cfg.key) storageKey = 'valeQuoting.preparedBy.' + cfg.key;
+                if (cfg.fallbackEmail) fallbackEmail = cfg.fallbackEmail;
+                defaultEmails = cfg.defaultEmails || DEFAULT_EMAILS;
+
+                selects = (cfg.selectIds || []).map(id => document.getElementById(id)).filter(Boolean);
+                if (!selects.length) return;
+
+                // The names shipped with the tool are the ones already in the
+                // markup, so each tool keeps the team it was built with.
+                defaults = Array.from(selects[0].options)
+                    .filter(o => o.value)
+                    .map(o => ({ name: o.value, email: defaultEmails[o.value] || '' }));
+
+                const stored = read();
+                people = stored || defaults.slice();
+
+                selects.forEach(buildPanel);
+                render();
+            }
+
+            function indexOfName(name) {
+                const key = String(name || '').trim().toLowerCase();
+                for (let i = 0; i < people.length; i++) {
+                    if (people[i].name.toLowerCase() === key) return i;
+                }
+                return -1;
+            }
+
+            /* The contact address for a name: what was entered for them here,
+               then the address shipped with the tool, then the team inbox. */
+            function emailFor(name, fallback) {
+                const i = indexOfName(name);
+                if (i >= 0 && people[i].email) return people[i].email;
+                return defaultEmails[name] || fallback || fallbackEmail;
+            }
+
+            function names() { return people.map(p => p.name); }
+
+            function add(name, email) {
+                name = String(name || '').trim();
+                email = String(email || '').trim();
+                if (!name) { flash('Enter a name to add.'); return false; }
+                if (indexOfName(name) >= 0) { flash(name + ' is already on the list.'); return false; }
+                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { flash('That email address does not look right.'); return false; }
+                people.push({ name: name, email: email });
+                persist(name + ' added.');
+                return true;
+            }
+
+            function remove(name) {
+                return removeAt(indexOfName(name));
+            }
+
+            /* Removal goes by position: a name can carry an apostrophe, which
+               would not survive a round trip through an inline handler. */
+            function removeAt(i) {
+                if (i < 0 || i >= people.length) return false;
+                const removed = people[i].name;
+                people.splice(i, 1);
+                persist(removed + ' removed.');
+                return true;
+            }
+
+            function restoreDefaults() {
+                people = defaults.slice();
+                persist('Default list restored.');
+            }
+
+            function persist(message) {
+                const saved = write();
+                flash(saved ? message : message + ' (could not be saved in this browser - it will last until you close the tab)');
+                render();
+            }
+
+            function flash(message) {
+                notice = message || '';
+                if (flash.timer) clearTimeout(flash.timer);
+                flash.timer = setTimeout(function () { notice = ''; renderPanels(); }, 6000);
+                renderPanels();
+            }
+
+            /* ---------- the Prepared By dropdowns ---------- */
+            function renderSelects() {
+                selects.forEach(sel => {
+                    const chosen = sel.value;
+                    const placeholder = sel.options.length && !sel.options[0].value
+                        ? sel.options[0].textContent
+                        : 'Select team member';
+                    let html = '<option value="">' + esc(placeholder) + '</option>';
+                    people.forEach(p => {
+                        html += '<option value="' + esc(p.name) + '">' + esc(p.name) + '</option>';
+                    });
+                    sel.innerHTML = html;
+                    if (chosen && indexOfName(chosen) >= 0) {
+                        sel.value = chosen;
+                    } else if (chosen) {
+                        // Whoever was selected has just been removed.
+                        sel.value = '';
+                        sel.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                });
+            }
+
+            /* ---------- the manage panel ---------- */
+            /* Sit the panel below the field. Where the field is one cell of a
+               two-column grid, go out to the grid so the panel gets the full
+               width rather than becoming a stray half-width cell. */
+            function anchorFor(sel) {
+                let node = sel.closest('.form-group') || sel;
+                const parent = node.parentElement;
+                if (parent) {
+                    let display = '';
+                    try { display = window.getComputedStyle(parent).display; } catch (e) { /* ignore */ }
+                    if (display === 'grid' || display === 'inline-grid') node = parent;
+                }
+                return node;
+            }
+
+            function buildPanel(sel) {
+                const wrap = document.createElement('div');
+                wrap.className = 'prepared-by-manage';
+                anchorFor(sel).insertAdjacentElement('afterend', wrap);
+                panels.push(wrap);
+            }
+
+            function renderPanels() {
+                panels.forEach((wrap, idx) => {
+                    const rows = people.length
+                        ? people.map((p, i) =>
+                            '<li class="pb-person">'
+                            + '<span class="pb-name">' + esc(p.name) + '</span>'
+                            + '<span class="pb-email">' + esc(p.email || defaultEmails[p.name] || '') + '</span>'
+                            + '<button type="button" class="pb-remove" title="Remove ' + esc(p.name) + '"'
+                            + ' onclick="PreparedByStore.removeAt(' + i + ')">&times;</button>'
+                            + '</li>').join('')
+                        : '<li class="pb-empty">No team members yet - add one below.</li>';
+
+                    wrap.innerHTML =
+                        '<button type="button" class="pb-toggle" aria-expanded="' + (open ? 'true' : 'false') + '"'
+                        + ' onclick="PreparedByStore.toggle()">'
+                        + (open ? '&#9662;' : '&#9656;') + ' Manage team members</button>'
+                        + (open
+                            ? '<div class="pb-panel">'
+                            + '<ul class="pb-list">' + rows + '</ul>'
+                            + '<div class="pb-add">'
+                            + '<input type="text" class="pb-input-name" placeholder="Full name" aria-label="New team member name">'
+                            + '<input type="email" class="pb-input-email" placeholder="Email (optional)" aria-label="New team member email">'
+                            + '<button type="button" class="pb-add-btn" onclick="PreparedByStore.addFromPanel(' + idx + ')">Add</button>'
+                            + '</div>'
+                            + (notice ? '<div class="pb-notice">' + esc(notice) + '</div>' : '')
+                            + '<button type="button" class="pb-restore" onclick="PreparedByStore.restoreDefaults()">Restore default list</button>'
+                            + '<p class="pb-hint">Saved in this browser for this tool. An email is used as the contact on the quote; leave it blank to use the team inbox.</p>'
+                            + '</div>'
+                            : '');
+                });
+            }
+
+            function addFromPanel(idx) {
+                const wrap = panels[idx];
+                if (!wrap) return;
+                const nameEl = wrap.querySelector('.pb-input-name');
+                const emailEl = wrap.querySelector('.pb-input-email');
+                if (add(nameEl.value, emailEl.value)) {
+                    nameEl.value = '';
+                    emailEl.value = '';
+                }
+                const again = panels[idx] && panels[idx].querySelector('.pb-input-name');
+                if (again) again.focus();
+            }
+
+            function toggle() {
+                open = !open;
+                notice = '';
+                renderPanels();
+            }
+
+            function render() {
+                renderSelects();
+                renderPanels();
+            }
+
+            return {
+                init: init, emailFor: emailFor, names: names, add: add, remove: remove,
+                removeAt: removeAt, restoreDefaults: restoreDefaults,
+                addFromPanel: addFromPanel, toggle: toggle,
+            };
+        })();
+
         /* ===================== QUOTE LINE REORDERING =====================
            Lets the user move quote lines up/down (or drag them) so the quote
            reads in whatever order suits the customer. The chosen order is held
@@ -1762,19 +2161,7 @@
             const under8Guests = document.getElementById('under8Guests').value;
             const bookingName = document.getElementById('bookingName').value || '—';
             const preparedBy = document.getElementById('preparedBy').value || '—';
-            const CONTACT_EMAILS = {
-                'Natalie Williams': 'nwilliams@valeresort.com',
-                'Liam Williams': 'liam.williams@valeresort.com',
-                'Cally Birt': 'cally.birt@valeresort.com',
-                'Ed Williams': 'edward.williams@valeresort.com',
-                'Linda Taylor': 'ltaylor@valeresort.com',
-                'Naomi Jones': 'naomi.jones@valeresort.com',
-                'Laura Williams': 'laura.williams@valeresort.com',
-                'Hollie Crowe': 'hollie.crowe@valeresort.com',
-                'Katie Thomas': 'katie.thomas@valeresort.com',
-                'Richard Williams': 'Richard.Williams@valeresort.com'
-            };
-            const contactEmail = CONTACT_EMAILS[document.getElementById('preparedBy').value] || 'sales@valeresort.com';
+            const contactEmail = PreparedByStore.emailFor(document.getElementById('preparedBy').value, 'sales@valeresort.com');
             const functionRoom = document.getElementById('functionRoom').value || '—';
 
             let formattedDate = 'Date not selected';
@@ -2159,6 +2546,12 @@
 
         populateOptions();
         recalculate();
+        PreparedByStore.init({
+            key: 'vale-resort-dinner-dance',
+            selectIds: ['preparedBy'],
+            fallbackEmail: 'sales@valeresort.com'
+        });
+
     </script>
 </body>
 </html>
