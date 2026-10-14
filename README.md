@@ -52,6 +52,12 @@ The generated quotes show customer and event details, selected items, quantities
 
 The result is a working internal sales aid rather than a measured research experiment. No accuracy benchmark, time-saving study or production usage metric is currently stored in this repository.
 
+## Customer details on the golf quote
+
+The golf tool opens with a **Customer Details** box — customer name, phone number and email address — above the event details. Whatever is filled in appears in the quote preview and in a **Prepared For** block at the top of the generated PDF, alongside the Prepared By details. Leaving a field blank simply omits that line, and leaving all three blank produces exactly the quote the tool produced before. The box is shared by Golf Day and Golf Break, and clears with the rest of the form on reset.
+
+The same golf tool is also the Golf quoting tool tab on the reservations dashboard at <https://bethanleeke.github.io/Reservations-AI-dashboard/>.
+
 ## Reordering quote lines
 
 Every tool builds its summary in a fixed order, which is not always the order a customer should read it in. The headline package may need to sit above the room hire, an extra may belong next to the item it relates to, or a discount may read better immediately after the line it applies to.

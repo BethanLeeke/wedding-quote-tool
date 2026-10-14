@@ -128,6 +128,8 @@
         .form-group select,
         .form-group input[type="number"],
         .form-group input[type="text"],
+        .form-group input[type="tel"],
+        .form-group input[type="email"],
         .form-group input[type="date"] {
             width: 100%;
             padding: 14px 16px;
@@ -682,6 +684,24 @@
                 <div class="mode-tabs">
                     <button class="mode-tab active" data-mode="day" onclick="switchMode('day')">Golf Day</button>
                     <button class="mode-tab" data-mode="break" onclick="switchMode('break')">Golf Break</button>
+                </div>
+
+                <!-- =============== CUSTOMER DETAILS =============== -->
+                <div class="section-subtitle">Customer Details</div>
+                <div class="date-grid">
+                    <div class="form-group">
+                        <label for="customerName">Customer Name</label>
+                        <input type="text" id="customerName" placeholder="e.g. Andrew Barr" oninput="recalculate();">
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone">Phone Number</label>
+                        <input type="tel" id="customerPhone" placeholder="e.g. 07700 900123" oninput="recalculate();">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="customerEmail">Email Address</label>
+                    <input type="email" id="customerEmail" placeholder="e.g. a.barr@example.co.uk" oninput="recalculate();">
+                    <div class="helper-text">Shown on the quote and the PDF. Leave any field blank to omit it.</div>
                 </div>
 
                 <!-- =============== GOLF DAY FIELDS =============== -->
@@ -1512,6 +1532,48 @@
 
         const NON_GOLFER_PACKAGES = ['DBB', 'DBB + Gin Tour', 'DBB + Spa Day', 'DBB + Spa & Gin Tour', 'B&B'];
 
+        /* ===================== CUSTOMER DETAILS =====================
+           Who the quote is for. The details are read on every recalculation
+           and travel with the quote into the preview and the PDF.
+        ----------------------------------------------------------------- */
+        function escHtml(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function readCustomer() {
+            const val = id => {
+                const el = document.getElementById(id);
+                return el ? (el.value || '').trim() : '';
+            };
+            return { name: val('customerName'), email: val('customerEmail'), phone: val('customerPhone') };
+        }
+
+        function hasCustomer(c) {
+            return !!(c && (c.name || c.email || c.phone));
+        }
+
+        /* Rows for the quote preview. */
+        function modalCustomer(c) {
+            if (!hasCustomer(c)) return '';
+            let html = '';
+            if (c.name) html += modalItem('Customer', escHtml(c.name));
+            if (c.email) html += modalItem('Customer Email', escHtml(c.email));
+            if (c.phone) html += modalItem('Customer Phone', escHtml(c.phone));
+            return html;
+        }
+
+        /* The Prepared For block at the top of the PDF's right-hand column. */
+        function customerMetaRows(c) {
+            if (!hasCustomer(c)) return '';
+            let rows = '<div class="meta-label" style="margin-bottom:4px;">Prepared For</div>';
+            if (c.name) rows += `<div class="meta-row"><span class="meta-value" style="font-weight:bold;">${escHtml(c.name)}</span></div>`;
+            if (c.email) rows += `<div class="meta-row"><span class="meta-value">${escHtml(c.email)}</span></div>`;
+            if (c.phone) rows += `<div class="meta-row"><span class="meta-value">${escHtml(c.phone)}</span></div>`;
+            return rows + '<div style="height:10px;"></div>';
+        }
+
         /* ===================== CUSTOM ITEMS (multi-row) ===================== */
         let customItemCounter = 0;
         function addCustomItem(desc = '', qty = 1, price = 0) {
@@ -1933,7 +1995,8 @@
             });
 
             window._currentQuote = {
-                mode: 'day', summary, total, deposit, golfers, rounds, buggies, pricePerPerson,
+                mode: 'day', customer: readCustomer(),
+                summary, total, deposit, golfers, rounds, buggies, pricePerPerson,
                 courseMaintenance, courseMaintenanceText, course, mealOption, mealCourses, mealTime,
                 arrivalTime, teeTimesText,
                 additionalBaconRolls, additionalMeals, freePlaces, dayFreeRatio,
@@ -2067,7 +2130,8 @@
             });
 
             window._currentQuote = {
-                mode: 'break', summary, total, deposit, golfers, nonGolfers, totalGuests, nights, rounds,
+                mode: 'break', customer: readCustomer(),
+                summary, total, deposit, golfers, nonGolfers, totalGuests, nights, rounds,
                 buggies, golferPrice, drinksVoucher, privateDining, lunch, organiserUpgrade, courseMaintenance, courseMaintenanceText,
                 earlyBird, earlyBirdPerPerson, earlyBirdDiscount,
                 valeTwinRooms, valeSingleRooms, hensolTwinRooms, hensolSingleRooms, totalSingleRooms, totalSingleRoomNights,
@@ -2212,6 +2276,7 @@
             if (isDay) {
                 const eventDate = formatDate(document.getElementById('dayEventDate').value);
                 const preparedBy = document.getElementById('dayPreparedBy').value || '\u2014';
+                html += modalCustomer(q.customer);
                 html += modalItem('Event Date', eventDate);
                 html += modalItem('Prepared By', preparedBy);
                 html += modalItem('Golf Numbers', q.golfers);
@@ -2260,6 +2325,7 @@
                 const arrival = formatDate(document.getElementById('breakArrivalDate').value);
                 const departure = formatDate(document.getElementById('breakDepartureDate').value);
                 const preparedBy = document.getElementById('breakPreparedBy').value || '\u2014';
+                html += modalCustomer(q.customer);
                 html += modalItem('Arrival Date', arrival);
                 html += modalItem('Departure Date', departure);
                 html += modalItem('Nights', q.nights);
@@ -2350,6 +2416,9 @@
         /* ===================== RESET ===================== */
         function resetForm() {
             QuoteLineOrder.clear();
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerEmail').value = '';
+            document.getElementById('customerPhone').value = '';
             if (activeMode === 'day') {
                 document.getElementById('dayEventDate').value = '';
                 document.getElementById('dayPreparedBy').value = '';
@@ -2699,6 +2768,7 @@
                     ${additionalNumbersRows}
                 </div>
                 <div class="meta-col">
+                    ${customerMetaRows(q.customer)}
                     <div class="meta-row"><span class="meta-label">Prepared By</span><span class="meta-value">${preparedBy}</span></div>
                     <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Contact</span><span class="meta-value">${contactEmail}</span></div>
                     <div class="meta-row"><span class="meta-label">Telephone</span><span class="meta-value">01443 665803</span></div>
@@ -2955,6 +3025,7 @@
                     <div class="meta-row"><span class="meta-label">Accommodation</span><span class="meta-value">${accomHtml}</span></div>
                 </div>
                 <div class="meta-col">
+                    ${customerMetaRows(q.customer)}
                     <div class="meta-row"><span class="meta-label">Prepared By</span><span class="meta-value">${preparedBy}</span></div>
                     <div class="meta-row" style="margin-top:8px;"><span class="meta-label">Contact</span><span class="meta-value">${contactEmail}</span></div>
                     <div class="meta-row"><span class="meta-label">Telephone</span><span class="meta-value">01443 665803</span></div>
