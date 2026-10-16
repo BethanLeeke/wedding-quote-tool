@@ -2519,8 +2519,8 @@
                 .totals-table tr.grand-total td { background: #2a2e3a; color: #fff; font-size: 13px; font-weight: bold; border-top: 2px solid #2a2e3a; }
                 .totals-table tr.sub-row td { border-bottom: 1px solid #dcd6c7; }
                 .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #c9c1ad; text-align: center; font-size: 10px; color: #6d8062; line-height: 1.8; letter-spacing: 0.5px; }
-                .section-title { font-size: 16px; letter-spacing: 3px; color: #8b3a4a; text-transform: uppercase; margin: 28px 0 16px 0; font-weight: normal; text-align: center; }
-                .info-block { margin-bottom: 18px; line-height: 1.8; font-size: 12px; }
+                .section-title { font-size: 16px; letter-spacing: 3px; color: #8b3a4a; text-transform: uppercase; margin: 20px 0 12px 0; font-weight: normal; text-align: center; }
+                .info-block { margin-bottom: 14px; line-height: 1.6; font-size: 12px; }
                 .info-block h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #6d8062; margin-bottom: 6px; }
                 .info-block p, .info-block li { color: #2a2e3a; }
                 .info-block ul { margin-left: 18px; }
@@ -2528,7 +2528,21 @@
                 .green-dot { display: inline-block; width: 10px; height: 10px; background: #8fa17e; border-radius: 50%; margin-right: 14px; vertical-align: middle; }
                 .menu-item { padding: 6px 0; font-size: 12px; color: #2a2e3a; border-bottom: 1px solid #eee; }
                 .menu-divider { text-align: center; font-size: 16px; letter-spacing: 4px; color: #8b3a4a; padding: 12px 0; }
-                @media print { body { padding: 20px 28px; } }
+                /* Print layout. Sections follow one another rather than each
+                   starting a new page, so a page is only ever as empty as the
+                   end of the document. These rules stop the flow splitting
+                   things that should stay together. */
+                @page { size: A4; margin: 12mm 0; }
+                .pdf-section { margin-top: 16px; }
+                .doc-title, .section-title, .info-block h3, .menu-divider { break-after: avoid; page-break-after: avoid; }
+                tr, li, .meta-grid, .totals-table, .logo-area, .menu-item, .footer { break-inside: avoid; page-break-inside: avoid; }
+                .footer { break-before: avoid; page-break-before: avoid; }
+                .keep-with-next { break-after: avoid; page-break-after: avoid; }
+                /* The closing terms move as one, so an overflow never leaves a
+                   last page holding a stray line or two. */
+                .keep-together { break-inside: avoid; page-break-inside: avoid; }
+                p, li { orphans: 3; widows: 3; }
+                @media print { body { padding: 0 28px; } }
             `;
         }
 
@@ -2550,16 +2564,16 @@
 
         function pdfTermsAndConditions(contactEmail) {
             return `
-            <div style="page-break-before: always; padding-top: 32px;">
+            <div class="pdf-section">
                 <div class="doc-title" style="margin-bottom:8px;">The Vale Resort Group</div>
                 <div style="text-align:center; font-size:18px; letter-spacing:2px; color:#2a2e3a; text-transform:uppercase; margin-bottom:22px; font-weight:normal;">Terms &amp; Conditions</div>
 
-                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                <div class="info-block" style="font-size:11px; line-height:1.5;">
                     <p>At the Vale Resort we want to make our terms of business as straight forward as possible. If, however, you have any questions, please speak to us before you sign.</p>
                     <p style="margin-top:8px;">All deposits paid towards your booking are non-refundable and non-transferable. By confirming your booking with us and paying your deposit you are agreeing to our booking terms and conditions below.</p>
                 </div>
 
-                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                <div class="info-block" style="font-size:11px; line-height:1.5;">
                     <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:8px; font-weight:bold;">1. What happens if I cancel?</h3>
                     <table style="width:100%; border-collapse:collapse; border:1px solid #c9c1ad; margin-bottom:8px;">
                         <thead><tr style="background:#2a2e3a; color:#fff;">
@@ -2574,7 +2588,7 @@
                     </table>
                 </div>
 
-                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                <div class="info-block" style="font-size:11px; line-height:1.5;">
                     <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">1.1 Could the Vale Resort cancel my booking?</h3>
                     <p>In the unlikely event that the Vale Resort has to cancel your booking, you'll receive all your advance payments, although the Vale will not have any liability. However the Vale may cancel if:</p>
                     <ul style="margin-left:18px; margin-top:4px;">
@@ -2584,38 +2598,37 @@
                     </ul>
                 </div>
 
-                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                <div class="info-block" style="font-size:11px; line-height:1.5;">
                     <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">2. Can I change my guest, delegate numbers and group accommodation?</h3>
                     <p>Of course, you can. However, if the numbers decrease significantly, cancellation charges will be applied. If you give us more than 4 weeks' notice, for events of 30 people plus, you can reduce your numbers by anything up to 10% without charge.</p>
                     <p style="margin-top:4px;">If you provide less than 4 weeks' notice, the contracted numbers will be charged. If numbers are reduced, the Vale Resort reserves the right to re-allocate the room to one more relevant to the size of the event.</p>
                     <p style="margin-top:4px;">Final numbers for meetings for 2 &ndash; 30 delegates are to be confirmed no later than 5 days prior to the event. Should numbers fall after this, full charges will apply.</p>
                 </div>
 
-                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                <div class="info-block" style="font-size:11px; line-height:1.5;">
                     <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">3. If I don't have a credit agreement, when do I have to pay?</h3>
                     <p>Upon confirmation of your booking, you will need to provide a credit card to secure and confirm your final payment. In the unlikely event that payment is not received upon departure the credit card may be used for full payment. The only exception to this is if you have booked a wedding with us, then the minimum non-refundable deposit is &pound;500.00. Full payment of the balance is due 14 days before the event. Credit is not available for wedding parties.</p>
                 </div>
 
-                ${pdfFooter(contactEmail)}
             </div>
 
-            <div style="page-break-before: always; padding-top: 32px;">
-                <div class="info-block" style="font-size:11px; line-height:1.6;">
+            <div>
+                <div class="info-block" style="font-size:11px; line-height:1.5;">
                     <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">4. How do I get credit?</h3>
                     <p>A 'Credit Application Form' is available on request if you are not recognized as a credit customer. Separate terms and conditions apply which can be found on the Resort's credit application form. This should be completed and returned no later than 4 weeks prior to the event date. Credit is not automatic; confirmation must be sought after completion of the 'Credit Application Form'. Full payment of the balance is due 14 days post event.</p>
                 </div>
 
-                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                <div class="info-block" style="font-size:11px; line-height:1.5;">
                     <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">5. I've got lots of things to bring to the Resort</h3>
                     <p>We can provide most equipment. However, should you wish to bring your own equipment into the Resort, you must ensure it has been tested and is safe to use. The Vale Resort accepts no liability for any equipment you bring to the property, and we ask you to comply with the rules set out in the Health &amp; Safety at work act. For any 3rd party contractors visiting the hotel (such as entertainment, bands etc) under your instruction, you must ensure current and adequate 'Public Liability Insurance' is in place. Copies of electrical testing certificates and insurance policies must be made available on request. Should you have any queries, our team will be happy to help.</p>
                 </div>
 
-                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                <div class="info-block" style="font-size:11px; line-height:1.5;">
                     <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">6. Guest Property</h3>
                     <p>The Resort shall not be liable for any loss or damage to property owned by, or in the custody of, the Client or its guests, employees, agents or others. The client is advised to arrange adequate insurance cover. Safe deposit boxes may be available for the Client's use. The Resort will not be liable for failure to comply with any terms or condition of this contract to the extent that such compliance is prevented, hindered or delayed by any cause beyond its control, including but not limited to fire, storm, explosion, flood, act of God, action of any government or governmental agency, shortage of materials of goods, strike or lock-out.</p>
                 </div>
 
-                <div class="info-block" style="font-size:11px; line-height:1.6;">
+                <div class="info-block keep-together" style="font-size:11px; line-height:1.5;">
                     <h3 style="font-size:12px; text-transform:none; letter-spacing:0.5px; color:#8b3a4a; margin-bottom:6px; font-weight:bold;">7. Anything else?</h3>
                     <p>Just a few points:</p>
                     <ul style="margin-left:18px; margin-top:4px;">
@@ -2627,7 +2640,6 @@
                     </ul>
                 </div>
 
-                ${pdfFooter(contactEmail)}
             </div>
             `;
         }
@@ -2795,25 +2807,25 @@
 
             ${pdfFooter(contactEmail)}
 
-            <!-- Page 2: Package Includes + Helpful Info -->
-            <div style="page-break-before: always; padding-top: 48px;">
-                <div style="text-align:center; font-size:20px; letter-spacing:3px; color:#8b3a4a; text-transform:uppercase; margin-bottom:36px; font-weight:normal;">Your Golf Day Package Includes</div>
+            <!-- Package Includes + Helpful Info -->
+            <div class="pdf-section">
+                <div class="keep-with-next" style="text-align:center; font-size:20px; letter-spacing:3px; color:#8b3a4a; text-transform:uppercase; margin-bottom:14px; font-weight:normal;">Your Golf Day Package Includes</div>
                 <table style="width:100%; border-collapse:collapse; margin-bottom:24px;">
                     <tbody>
                         <tr>
-                            <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
+                            <td style="padding:10px 20px; border-bottom:1px solid #dcd6c7; font-size:13px; vertical-align:middle;">
                                 <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
                                 Arrival &amp; Registration: Tea/coffee &amp; bacon rolls
                             </td>
                         </tr>
                         <tr style="background:#f7f4eb;">
-                            <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
+                            <td style="padding:10px 20px; border-bottom:1px solid #dcd6c7; font-size:13px; vertical-align:middle;">
                                 <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
                                 18 holes Championship golf on the ${q.course}
                             </td>
                         </tr>
                         <tr>
-                            <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
+                            <td style="padding:10px 20px; border-bottom:1px solid #dcd6c7; font-size:13px; vertical-align:middle;">
                                 <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
                                 ${q.mealCourses} course Society ${mealLower} served at the Golf Club
                             </td>
@@ -2841,14 +2853,13 @@
                     <p style="margin-top:6px;">We do not allow any food or beverage to be brought onto the resort.</p>
                 </div>
 
-                ${pdfFooter(contactEmail)}
             </div>
 
-            <!-- Page 3: Society Dinner Menu + Payments + Next Steps -->
-            <div style="page-break-before: always; padding-top: 48px;">
+            <!-- Society Dinner Menu + Payments + Next Steps -->
+            <div class="pdf-section">
                 <div class="section-title">Society ${q.mealOption} Menu</div>
 
-                <div style="text-align:center; margin-bottom:18px;">
+                <div class="keep-with-next" style="text-align:center; margin-bottom:18px;">
                     <p style="font-size:13px; font-weight:bold; color:#2a2e3a; margin-bottom:4px;">Golf Society and Golf Teams Menu</p>
                     <p style="font-size:11px; color:#6d8062; font-style:italic;">Please make one choice from each course for the entire group</p>
                 </div>
@@ -2896,7 +2907,6 @@
                     </ul>
                 </div>
 
-                ${pdfFooter(contactEmail)}
             </div>
 
             ${pdfTermsAndConditions(contactEmail)}
@@ -3052,9 +3062,9 @@
 
             ${pdfFooter(contactEmail)}
 
-            <!-- Page 2: Package Includes + Helpful Info + Payments + Next Steps -->
-            <div style="page-break-before: always; padding-top: 48px;">
-                <div style="text-align:center; font-size:20px; letter-spacing:3px; color:#8b3a4a; text-transform:uppercase; margin-bottom:36px; font-weight:normal;">Your Golf Break Package Includes</div>
+            <!-- Package Includes + Helpful Info + Payments + Next Steps -->
+            <div class="pdf-section">
+                <div class="keep-with-next" style="text-align:center; font-size:20px; letter-spacing:3px; color:#8b3a4a; text-transform:uppercase; margin-bottom:14px; font-weight:normal;">Your Golf Break Package Includes</div>
                 <table style="width:100%; border-collapse:collapse; margin-bottom:24px;">
                     <tbody>
                         ${[
@@ -3066,7 +3076,7 @@
                             q.lunch ? 'Lunch' : null,
                             q.organiserUpgrade ? 'Free room upgrade for Group Organiser' : null
                         ].filter(Boolean).map((text, idx) => `<tr style="${idx % 2 === 1 ? 'background:#f7f4eb;' : ''}">
-                            <td style="padding:16px 20px; border-bottom:1px solid #dcd6c7; font-size:14px; vertical-align:middle;">
+                            <td style="padding:10px 20px; border-bottom:1px solid #dcd6c7; font-size:13px; vertical-align:middle;">
                                 <span style="display:inline-block; width:10px; height:10px; background:#8fa17e; border-radius:50%; margin-right:14px; vertical-align:middle;"></span>
                                 ${text}
                             </td>
@@ -3116,7 +3126,6 @@
                     </ul>
                 </div>
 
-                ${pdfFooter(contactEmail)}
             </div>
 
             ${pdfTermsAndConditions(contactEmail)}
