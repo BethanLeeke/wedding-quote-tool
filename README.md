@@ -16,7 +16,7 @@ There is no external CSV, database or API. The pricing dataset is encoded as Jav
 
 For the wedding tool, the dataset includes:
 
-- 2026-2028 venue hire tariffs, split by season, date range and day of the week
+- 2026-2029 venue hire tariffs, split by season, date range and day of the week
 - adult, junior and under-eight wedding breakfast prices
 - evening-food packages and dessert supplements
 - wine, beer, soft-drink and non-alcoholic drink prices
